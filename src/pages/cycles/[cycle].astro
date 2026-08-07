@@ -1,0 +1,86 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cycles = await getCollection('cycles');
+  return cycles.map((cycle) => ({
+    params: { cycle: String(cycle.data.cycleNumber) },
+    props: { cycle },
+  }));
+}
+
+const { cycle } = Astro.props;
+const chapters = await getCollection('chapters');
+const cycleChapters = chapters
+  .filter(ch => ch.data.cycleNumber === cycle.data.cycleNumber)
+  .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
+---
+
+<Layout title={`${cycle.data.title} - Perry Rhodan Fan`}>
+  <div class="min-h-screen bg-slate-900">
+    <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/Perry-Rhodan-Fan/" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+          PERRY RHODAN
+        </a>
+        <div class="flex items-center gap-4">
+          <a href="/Perry-Rhodan-Fan/cycles" class="text-blue-200 hover:text-cyan-300 transition-colors">← Cycles</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+      <div class="mb-12">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="text-5xl font-bold text-blue-500/30">
+            {String(cycle.data.cycleNumber).padStart(2, '0')}
+          </span>
+          <div>
+            <h1 class="text-4xl font-bold text-white">{cycle.data.title}</h1>
+            <p class="text-blue-200 mt-1">
+              {cycle.data.type === 'fr' ? `Tomes ${cycle.data.bookStart}-${cycle.data.bookEnd}` : `Fascicules ${cycle.data.bookStart}-${cycle.data.bookEnd}`}
+            </p>
+          </div>
+        </div>
+        <p class="text-lg text-blue-200/80 max-w-3xl">{cycle.data.description}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {cycleChapters.map((chapter) => (
+          <a href={`/Perry-Rhodan-Fan/chapter/${chapter.id}`} class="group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden">
+            {chapter.data.cover && (
+              <div class="aspect-[2/3] bg-slate-700 overflow-hidden">
+                <img src={chapter.data.cover} alt={chapter.data.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              </div>
+            )}
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-sm text-blue-400 font-mono">
+                  #{String(chapter.data.chapterNumber).padStart(3, '0')}
+                </span>
+                {chapter.data.type === 'translation' && (
+                  <span class="px-2 py-0.5 bg-purple-600/20 text-purple-300 text-xs rounded border border-purple-500/30">
+                    Traduction
+                  </span>
+                )}
+              </div>
+              <h3 class="text-lg font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors line-clamp-2">
+                {chapter.data.title}
+              </h3>
+              {chapter.data.originalTitle && (
+                <p class="text-xs text-blue-300/50 italic mb-2">{chapter.data.originalTitle}</p>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      {cycleChapters.length === 0 && (
+        <div class="text-center py-20">
+          <p class="text-blue-200/50 text-lg">Aucun chapitre disponible pour ce cycle.</p>
+        </div>
+      )}
+    </main>
+  </div>
+</Layout>

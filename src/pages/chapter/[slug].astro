@@ -1,0 +1,151 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const chapters = await getCollection('chapters');
+  return chapters.map((chapter) => ({
+    params: { slug: chapter.id },
+    props: { chapter },
+  }));
+}
+
+const { chapter } = Astro.props;
+const { Content } = await render(chapter);
+
+const allChapters = await getCollection('chapters');
+const cycleChapters = allChapters
+  .filter(ch => ch.data.cycleNumber === chapter.data.cycleNumber)
+  .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
+
+const currentIndex = cycleChapters.findIndex(ch => ch.id === chapter.id);
+const prevChapter = currentIndex > 0 ? cycleChapters[currentIndex - 1] : null;
+const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[currentIndex + 1] : null;
+---
+
+<Layout title={`${chapter.data.title} - Perry Rhodan Fan`}>
+  <div class="min-h-screen bg-slate-900" id="reader-page">
+    <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
+      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <a href={`/Perry-Rhodan-Fan/cycles/${chapter.data.cycleNumber}`} class="text-blue-200 hover:text-cyan-300 transition-colors text-sm">
+          ← Cycle {chapter.data.cycleNumber}
+        </a>
+        <div class="flex items-center gap-3">
+          <button id="theme-toggle" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Mode sombre/clair">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+          </button>
+          <div class="flex items-center gap-1">
+            <button id="font-decrease" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Réduire la police">A-</button>
+            <button id="font-increase" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Agrandir la police">A+</button>
+          </div>
+        </div>
+      </div>
+      <div class="h-1 bg-slate-700">
+        <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 w-0 transition-all duration-100"></div>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      <article id="chapter-content" class="prose prose-invert prose-lg max-w-none">
+        {chapter.data.cover && (
+          <div class="not-prose mb-8 flex justify-center">
+            <img src={chapter.data.cover} alt={chapter.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
+          </div>
+        )}
+
+        <header class="mb-8 text-center not-prose">
+          <p class="text-blue-400 font-mono text-sm mb-2">Chapitre {chapter.data.chapterNumber}</p>
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{chapter.data.title}</h1>
+          {chapter.data.originalTitle && (
+            <p class="text-blue-300/50 italic">{chapter.data.originalTitle}</p>
+          )}
+        </header>
+
+        <div class="text-blue-100 leading-relaxed reader-text">
+          <Content />
+        </div>
+      </article>
+
+      <div class="mt-16 flex items-center justify-between border-t border-blue-500/20 pt-8">
+        {prevChapter ? (
+          <a href={`/Perry-Rhodan-Fan/chapter/${prevChapter.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors">
+            <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <div class="text-left">
+              <div class="text-xs text-blue-400">Précédent</div>
+              <div class="font-semibold">{prevChapter.data.title}</div>
+            </div>
+          </a>
+        ) : <div></div>}
+
+        {nextChapter ? (
+          <a href={`/Perry-Rhodan-Fan/chapter/${nextChapter.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors text-right">
+            <div>
+              <div class="text-xs text-blue-400">Suivant</div>
+              <div class="font-semibold">{nextChapter.data.title}</div>
+            </div>
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        ) : <div></div>}
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const progressBar = document.getElementById('progress-bar');
+    const themeToggle = document.getElementById('theme-toggle');
+    const fontIncrease = document.getElementById('font-increase');
+    const fontDecrease = document.getElementById('font-decrease');
+    const readerText = document.querySelector('.reader-text');
+    const page = document.getElementById('reader-page');
+
+    let fontSize = parseInt(localStorage.getItem('pr-font-size') || '18');
+    let darkMode = localStorage.getItem('pr-theme') !== 'light';
+
+    function applyTheme() {
+      if (darkMode) {
+        page.classList.remove('bg-slate-100', 'text-slate-900');
+        page.classList.add('bg-slate-900', 'text-white');
+      } else {
+        page.classList.remove('bg-slate-900', 'text-white');
+        page.classList.add('bg-slate-100', 'text-slate-900');
+      }
+    }
+
+    function applyFontSize() {
+      if (readerText) readerText.style.fontSize = fontSize + 'px';
+      localStorage.setItem('pr-font-size', String(fontSize));
+    }
+
+    applyTheme();
+    applyFontSize();
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      if (progressBar) progressBar.style.width = progress + '%';
+    });
+
+    themeToggle?.addEventListener('click', () => {
+      darkMode = !darkMode;
+      localStorage.setItem('pr-theme', darkMode ? 'dark' : 'light');
+      applyTheme();
+    });
+
+    fontIncrease?.addEventListener('click', () => {
+      fontSize = Math.min(fontSize + 2, 32);
+      applyFontSize();
+    });
+
+    fontDecrease?.addEventListener('click', () => {
+      fontSize = Math.max(fontSize - 2, 12);
+      applyFontSize();
+    });
+  </script>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Perry Rhodan Fan - Traduction Fan">
+  <div class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900"></div>
+    
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute top-20 left-10 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+      <div class="absolute top-40 right-20 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
+      <div class="absolute bottom-40 left-1/4 w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-700"></div>
+      <div class="absolute top-1/3 right-1/3 w-1 h-1 bg-white rounded-full animate-pulse delay-1000"></div>
+      <div class="absolute bottom-20 right-10 w-2 h-2 bg-white rounded-full animate-pulse delay-500"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <h1 class="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-pulse">
+        PERRY RHODAN
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-blue-200 mb-4 font-light">
+        La plus grande saga de science-fiction de tous les temps
+      </p>
+      
+      <p class="text-lg text-blue-300 mb-12 max-w-2xl mx-auto">
+        Plongez dans l'univers épique de Perry Rhodan à travers des traductions fan exclusives
+      </p>
+
+      <a 
+        href="/Perry-Rhodan-Fan/cycles" 
+        class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300"
+      >
+        Commencer la lecture
+      </a>
+
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+          <div class="text-4xl font-bold text-cyan-400 mb-2">379</div>
+          <div class="text-blue-200">Tomes en français</div>
+        </div>
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+          <div class="text-4xl font-bold text-cyan-400 mb-2">46</div>
+          <div class="text-blue-200">Cycles épiques</div>
+        </div>
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+          <div class="text-4xl font-bold text-cyan-400 mb-2">3399+</div>
+          <div class="text-blue-200">Fascicules allemands</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+      </svg>
+    </div>
+  </div>
+</Layout>
