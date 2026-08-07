@@ -15,5 +15,9 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.0",
     "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "cheerio": "^1.2.0",
+    "iconv-lite": "^0.7.3"
   }
 }

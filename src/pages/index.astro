@@ -3,57 +3,166 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Perry Rhodan Fan - Traduction Fan">
-  <div class="relative min-h-screen flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900"></div>
+  <div class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black" id="hero">
+    <canvas id="starfield" class="absolute inset-0 w-full h-full"></canvas>
     
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute top-20 left-10 w-2 h-2 bg-white rounded-full animate-pulse"></div>
-      <div class="absolute top-40 right-20 w-1 h-1 bg-white rounded-full animate-pulse delay-300"></div>
-      <div class="absolute bottom-40 left-1/4 w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-700"></div>
-      <div class="absolute top-1/3 right-1/3 w-1 h-1 bg-white rounded-full animate-pulse delay-1000"></div>
-      <div class="absolute bottom-20 right-10 w-2 h-2 bg-white rounded-full animate-pulse delay-500"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/30 to-slate-950/80 pointer-events-none"></div>
+    
+    <div id="ship-container" class="absolute z-10 pointer-events-none">
+      <svg id="ship" viewBox="0 0 200 80" class="w-48 md:w-64 drop-shadow-[0_0_15px_rgba(56,189,248,0.6)]">
+        <defs>
+          <linearGradient id="hull" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1e3a5f;stop-opacity:1" />
+          </linearGradient>
+          <radialGradient id="engine" cx="0%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:0" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="100" cy="40" rx="90" ry="18" fill="url(#hull)" stroke="#60a5fa" stroke-width="0.5"/>
+        <ellipse cx="100" cy="40" rx="95" ry="6" fill="none" stroke="#3b82f6" stroke-width="0.3" opacity="0.6"/>
+        <circle cx="100" cy="40" r="12" fill="#0c4a6e" stroke="#22d3ee" stroke-width="0.5"/>
+        <circle cx="100" cy="40" r="6" fill="#22d3ee" opacity="0.8"/>
+        <rect x="2" y="34" width="20" height="12" rx="6" fill="url(#engine)" opacity="0.9"/>
+        <rect x="178" y="34" width="20" height="12" rx="6" fill="url(#engine)" opacity="0.9"/>
+      </svg>
     </div>
 
-    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
-      <h1 class="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-pulse">
-        PERRY RHODAN
+    <div class="relative z-20 text-center px-4 max-w-4xl mx-auto">
+      <h1 class="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
+        <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite]">PERRY RHODAN</span>
       </h1>
       
-      <p class="text-xl md:text-2xl text-blue-200 mb-4 font-light">
+      <p class="text-xl md:text-2xl text-blue-200 mb-4 font-light animate-[fadeInUp_1s_ease-out_0.3s_both]">
         La plus grande saga de science-fiction de tous les temps
       </p>
       
-      <p class="text-lg text-blue-300 mb-12 max-w-2xl mx-auto">
-        Plongez dans l'univers épique de Perry Rhodan à travers des traductions fan exclusives
+      <p class="text-lg text-blue-300/80 mb-12 max-w-2xl mx-auto animate-[fadeInUp_1s_ease-out_0.6s_both]">
+        Plongez dans l'univers épique de Perry Rhodan à travers des traductions fan exclusives et les éditions françaises originales
       </p>
 
       <a 
         href="/Perry-Rhodan-Fan/cycles" 
-        class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300"
+        class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 animate-[fadeInUp_1s_ease-out_0.9s_both]"
       >
         Commencer la lecture
       </a>
 
-      <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center animate-[fadeInUp_1s_ease-out_1.2s_both]">
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
           <div class="text-4xl font-bold text-cyan-400 mb-2">379</div>
           <div class="text-blue-200">Tomes en français</div>
         </div>
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
           <div class="text-4xl font-bold text-cyan-400 mb-2">46</div>
           <div class="text-blue-200">Cycles épiques</div>
         </div>
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20">
+        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
           <div class="text-4xl font-bold text-cyan-400 mb-2">3399+</div>
           <div class="text-blue-200">Fascicules allemands</div>
         </div>
       </div>
     </div>
 
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
       <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
       </svg>
     </div>
   </div>
+
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    const shipContainer = document.getElementById('ship-container');
+    
+    let width, height;
+    const stars = [];
+    const STAR_COUNT = 400;
+    
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    
+    function initStars() {
+      stars.length = 0;
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          z: Math.random() * 3 + 0.5,
+          size: Math.random() * 1.5 + 0.5,
+          brightness: Math.random()
+        });
+      }
+    }
+    
+    let time = 0;
+    function animate() {
+      time += 0.005;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, width, height);
+      
+      stars.forEach(star => {
+        star.x -= star.z * 0.3;
+        if (star.x < 0) {
+          star.x = width;
+          star.y = Math.random() * height;
+        }
+        
+        const flicker = 0.7 + Math.sin(time * 3 + star.brightness * 10) * 0.3;
+        const alpha = star.brightness * flicker;
+        const size = star.size * (1 + Math.sin(time * 2 + star.x) * 0.1);
+        
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200, 220, 255, ${alpha})`;
+        ctx.fill();
+        
+        if (star.z > 2 && alpha > 0.8) {
+          ctx.beginPath();
+          ctx.moveTo(star.x, star.y);
+          ctx.lineTo(star.x + star.z * 8, star.y);
+          ctx.strokeStyle = `rgba(150, 200, 255, ${alpha * 0.3})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      });
+      
+      const shipX = width * 0.15 + Math.sin(time * 0.7) * width * 0.35;
+      const shipY = height * 0.3 + Math.cos(time * 0.5) * height * 0.08;
+      const tilt = Math.cos(time * 0.7) * 5;
+      
+      if (shipContainer) {
+        shipContainer.style.left = shipX + 'px';
+        shipContainer.style.top = shipY + 'px';
+        shipContainer.style.transform = `rotate(${tilt}deg)`;
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    
+    resize();
+    initStars();
+    animate();
+    
+    window.addEventListener('resize', () => {
+      resize();
+      initStars();
+    });
+  </script>
+
+  <style is:global>
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </Layout>

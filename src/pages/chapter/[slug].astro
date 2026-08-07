@@ -56,7 +56,11 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
         )}
 
         <header class="mb-8 text-center not-prose">
-          <p class="text-blue-400 font-mono text-sm mb-2">Chapitre {chapter.data.chapterNumber}</p>
+          <p class="text-blue-400 font-mono text-sm mb-2">
+            {chapter.data.type === 'translation'
+              ? `Chapitre ${chapter.data.chapterNumber} · Traduction fan`
+              : `Tome n° ${chapter.data.chapterNumber} · Édition française`}
+          </p>
           <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{chapter.data.title}</h1>
           {chapter.data.originalTitle && (
             <p class="text-blue-300/50 italic">{chapter.data.originalTitle}</p>
