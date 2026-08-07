@@ -71,7 +71,7 @@ function cleanText(text) {
 }
 
 function escapeYaml(str) {
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ').substring(0, 2000);
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ');
 }
 
 async function scrapeVolume(num) {
@@ -119,23 +119,24 @@ async function scrapeVolume(num) {
 
     const coverImg = central.find('img[src*="covers/pr_vf"]').first().attr('src');
     let cover = '';
+    let remoteCover = '';
     if (coverImg) {
-      cover = coverImg.replace(/\.\.\//g, '');
-      cover = `http://rhodan.stellarque.com/${cover}`;
+      const cleanPath = coverImg.replace(/\.\.\//g, '');
+      remoteCover = `http://rhodan.stellarque.com/${cleanPath}`;
+      cover = `/images/covers/FR_COVER_PLACEHOLDER`;
     }
 
     let synopsis = '';
     const fullText = cleanText(text);
     const allPartsMatch = fullText.match(/((?:PREMI[ÈE]RE|DEUXI[ÈE]ME|TROISI[ÈE]ME)\s+PARTIE[\s\S]*?)(?:FASCICULES\s+ORIGINAUX|AUTRES\s+EDITIONS|©)/i);
     if (allPartsMatch) {
-      synopsis = cleanText(allPartsMatch[1]).substring(0, 2000);
+      synopsis = cleanText(allPartsMatch[1]);
     } else {
       const afterParution = fullText.match(/Parution\s+(?:[a-zA-Zéèêàâûô]+\s+)?\d{4}\s*([\s\S]*)$/i);
       if (afterParution) {
         synopsis = cleanText(afterParution[1])
           .split(/\b(?:FASCICULES\s+ORIGINAUX|AUTRES\s+EDITIONS|©)\b/i)[0]
-          .replace(/\s*SOURCE\s*$/i, '')
-          .substring(0, 2000);
+          .replace(/\s*SOURCE\s*$/i, '');
       }
     }
 
@@ -156,17 +157,16 @@ async function main() {
     }
 
     const slug = `fr-${String(data.bookNumber).padStart(3, '0')}`;
-    const synopsisEsc = escapeYaml(data.synopsis || 'Synopsis à compléter.');
     const synopsisBody = data.synopsis || 'Synopsis à compléter depuis la source.';
     const titleEsc = data.title.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    const coverPath = data.cover ? data.cover.replace('FR_COVER_PLACEHOLDER', `${slug}.jpg`) : '';
 
     const content = `---
 title: "${titleEsc}"
 cycleNumber: ${data.cycleNumber}
 chapterNumber: ${data.bookNumber}
 type: synopsis
-synopsis: "${synopsisEsc}"
-${data.cover ? `cover: "${data.cover}"` : ''}
+${coverPath ? `cover: "${coverPath}"` : ''}
 ---
 
 ## ${data.title}

@@ -1,0 +1,33 @@
+media:
+  input: public/images
+  output: /images
+content:
+  - name: cycles
+    label: Cycles
+    type: collection
+    path: src/content/cycles
+    view:
+      fields: [title, cycleNumber, type]
+    fields:
+      - { name: title, label: Titre, type: string, required: true }
+      - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
+      - { name: bookStart, label: "Tome début", type: number, required: true }
+      - { name: bookEnd, label: "Tome fin", type: number, required: true }
+      - { name: description, label: Description, type: rich-text }
+      - { name: type, label: Type, type: select, options: [{ value: fr, label: "Édition française" }, { value: de, label: "Traduction fan DE→FR" }], required: true }
+      - { name: cover, label: Couverture, type: image }
+
+  - name: chapters
+    label: Tomes / Chapitres
+    type: collection
+    path: src/content/chapters
+    view:
+      fields: [title, chapterNumber, type]
+    fields:
+      - { name: title, label: Titre, type: string, required: true }
+      - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
+      - { name: chapterNumber, label: "Numéro de tome", type: number, required: true }
+      - { name: type, label: Type, type: select, options: [{ value: synopsis, label: "Synopsis (FR)" }, { value: translation, label: "Traduction fan (DE→FR)" }], required: true }
+      - { name: originalTitle, label: "Titre original", type: string }
+      - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
+      - { name: body, label: Contenu, type: rich-text }

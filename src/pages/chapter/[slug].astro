@@ -12,6 +12,7 @@ export async function getStaticPaths() {
 
 const { chapter } = Astro.props;
 const { Content } = await render(chapter);
+const base = import.meta.env.BASE_URL;
 
 const allChapters = await getCollection('chapters');
 const cycleChapters = allChapters
@@ -51,7 +52,7 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
       <article id="chapter-content" class="prose prose-invert prose-lg max-w-none">
         {chapter.data.cover && (
           <div class="not-prose mb-8 flex justify-center">
-            <img src={chapter.data.cover} alt={chapter.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
+            <img src={`${base}${chapter.data.cover}`} alt={chapter.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
           </div>
         )}
 
