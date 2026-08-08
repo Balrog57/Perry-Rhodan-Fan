@@ -27,18 +27,7 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 
 <Layout title={`${cycle.data.title} - Perry Rhodan Fan`}>
   <div class="min-h-screen bg-slate-900">
-    <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href={path('')} class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-          PERRY RHODAN
-        </a>
-        <div class="flex items-center gap-4">
-          <a href={path('cycles')} class="text-blue-200 hover:text-cyan-300 transition-colors">← Les Cycles</a>
-        </div>
-      </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto px-4 py-12">
+    <main class="max-w-7xl mx-auto px-4 py-16 pt-24">
       <div class="mb-12 flex flex-col md:flex-row gap-8 items-start">
         {cycle.data.cover && (
           <div class="md:w-56 shrink-0">

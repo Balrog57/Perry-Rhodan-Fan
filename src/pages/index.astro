@@ -41,6 +41,16 @@ const timeline = sortedCycles.map((c) => {
 ---
 
 <Layout title={`${a.title} - La plus grande saga de science-fiction`}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BookSeries',
+    name: 'Perry Rhodan',
+    inLanguage: 'fr',
+    publisher: { '@type': 'Organization', name: 'Fan Translation' },
+    description: 'Traduction fan en français des tomes de l\'édition française (1966-2020) et des fascicules inédits en France.',
+    numberOfBooks: `${tomes.length}`,
+    isFamilyFriendly: true,
+  })} />
   <StarfieldBackground />
 
   <!-- HERO : couverture emblématique + texte -->

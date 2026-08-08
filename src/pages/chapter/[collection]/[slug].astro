@@ -42,7 +42,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
 
 <Layout title={`${item.data.title} - Perry Rhodan Fan`}>
   <div class="min-h-screen" id="reader-page">
-    <nav class="theme-nav backdrop-blur-md border-b sticky top-0 z-50">
+    <nav class="theme-nav backdrop-blur-md border-b sticky top-14 z-40">
       <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <a href={`/Perry-Rhodan-Fan/cycles/${item.data.cycleNumber}`} class="theme-link transition-colors text-sm">
           ← Cycle {item.data.cycleNumber}
@@ -70,7 +70,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
       </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-12">
+    <main class="max-w-4xl mx-auto px-4 py-12 pt-24">
       <article id="chapter-content" class="prose prose-lg max-w-none">
         {item.data.cover && (
           <div class="not-prose mb-8 flex justify-center">

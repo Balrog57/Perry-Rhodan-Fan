@@ -1,0 +1,3 @@
+﻿User-agent: *
+Allow: /
+Sitemap: https://balrog57.github.io/Perry-Rhodan-Fan/sitemap.xml
