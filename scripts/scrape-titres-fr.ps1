@@ -1,4 +1,5 @@
-# Scrape French titles (heft.php) with retries + polite delays.
+# Scrape French titles (heft.php) with adaptive backoff.
+# Stops for a long pause when the server returns 503 repeatedly, then resumes.
 $scriptRoot = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } else { (Get-Location).Path }
 $siteRoot = [System.IO.Path]::GetFullPath((Join-Path $scriptRoot '..'))
 $chapitresDir = Join-Path $siteRoot 'src\content\chapitres'
@@ -11,7 +12,7 @@ function Decode-Html {
 }
 
 function Get-TitleFr([int]$num) {
-  for ($attempt = 1; $attempt -le 8; $attempt++) {
+  for ($attempt = 1; $attempt -le 3; $attempt++) {
     $wc = New-Object System.Net.WebClient
     try {
       $bytes = $wc.DownloadData("http://rhodan.stellarque.com/perryrhodan/heft.php?init=$num")
@@ -23,11 +24,18 @@ function Get-TitleFr([int]$num) {
       return $null
     } catch {
       $wc.Dispose()
-      Start-Sleep -Seconds ([Math]::Min(3 * $attempt, 45))
+      Start-Sleep -Seconds (2 * $attempt)
     }
+  }
+  $script:consecutive503++
+  if ($script:consecutive503 -ge 5) {
+    Write-Output "BACKOFF 5min"
+    Start-Sleep -Seconds 300
+    $script:consecutive503 = 0
   }
   return $null
 }
+$script:consecutive503 = 0
 
 $files = Get-ChildItem -LiteralPath $chapitresDir -Filter 'de-*.md' | Sort-Object Name
 Write-Output "found $($files.Count) chapter files"
@@ -35,7 +43,7 @@ Write-Output "found $($files.Count) chapter files"
 $ok = 0; $fail = 0
 foreach ($f in $files) {
   $content = [System.IO.File]::ReadAllText($f.FullName, (New-Object System.Text.UTF8Encoding($false)))
-  if ($content -match 'titleFr: "') { $ok++; continue }   # already done
+  if ($content -match 'titleFr: "') { continue }
   $num = [int]$f.BaseName.Substring(3)
   $mTitle = [regex]::Match($content, 'title: "(.+)"')
   $mOrig  = [regex]::Match($content, 'originalTitle: "(.+)"')
@@ -52,6 +60,7 @@ foreach ($f in $files) {
 
   $fr = Get-TitleFr $num
   if (-not $fr) { $fail++; Write-Output "NOPE $($f.Name)"; continue }
+
   $escDe = ($deTitle -replace '\\','\\' -replace '"','\"')
   $escFr = ($fr -replace '\\','\\' -replace '"','\"')
   $cycle = $mCycle.Groups[1].Value
@@ -71,7 +80,7 @@ foreach ($f in $files) {
         "---`n`nWIP`n"
   [System.IO.File]::WriteAllText($f.FullName, $md, (New-Object System.Text.UTF8Encoding($false)))
   $ok++
-  if ($ok % 100 -eq 0) { Write-Output "progress: $ok" }
-  Start-Sleep -Milliseconds 1200
+  if ($ok % 50 -eq 0) { Write-Output "progress: $ok" }
+  Start-Sleep -Milliseconds 1500
 }
 Write-Output "DONE ok=$ok fail=$fail"

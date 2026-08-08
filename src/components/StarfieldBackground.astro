@@ -17,28 +17,42 @@
   let last = 0;
   let frameCount = 0;
 
-  // ---- SHIP: PNG with alpha, orientation auto-detected at load ----
-const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
+  // ---- SHIPS: PNG sprites with alpha, orientation auto-detected at load ----
+  const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
   const SHIP_LOCAL_LEN = 210; // nose-to-tail size in local units (relative to cone scale)
-  const SHIP_FLIP = false;    // set true if the ship flies nose-first backwards
-  const SHIP = { img: null, ready: false, corr: 0, drawW: 0, drawH: 0, offX: 0, offY: 0 };
+  const SHIP_FLIP = false;    // set true if the ships fly nose-first backwards
+  const SHIP_FILES = [
+    { file: 'futuristic-aircraft.webp', dur: 10 },
+    { file: 'spaceship-45800111.webp', dur: 8 },
+    { file: 'spaceship.webp', dur: 8 },
+  ];
+  const SHIPS = SHIP_FILES.map((c) => ({
+    file: c.file, dur: c.dur, img: null, ready: false,
+    corr: 0, drawW: 0, drawH: 0, offX: 0, offY: 0, nose: [1, 0],
+  }));
+  let SHIP = null;      // currently animated ship
+  let shipIdx = 0;
+  let travelT = 0;      // 0..1 progress within the current traversal
 
-  function loadShip() {
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const r = analyzeShip(img);
-        SHIP.img = img;
-        SHIP.ready = true;
-        SHIP.corr = r.corr;
-        SHIP.drawW = SHIP_LOCAL_LEN * (img.naturalWidth / r.length);
-        SHIP.drawH = SHIP_LOCAL_LEN * (img.naturalHeight / r.length);
-        SHIP.offX = ((r.cx - img.naturalWidth / 2) / img.naturalWidth) * SHIP.drawW;
-        SHIP.offY = ((r.cy - img.naturalHeight / 2) / img.naturalHeight) * SHIP.drawH;
-      } catch (e) { console.error('ship analyze failed', e); }
-    };
-    img.onerror = () => { console.error('ship image failed to load'); };
-    img.src = `${BASE}/images/spaceship.webp`;
+  function loadShips() {
+    SHIPS.forEach((s) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const r = analyzeShip(img);
+          s.img = img;
+          s.ready = true;
+          s.corr = r.corr;
+          s.nose = r.nose;
+          s.drawW = SHIP_LOCAL_LEN * (img.naturalWidth / r.length);
+          s.drawH = SHIP_LOCAL_LEN * (img.naturalHeight / r.length);
+          s.offX = ((r.cx - img.naturalWidth / 2) / img.naturalWidth) * s.drawW;
+          s.offY = ((r.cy - img.naturalHeight / 2) / img.naturalHeight) * s.drawH;
+        } catch (e) { console.error('ship analyze failed', s.file, e); }
+      };
+      img.onerror = () => { console.error('ship image failed to load', s.file); };
+      img.src = `${BASE}/images/${s.file}`;
+    });
   }
 
   // Detect ship axis, nose direction and alpha centroid from the image pixels.
@@ -98,7 +112,7 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
     if (noseNeg) { nx = -u0; ny = -v0; } else { nx = u0; ny = v0; }
     const corr = -Math.atan2(ny, nx);
 
-    return { corr, length: L, cx, cy };
+    return { corr, length: L, cx, cy, nose: [nx, ny] };
   }
 
   function resize() {
@@ -343,7 +357,7 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
 
   // ---- SHIP (raster image, nose along +X after correction) ----
   function drawShip(x, y, scale, angle, depth) {
-    if (!SHIP.ready) return;
+    if (!SHIP || !SHIP.ready) return;
     ctx.save();
     const blur = depth > 0.5 ? (depth - 0.5) * 6 : 0;
     ctx.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : 'none';
@@ -439,46 +453,38 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
     ctx.restore();
   }
 
-  // ---- TRAJECTORY : wobbling ellipse, variable speed, pitch up/down ----
-  let theta = 0;
+  // ---- TRAJECTORY : ship crosses the screen nose-first, rotating through the ships ----
   let curPitchShear = 0;
   function getShipState(dt) {
+    const cur = SHIPS[shipIdx];
+    if (cur.ready) SHIP = cur;
+
+    travelT += dt / cur.dur;
+    if (travelT >= 1) {
+      travelT = 0;
+      shipIdx = (shipIdx + 1) % SHIPS.length;
+    }
+
+    // linear pass along the ship's own nose direction (screen coords, y-down)
+    const halfPath = 0.5 * Math.hypot(W, H) + 320;
+    const s = -halfPath + travelT * 2 * halfPath;
+    const [nx, ny] = cur.nose;
     const cx = W * 0.5;
-    const cy = H * 0.42;
-    const rx = Math.min(W * 0.4, 560);
-    const ry = Math.min(H * 0.27, 210);
-    const wob = Math.min(ry * 0.35, 70);
+    const cy = H * 0.46;
+    const x = cx + nx * s;
+    const y = cy + ny * s;
 
-    const depth = (1 - Math.sin(theta)) / 2;
-    const base = 0.1;
-    const boost = 0.16;
-    const dTheta = base + boost * (1 - depth);
-    theta += dTheta * dt;
+    const angle = Math.atan2(ny, nx);
+    const nearness = Math.min(1, Math.abs(s) / halfPath); // 0 center, 1 screen edges
+    const depth = nearness;
 
-    const x = cx + Math.cos(theta) * rx;
-    const y = cy + Math.sin(theta) * ry + Math.sin(theta * 2) * wob;
-
-    const dx = -Math.sin(theta) * rx;
-    const dy = Math.cos(theta) * ry + 2 * Math.cos(theta * 2) * wob;
-    const ddx = -Math.cos(theta) * rx;
-    const ddy = -Math.sin(theta) * ry - 4 * Math.sin(theta * 2) * wob;
-    const sp2 = dx * dx + dy * dy || 1;
-    const angAccel = (ddx * dy - dx * ddy) / sp2;
-    const steer = Math.max(-0.22, Math.min(0.22, angAccel * 0.05));
-    const angle = Math.atan2(dy, dx) + steer;
-
-    // pitch: cabre vers le haut au premier plan, pique vers le bas à l'arrière-plan
-    const pitch = Math.max(-1, Math.min(1, (0.55 - depth) * 1.7));
-    curPitchShear = pitch * 0.13;
+    // gentle nose-up arc while crossing, level at the edges
+    curPitchShear = Math.sin(travelT * Math.PI) * 0.10;
 
     const vf = Math.max(0.55, Math.min(1, H / 900));
-    const scale = (3.2 - depth * 2.4) * vf;
+    const scale = (2.2 + (1 - nearness) * 0.5) * vf;
 
-    const vx = dx * dTheta;
-    const vy = dy * dTheta;
-    const speed = Math.max(0.4, Math.min(1, Math.hypot(vx, vy) / 240));
-
-    return { x, y, scale, angle, depth, speed };
+    return { x, y, scale, angle, depth, speed: 1 };
   }
 
   function frame(now) {
@@ -511,7 +517,7 @@ const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
   }
 
   resize();
-  loadShip();
+  loadShips();
   window.addEventListener('resize', resize);
   requestAnimationFrame((n) => { last = n; frame(n); });
 })();
