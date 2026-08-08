@@ -1,7 +1,42 @@
 media:
   input: public/images
   output: /images
+
 content:
+  - name: accueil
+    label: Accueil
+    type: file
+    path: src/content/accueil/accueil.md
+    fields:
+      - { name: title, label: Titre du site, type: string }
+      - { name: tagline, label: Slogan principal, type: string }
+      - { name: subtitle, label: Sous-titre, type: string }
+      - { name: ctaPrimary, label: "Bouton principal", type: string }
+      - { name: ctaSecondary, label: "Bouton secondaire", type: string }
+      - { name: stat1, label: "Statistique 1", type: string }
+      - { name: stat1Label, label: "Libellé statistique 1", type: string }
+      - { name: stat2, label: "Statistique 2", type: string }
+      - { name: stat2Label, label: "Libellé statistique 2", type: string }
+      - { name: stat3, label: "Statistique 3", type: string }
+      - { name: stat3Label, label: "Libellé statistique 3", type: string }
+      - { name: sectionAboutTitle, label: "Titre section Univers", type: string }
+      - { name: sectionAboutQuote, label: Citation, type: string }
+      - { name: sectionAboutIntro, label: Introduction, type: string }
+      - { name: sectionAboutText, label: Texte principal, type: string }
+      - { name: card1Title, label: "Titre carte 1", type: string }
+      - { name: card1Text, label: "Texte carte 1", type: string }
+      - { name: card2Title, label: "Titre carte 2", type: string }
+      - { name: card2Text, label: "Texte carte 2", type: string }
+      - { name: sectionOeuvreTitle, label: "Titre section Œuvre", type: string }
+      - { name: oeuvre1Title, label: "Titre bloc 1", type: string }
+      - { name: oeuvre1Text, label: "Texte bloc 1", type: string }
+      - { name: oeuvre2Title, label: "Titre bloc 2", type: string }
+      - { name: oeuvre2Text, label: "Texte bloc 2", type: string }
+      - { name: oeuvre3Title, label: "Titre bloc 3", type: string }
+      - { name: oeuvre3Text, label: "Texte bloc 3", type: string }
+      - { name: ctaText, label: "Texte d'appel", type: string }
+      - { name: ctaLabel, label: "Libellé bouton final", type: string }
+
   - name: cycles
     label: Cycles
     type: collection
@@ -13,25 +48,38 @@ content:
       - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
       - { name: bookStart, label: "Tome début", type: number, required: true }
       - { name: bookEnd, label: "Tome fin", type: number, required: true }
-      - { name: description, label: Description, type: rich-text }
+      - { name: description, label: Description, type: string }
       - { name: type, label: Type, type: select, options: [{ value: fr, label: "Édition française" }, { value: de, label: "Traduction fan DE→FR" }], required: true }
       - { name: cover, label: Couverture, type: image }
 
-  - name: chapters
-    label: Tomes / Chapitres
+  - name: tomes
+    label: Tomes français
     type: collection
-    path: src/content/chapters
+    path: src/content/tomes
     view:
-      fields: [title, chapterNumber, type]
+      fields: [title, chapterNumber, cycleNumber]
     fields:
       - { name: title, label: Titre, type: string, required: true }
       - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
-      - { name: chapterNumber, label: "Numéro de tome", type: number, required: true }
-      - { name: type, label: Type, type: select, options: [{ value: synopsis, label: "Synopsis (FR)" }, { value: translation, label: "Traduction fan (DE→FR)" }], required: true }
-      - { name: originalTitle, label: "Titre original", type: string }
-      - { name: cycle, label: Cycle, type: string }
-      - { name: traduction, label: Traduction, type: string }
+      - { name: chapterNumber, label: "Numéro du tome", type: number, required: true }
+      - { name: cycle, label: "Nom du cycle", type: string }
+      - { name: traduction, label: Traducteur, type: string }
       - { name: edition, label: "Édition originale", type: string }
-      - { name: parution, label: Parution, type: string }
+      - { name: parution, label: "Année de parution", type: string }
       - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
-      - { name: body, label: Contenu, type: rich-text }
+      - { name: body, label: Synopsis, type: rich-text }
+
+  - name: chapitres
+    label: Chapitres allemands
+    type: collection
+    path: src/content/chapitres
+    view:
+      fields: [title, chapterNumber, cycleNumber]
+    fields:
+      - { name: title, label: Titre, type: string, required: true }
+      - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
+      - { name: chapterNumber, label: "Numéro de chapitre", type: number, required: true }
+      - { name: originalTitle, label: "Titre original allemand", type: string }
+      - { name: synopsis, label: Résumé, type: string }
+      - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
+      - { name: body, label: Texte de la traduction, type: rich-text }

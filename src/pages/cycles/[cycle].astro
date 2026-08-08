@@ -11,8 +11,15 @@ export async function getStaticPaths() {
 }
 
 const { cycle } = Astro.props;
-const chapters = await getCollection('chapters');
-const cycleVolumes = chapters
+const tomes = await getCollection('tomes');
+const chapitres = await getCollection('chapitres');
+
+const volumes = [
+  ...tomes.map(t => ({ ...t, collection: 'tomes' })),
+  ...chapitres.map(c => ({ ...c, collection: 'chapitres' })),
+];
+
+const cycleVolumes = volumes
   .filter(ch => ch.data.cycleNumber === cycle.data.cycleNumber)
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 
@@ -53,7 +60,7 @@ const base = import.meta.env.BASE_URL;
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
         {cycleVolumes.map((volume) => (
           <a
-            href={`/Perry-Rhodan-Fan/chapter/${volume.id}`}
+            href={`/Perry-Rhodan-Fan/chapter/${volume.collection}/${volume.id}`}
             class="group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
           >
             <div class="aspect-[2/3] bg-slate-700 overflow-hidden relative">

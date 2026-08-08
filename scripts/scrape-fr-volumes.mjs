@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE = 'http://rhodan.stellarque.com/perryrhodan/vf.php?init=';
-const OUT = join(__dirname, '..', 'src', 'content', 'chapters');
+const OUT = join(__dirname, '..', 'src', 'content', 'tomes');
 
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
 

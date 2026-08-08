@@ -1,35 +1,47 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import Layout from '../../../layouts/Layout.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
-  const chapters = await getCollection('chapters');
-  return chapters.map((chapter) => ({
-    params: { slug: chapter.id },
-    props: { chapter },
-  }));
+  const tomes = await getCollection('tomes');
+  const chapitres = await getCollection('chapitres');
+
+  const paths = [
+    ...tomes.map((item) => ({
+      params: { collection: 'tomes', slug: item.id },
+      props: { item, collection: 'tomes' },
+    })),
+    ...chapitres.map((item) => ({
+      params: { collection: 'chapitres', slug: item.id },
+      props: { item, collection: 'chapitres' },
+    })),
+  ];
+  return paths;
 }
 
-const { chapter } = Astro.props;
-const { Content } = await render(chapter);
+const { item, collection } = Astro.props;
+const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
 
-const allChapters = await getCollection('chapters');
-const cycleChapters = allChapters
-  .filter(ch => ch.data.cycleNumber === chapter.data.cycleNumber)
+const sameCollection = collection === 'tomes'
+  ? await getCollection('tomes')
+  : await getCollection('chapitres');
+
+const cycleItems = sameCollection
+  .filter(ch => ch.data.cycleNumber === item.data.cycleNumber)
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 
-const currentIndex = cycleChapters.findIndex(ch => ch.id === chapter.id);
-const prevChapter = currentIndex > 0 ? cycleChapters[currentIndex - 1] : null;
-const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[currentIndex + 1] : null;
+const currentIndex = cycleItems.findIndex(ch => ch.id === item.id);
+const prevItem = currentIndex > 0 ? cycleItems[currentIndex - 1] : null;
+const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex + 1] : null;
 ---
 
-<Layout title={`${chapter.data.title} - Perry Rhodan Fan`}>
+<Layout title={`${item.data.title} - Perry Rhodan Fan`}>
   <div class="min-h-screen" id="reader-page">
     <nav class="theme-nav backdrop-blur-md border-b sticky top-0 z-50">
       <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-        <a href={`/Perry-Rhodan-Fan/cycles/${chapter.data.cycleNumber}`} class="theme-link transition-colors text-sm">
-          ← Cycle {chapter.data.cycleNumber}
+        <a href={`/Perry-Rhodan-Fan/cycles/${item.data.cycleNumber}`} class="theme-link transition-colors text-sm">
+          ← Cycle {item.data.cycleNumber}
         </a>
         <div class="flex items-center gap-3">
           <button id="theme-toggle" class="p-2 theme-link transition-colors" title="Mode : sombre / clair / sépia">
@@ -56,48 +68,48 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
 
     <main class="max-w-4xl mx-auto px-4 py-12">
       <article id="chapter-content" class="prose prose-lg max-w-none">
-        {chapter.data.cover && (
+        {item.data.cover && (
           <div class="not-prose mb-8 flex justify-center">
-            <img src={`${base}${chapter.data.cover}`} alt={chapter.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
+            <img src={`${base}${item.data.cover}`} alt={item.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
           </div>
         )}
 
         <header class="mb-8 text-center not-prose">
           <p class="theme-label font-mono text-sm mb-2">
-            {chapter.data.type === 'translation'
-              ? `Chapitre ${chapter.data.chapterNumber} · Traduction fan`
-              : `Tome n° ${chapter.data.chapterNumber} · Édition française`}
+            {collection === 'chapitres'
+              ? `Chapitre ${item.data.chapterNumber} · Traduction fan`
+              : `Tome n° ${item.data.chapterNumber} · Édition française`}
           </p>
-          <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{chapter.data.title}</h1>
-          {chapter.data.originalTitle && (
-            <p class="theme-muted italic">{chapter.data.originalTitle}</p>
+          <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{item.data.title}</h1>
+          {item.data.originalTitle && (
+            <p class="theme-muted italic">{item.data.originalTitle}</p>
           )}
-          {chapter.data.type === 'synopsis' && (
+          {collection === 'tomes' && (
             <div class="mt-6 mx-auto max-w-md">
               <table class="w-full text-sm theme-value border-collapse">
                 <tbody class="theme-divide">
-                  {chapter.data.cycle && (
+                  {item.data.cycle && (
                     <tr>
                       <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Cycle</th>
-                      <td class="py-2 text-right">{chapter.data.cycle}</td>
+                      <td class="py-2 text-right">{item.data.cycle}</td>
                     </tr>
                   )}
-                  {chapter.data.traduction && (
+                  {item.data.traduction && (
                     <tr>
                       <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Traduction</th>
-                      <td class="py-2 text-right">{chapter.data.traduction}</td>
+                      <td class="py-2 text-right">{item.data.traduction}</td>
                     </tr>
                   )}
-                  {chapter.data.edition && (
+                  {item.data.edition && (
                     <tr>
                       <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Édition originale</th>
-                      <td class="py-2 text-right">{chapter.data.edition}</td>
+                      <td class="py-2 text-right">{item.data.edition}</td>
                     </tr>
                   )}
-                  {chapter.data.parution && (
+                  {item.data.parution && (
                     <tr>
                       <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Parution</th>
-                      <td class="py-2 text-right">{chapter.data.parution}</td>
+                      <td class="py-2 text-right">{item.data.parution}</td>
                     </tr>
                   )}
                 </tbody>
@@ -112,23 +124,23 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
       </article>
 
       <div class="mt-16 flex items-center justify-between theme-border-t pt-8">
-        {prevChapter ? (
-          <a href={`/Perry-Rhodan-Fan/chapter/${prevChapter.id}`} class="group flex items-center gap-3 theme-link transition-colors">
+        {prevItem ? (
+          <a href={`/Perry-Rhodan-Fan/chapter/${collection}/${prevItem.id}`} class="group flex items-center gap-3 theme-link transition-colors">
             <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
             <div class="text-left">
               <div class="text-xs theme-label">Précédent</div>
-              <div class="font-semibold theme-title">{prevChapter.data.title}</div>
+              <div class="font-semibold theme-title">{prevItem.data.title}</div>
             </div>
           </a>
         ) : <div></div>}
 
-        {nextChapter ? (
-          <a href={`/Perry-Rhodan-Fan/chapter/${nextChapter.id}`} class="group flex items-center gap-3 theme-link transition-colors text-right">
+        {nextItem ? (
+          <a href={`/Perry-Rhodan-Fan/chapter/${collection}/${nextItem.id}`} class="group flex items-center gap-3 theme-link transition-colors text-right">
             <div>
               <div class="text-xs theme-label">Suivant</div>
-              <div class="font-semibold theme-title">{nextChapter.data.title}</div>
+              <div class="font-semibold theme-title">{nextItem.data.title}</div>
             </div>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
