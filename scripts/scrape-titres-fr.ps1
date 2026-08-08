@@ -29,7 +29,7 @@ function Get-TitleFr([int]$num) {
   }
   $script:consecutive503++
   if ($script:consecutive503 -ge 5) {
-    Write-Output "BACKOFF 5min"
+    [Console]::Error.WriteLine("BACKOFF 5min")
     Start-Sleep -Seconds 300
     $script:consecutive503 = 0
   }

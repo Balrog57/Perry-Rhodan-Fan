@@ -22,9 +22,9 @@
   const SHIP_LOCAL_LEN = 210; // nose-to-tail size in local units (relative to cone scale)
   const SHIP_FLIP = false;    // set true if the ships fly nose-first backwards
   const SHIP_FILES = [
-    { file: 'futuristic-aircraft.webp', dur: 10 },
-    { file: 'spaceship-45800111.webp', dur: 8 },
-    { file: 'spaceship.webp', dur: 8 },
+    { file: 'futuristic-aircraft.webp', dur: 15 },
+    { file: 'spaceship-45800111.webp', dur: 12 },
+    { file: 'spaceship.webp', dur: 11 },
   ];
   const SHIPS = SHIP_FILES.map((c) => ({
     file: c.file, dur: c.dur, img: null, ready: false,
@@ -453,7 +453,7 @@
     ctx.restore();
   }
 
-  // ---- TRAJECTORY : ship crosses the screen nose-first, rotating through the ships ----
+  // ---- TRAJECTORY : eased, curved traversal across the screen, nose-first ----
   let curPitchShear = 0;
   function getShipState(dt) {
     const cur = SHIPS[shipIdx];
@@ -465,26 +465,56 @@
       shipIdx = (shipIdx + 1) % SHIPS.length;
     }
 
-    // linear pass along the ship's own nose direction (screen coords, y-down)
-    const halfPath = 0.5 * Math.hypot(W, H) + 320;
-    const s = -halfPath + travelT * 2 * halfPath;
+    // smoothstep easing: fluid acceleration then deceleration across the pass
+    const ts = travelT;
+    const e = ts * ts * (3 - 2 * ts);
+    const de = 6 * ts * (1 - ts);       // d(e)/dt
+    const de2 = 6 - 12 * ts;            // d2(e)/dt2
+
     const [nx, ny] = cur.nose;
     const cx = W * 0.5;
     const cy = H * 0.46;
-    const x = cx + nx * s;
-    const y = cy + ny * s;
 
-    const angle = Math.atan2(ny, nx);
-    const nearness = Math.min(1, Math.abs(s) / halfPath); // 0 center, 1 screen edges
-    const depth = nearness;
+    // travel just far enough to cross the screen along the nose direction
+    const ax = Math.abs(nx) || 1e-6;
+    const ay = Math.abs(ny) || 1e-6;
+    const enterD = Math.min(cx / ax, cy / ay);       // border distance on entry
+    const exitD = Math.min((W - cx) / ax, (H - cy) / ay);
+    const margin = 170;
+    const s0 = -(enterD + margin);
+    const s1 = exitD + margin;
+    const s = s0 + e * (s1 - s0);
 
-    // gentle nose-up arc while crossing, level at the edges
-    curPitchShear = Math.sin(travelT * Math.PI) * 0.10;
+    // gentle S-curve perpendicular to the pass (vanishes at both ends)
+    const sway = Math.min(W, H) * 0.11;
+    const px = -ny, py = nx;
+    const wob = Math.sin(ts * Math.PI) * sway;
+    const x = cx + nx * s + px * wob;
+    const y = cy + ny * s + py * wob;
+
+    // path tangent -> heading; steer slightly into the curvature
+    const ds = s1 - s0;
+    const dw = Math.cos(ts * Math.PI) * Math.PI * sway;
+    const ddw = -Math.sin(ts * Math.PI) * Math.PI * Math.PI * sway;
+    const tx = nx * ds * de + px * dw;
+    const ty = ny * ds * de + py * dw;
+    const ax2 = nx * ds * de2 + px * ddw;
+    const ay2 = ny * ds * de2 + py * ddw;
+    const sp2 = tx * tx + ty * ty || 1;
+    const angAcc = (tx * ay2 - ty * ax2) / sp2;
+    const steer = Math.max(-0.12, Math.min(0.12, angAcc * 0.0015));
+    const angle = Math.atan2(ty, tx) + steer;
+
+    const centerD = (enterD + exitD) / 2 + margin;
+    const depth = Math.min(1, Math.abs(s) / centerD);
+    // gentle body tilt during the pass + a touch into the turns
+    curPitchShear = Math.sin(ts * Math.PI) * 0.10 + Math.max(-0.08, Math.min(0.08, steer * 0.5));
 
     const vf = Math.max(0.55, Math.min(1, H / 900));
-    const scale = (2.2 + (1 - nearness) * 0.5) * vf;
+    const scale = (2.15 + 0.4 * (1 - depth)) * vf;
+    const speed = 0.8 + 0.25 * Math.sin(ts * Math.PI * 2);
 
-    return { x, y, scale, angle, depth, speed: 1 };
+    return { x, y, scale, angle, depth, speed };
   }
 
   function frame(now) {
