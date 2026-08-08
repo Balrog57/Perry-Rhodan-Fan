@@ -14,104 +14,157 @@ const { cycle } = Astro.props;
 const tomes = await getCollection('tomes');
 const chapitres = await getCollection('chapitres');
 
-const volumes = [
-  ...tomes.map(t => ({ ...t, collection: 'tomes' })),
-  ...chapitres.map(c => ({ ...c, collection: 'chapitres' })),
-];
-
-const cycleVolumes = volumes
-  .filter(ch => ch.data.cycleNumber === cycle.data.cycleNumber)
+const cycleTomes = tomes
+  .filter((t) => t.data.cycleNumber === cycle.data.cycleNumber)
+  .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
+const cycleChapitres = chapitres
+  .filter((c) => c.data.cycleNumber === cycle.data.cycleNumber)
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 
 const base = import.meta.env.BASE_URL;
+const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 ---
 
 <Layout title={`${cycle.data.title} - Perry Rhodan Fan`}>
   <div class="min-h-screen bg-slate-900">
     <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <a href="/Perry-Rhodan-Fan/" class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+        <a href={path('')} class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
           PERRY RHODAN
         </a>
         <div class="flex items-center gap-4">
-          <a href="/Perry-Rhodan-Fan/cycles" class="text-blue-200 hover:text-cyan-300 transition-colors">← Cycles</a>
+          <a href={path('cycles')} class="text-blue-200 hover:text-cyan-300 transition-colors">← Les Cycles</a>
         </div>
       </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 py-12">
-      <div class="mb-12">
-        <div class="flex items-center gap-4 mb-4">
-          <span class="text-5xl font-bold text-blue-500/30">
-            {String(cycle.data.cycleNumber).padStart(2, '0')}
-          </span>
-          <div>
-            <h1 class="text-4xl font-bold text-white">{cycle.data.title}</h1>
-            <p class="text-blue-200 mt-1">
-              {cycle.data.type === 'fr'
-                ? `Tomes ${cycle.data.bookStart}-${cycle.data.bookEnd} (édition française)`
-                : `Fascicules ${cycle.data.bookStart}-${cycle.data.bookEnd} (traduction fan DE→FR)`}
-            </p>
+      <div class="mb-12 flex flex-col md:flex-row gap-8 items-start">
+        {cycle.data.cover && (
+          <div class="md:w-56 shrink-0">
+            <img
+              src={path(cycle.data.cover)}
+              alt={cycle.data.title}
+              class="w-full rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20"
+            />
           </div>
+        )}
+        <div class="flex-1">
+          <div class="flex items-start gap-4 mb-4">
+            <span class="text-6xl font-bold text-blue-500/30">{String(cycle.data.cycleNumber).padStart(2, '0')}</span>
+            <div>
+              <h1 class="text-4xl font-bold text-white">{cycle.data.title}</h1>
+              <p class="text-blue-200 mt-1">
+                {cycle.data.type === 'fr'
+                  ? `Tomes ${cycle.data.bookStart}-${cycle.data.bookEnd} (édition française)`
+                  : `Fascicules ${cycle.data.bookStart}-${cycle.data.bookEnd} (traduction fan DE→FR)`}
+              </p>
+            </div>
+          </div>
+          <p class="text-lg text-blue-200/80 max-w-3xl">{cycle.data.description}</p>
+
+          {cycle.data.type === 'de' && (
+            <div class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-200 text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              Suite inédite en France — cycle traduit pour les lecteurs francophones
+            </div>
+          )}
         </div>
-        <p class="text-lg text-blue-200/80 max-w-3xl">{cycle.data.description}</p>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {cycleVolumes.map((volume) => (
-          <a
-            href={`/Perry-Rhodan-Fan/chapter/${volume.collection}/${volume.id}`}
-            class="group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
-          >
-            <div class="aspect-[2/3] bg-slate-700 overflow-hidden relative">
-              {volume.data.cover ? (
-                <img
-                  src={`${base}${volume.data.cover}`}
-                  alt={volume.data.title}
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              ) : (
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-b from-slate-700 to-slate-800">
-                  <span class="text-4xl font-bold text-blue-500/40">
-                    #{String(volume.data.chapterNumber)}
-                  </span>
+      {cycleChapitres.length > 0 && (
+        <section class="mb-16">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-cyan-400 border-l-4 border-cyan-400 pl-4">
+              {cycle.data.type === 'de' ? 'Chapitres traduits (DE→FR)' : 'Fascicules'}
+            </h2>
+            <span class="text-sm text-blue-200/70">{cycleChapitres.length} chapitres</span>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {cycleChapitres.map((volume) => (
+              <a
+                href={`/Perry-Rhodan-Fan/chapter/chapitres/${volume.id}`}
+                class="group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
+              >
+                <div class="aspect-[2/3] bg-slate-700 overflow-hidden relative">
+                  {volume.data.cover ? (
+                    <img
+                      src={`${base}${volume.data.cover}`}
+                      alt={volume.data.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="w-full h-full flex items-center justify-center bg-gradient-to-b from-slate-700 to-slate-800">
+                      <span class="text-4xl font-bold text-blue-500/40">
+                        #{String(volume.data.chapterNumber)}
+                      </span>
+                    </div>
+                  )}
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+                    <span class="text-xs text-cyan-300 font-semibold">Lire →</span>
+                  </div>
                 </div>
-              )}
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                <span class="text-xs text-cyan-300 font-semibold">
-                  {volume.data.type === 'translation' ? 'Lire la traduction →' : 'Lire le synopsis →'}
-                </span>
-              </div>
-            </div>
-            <div class="p-3">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs text-blue-400 font-mono">N° {volume.data.chapterNumber}</span>
-                {volume.data.type === 'translation' ? (
-                  <span class="px-1.5 py-0.5 bg-purple-600/20 text-purple-300 text-[10px] rounded border border-purple-500/30">
-                    Traduction
-                  </span>
-                ) : (
-                  <span class="px-1.5 py-0.5 bg-blue-600/20 text-blue-300 text-[10px] rounded border border-blue-500/30">
-                    FR
-                  </span>
-                )}
-              </div>
-              <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
-                {volume.data.title}
-              </h3>
-              {volume.data.titleFr && (
-                <p class="text-[10px] text-blue-300/50 italic mt-1">{volume.data.titleFr}</p>
-              )}
-              {!volume.data.titleFr && volume.data.originalTitle && (
-                <p class="text-[10px] text-blue-300/50 italic mt-1">{volume.data.originalTitle}</p>
-              )}
-            </div>
-          </a>
-        ))}
-      </div>
+                <div class="p-3">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-xs text-blue-400 font-mono">N° {volume.data.chapterNumber}</span>
+                    <span class="px-1.5 py-0.5 bg-purple-600/20 text-purple-300 text-[10px] rounded border border-purple-500/30">
+                      Traduction
+                    </span>
+                  </div>
+                  <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
+                    {volume.data.title}
+                  </h3>
+                  {volume.data.titleFr && (
+                    <p class="text-[10px] text-blue-300/50 italic mt-1 line-clamp-2">{volume.data.titleFr}</p>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {cycleVolumes.length === 0 && (
+      {cycleTomes.length > 0 && (
+        <section class="mb-16">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-blue-400 border-l-4 border-blue-400 pl-4">
+              Tomes de l'édition française
+            </h2>
+            <span class="text-sm text-blue-200/70">{cycleTomes.length} tomes</span>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {cycleTomes.map((tome) => (
+              <a
+                href={`/Perry-Rhodan-Fan/chapter/tomes/${tome.id}`}
+                class="group block bg-slate-800/50 rounded-lg overflow-hidden border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300"
+              >
+                <div class="aspect-[2/3] bg-slate-700 overflow-hidden">
+                  {tome.data.cover && (
+                    <img
+                      src={`${base}${tome.data.cover}`}
+                      alt={tome.data.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+                <div class="p-3">
+                  <div class="text-xs text-blue-400 font-mono">N° {tome.data.chapterNumber}</div>
+                  <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
+                    {tome.data.title}
+                  </h3>
+                  <p class="text-[10px] text-blue-300/50 mt-1">{tome.data.parution}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {cycleChapitres.length === 0 && cycleTomes.length === 0 && (
         <div class="text-center py-20">
           <p class="text-blue-200/50 text-lg">Aucun volume disponible pour ce cycle pour le moment.</p>
         </div>
