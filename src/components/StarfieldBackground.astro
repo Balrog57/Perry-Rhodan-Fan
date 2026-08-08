@@ -28,9 +28,9 @@
   function buildStars() {
     STAR_LAYERS.length = 0;
     const layerConfigs = [
-      { count: Math.floor(W * H / 3500), speed: 0.02, max: 0.8, alpha: 0.55 },
-      { count: Math.floor(W * H / 7000), speed: 0.08, max: 1.3, alpha: 0.8 },
-      { count: Math.floor(W * H / 18000), speed: 0.22, max: 1.9, alpha: 1 },
+      { count: Math.floor(W * H / 3500), speed: 0.05, max: 0.8, alpha: 0.55 },
+      { count: Math.floor(W * H / 7000), speed: 0.2, max: 1.3, alpha: 0.8 },
+      { count: Math.floor(W * H / 18000), speed: 0.55, max: 1.9, alpha: 1 },
     ];
     for (const cfg of layerConfigs) {
       const arr = [];
@@ -93,12 +93,18 @@
 
   function drawStars() {
     for (const layer of STAR_LAYERS) {
+      const streak = layer.speed > 0.3;
       for (const s of layer.stars) {
         s.x -= layer.speed;
         if (s.x < 0) { s.x = W; s.y = Math.random() * H; }
-        const twinkle = 0.75 + Math.sin(time * s.twSpeed + s.tw) * 0.25;
+        const twinkle = streak ? 1 : 0.75 + Math.sin(time * s.twSpeed + s.tw) * 0.25;
         const alpha = s.base * twinkle * layer.alpha;
         const [r, g, b] = s.color;
+        if (streak) {
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+          ctx.fillRect(s.x - s.size * 5, s.y - s.size * 0.45, s.size * 6, s.size * 0.9);
+          continue;
+        }
         ctx.beginPath();
         ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
         ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
@@ -111,6 +117,91 @@
         }
       }
     }
+  }
+
+  // ---- Engine exhaust + warp streaks behind the ship ----
+  const TRAIL = [];
+  const STREAKS = [];
+  let trailAcc = 0;
+  let streakAcc = 0;
+
+  function spawnTrail(s, dt) {
+    trailAcc += dt * 55;
+    const vx = Math.cos(s.angle), vy = Math.sin(s.angle);
+    const px = -vy, py = vx;
+    while (trailAcc >= 1) {
+      trailAcc -= 1;
+      const rear = (62 + Math.random() * 10) * s.scale;
+      const off = (Math.random() - 0.5) * 14 * s.scale;
+      TRAIL.push({
+        x: s.x - vx * rear + px * off,
+        y: s.y - vy * rear + py * off,
+        vx: -vx * (1.4 + Math.random() * 1.8),
+        vy: -vy * (1.4 + Math.random() * 1.8),
+        life: 1,
+        decay: 1.8 + Math.random() * 1.4,
+        size: 1.4 + Math.random() * 3.2,
+        cyan: Math.random() < 0.72,
+      });
+    }
+    if (TRAIL.length > 260) TRAIL.splice(0, TRAIL.length - 260);
+  }
+
+  function drawTrail(dt) {
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = TRAIL.length - 1; i >= 0; i--) {
+      const p = TRAIL[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay * dt;
+      if (p.life <= 0) { TRAIL.splice(i, 1); continue; }
+      const a = p.life;
+      ctx.fillStyle = p.cyan ? `rgba(120,246,255,${a * 0.65})` : `rgba(255,178,80,${a * 0.65})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function spawnStreak(s, dt) {
+    streakAcc += dt * 34;
+    const vx = Math.cos(s.angle), vy = Math.sin(s.angle);
+    while (streakAcc >= 1) {
+      streakAcc -= 1;
+      STREAKS.push({
+        x: s.x + (Math.random() - 0.5) * 40,
+        y: s.y + (Math.random() - 0.5) * 40,
+        vx: -vx * (4 + Math.random() * 4),
+        vy: -vy * (4 + Math.random() * 4),
+        life: 1,
+        decay: 0.7 + Math.random() * 0.7,
+        len: 26 + Math.random() * 40,
+        w: 0.8 + Math.random() * 1.2,
+      });
+    }
+    if (STREAKS.length > 90) STREAKS.splice(0, STREAKS.length - 90);
+  }
+
+  function drawStreaks(dt) {
+    ctx.globalCompositeOperation = 'screen';
+    ctx.lineCap = 'round';
+    for (let i = STREAKS.length - 1; i >= 0; i--) {
+      const p = STREAKS[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay * dt;
+      if (p.life <= 0) { STREAKS.splice(i, 1); continue; }
+      const a = Math.max(p.life, 0);
+      ctx.strokeStyle = `rgba(170,235,255,${a * 0.85})`;
+      ctx.lineWidth = p.w * a + 0.3;
+      const L = Math.hypot(p.vx, p.vy) || 1;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - (p.vx / L) * p.len, p.y - (p.vy / L) * p.len);
+      ctx.stroke();
+    }
+    ctx.globalCompositeOperation = 'source-over';
   }
 
   function roundRect(c, x, y, w, h, r) {
@@ -128,14 +219,12 @@
   }
 
   // ---- Ship rendering (Constitution-class style, nose points +X) ----
-  function drawShip(x, y, scale, angle, bank, depth) {
+  function drawShip(x, y, scale, angle, depth) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
-    // banking: compress perpendicular to heading for a natural roll feel
-    const squash = 1 - Math.min(Math.abs(bank) * 0.12, 0.18);
-    ctx.scale(scale, scale * squash);
-    ctx.globalAlpha = 0.6 + depth * 0.4;
+    ctx.scale(scale, scale);
+    ctx.globalAlpha = 1 - depth * 0.3;
 
     const H0 = '#cdd6e2';
     const H1 = '#85909f';
@@ -163,16 +252,17 @@
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
     ctx.shadowColor = GLOW;
-    ctx.shadowBlur = 22;
+    ctx.shadowBlur = 26;
     ctx.fillStyle = GLOW;
     ctx.beginPath();
-    ctx.moveTo(-36, -3);
-    ctx.lineTo(-62, -7);
-    ctx.lineTo(-62, 9);
-    ctx.lineTo(-36, 3);
+    ctx.moveTo(-36, -2);
+    ctx.lineTo(-86, -6);
+    ctx.lineTo(-86, 6);
+    ctx.lineTo(-36, 2);
     ctx.closePath();
     ctx.fill();
-    ctx.fillRect(-38, -2.5, 3, 5);
+    ctx.fillRect(-38, -2.5, 4, 5);
+    ctx.fillRect(-34, -1.5, 2, 3);
     ctx.restore();
 
     // ---- NACELLES (behind hull) ----
@@ -335,28 +425,27 @@
   function getShipState(t) {
     const cx = W * 0.5;
     const cy = H * 0.42;
-    const rx = Math.min(W * 0.32, 440);
-    const ry = Math.min(H * 0.24, 190);
+    const rx = Math.min(W * 0.35, 470);
+    const ry = Math.min(H * 0.26, 200);
 
-    const theta = t * 0.045;
+    const theta = t * 0.12;
     const x = cx + Math.cos(theta) * rx;
     const y = cy + Math.sin(theta) * ry;
 
     const depth = (1 - Math.sin(theta)) / 2;
     const vf = Math.min(H / 800, 1.25);
-    const scale = (0.55 + depth * 0.8) * vf;
+    const scale = (1.9 - depth * 0.75) * vf;
 
     const dx = -Math.sin(theta) * rx;
     const dy = Math.cos(theta) * ry;
-    const angle = Math.atan2(dy, dx);
-
     const ddx = -Math.cos(theta) * rx;
     const ddy = -Math.sin(theta) * ry;
     const sp2 = dx * dx + dy * dy || 1;
     const angAccel = (ddx * dy - dx * ddy) / sp2;
-    const bank = -angAccel * 0.14;
+    const steer = Math.max(-0.25, Math.min(0.25, angAccel * 0.06));
+    const angle = Math.atan2(dy, dx) + steer;
 
-    return { x, y, scale, angle, bank, depth };
+    return { x, y, scale, angle, depth };
   }
 
   function frame(now) {
@@ -375,7 +464,11 @@
     drawStars();
 
     const s = getShipState(time);
-    drawShip(s.x, s.y, s.scale, s.angle, s.bank, s.depth);
+    spawnTrail(s, dt);
+    spawnStreak(s, dt);
+    drawStreaks(dt);
+    drawTrail(dt);
+    drawShip(s.x, s.y, s.scale, s.angle, s.depth);
 
     requestAnimationFrame(frame);
   }
