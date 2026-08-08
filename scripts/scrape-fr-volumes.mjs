@@ -9,34 +9,6 @@ const OUT = join(__dirname, '..', 'src', 'content', 'chapters');
 
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
 
-const CYCLE_MAP = {
-  'La Troisième Force': 1,
-  'Atlan et Arkonis': 2,
-  'Les Bioposis': 3,
-  'Le Deuxième Empire': 4,
-  'Les Maîtres Insulaires': 5,
-  'M 87': 6,
-  'Les Cappins': 7,
-  "L'Essaim": 8,
-  'Les Vieux Mutants': 9,
-  'Le Concile': 11,
-  'Aphilie': 12,
-  'Bardioc': 13,
-  'Pan-thau-ra': 14,
-  'Les Citadelles Cosmiques': 15,
-  'La Hanse Cosmique': 16,
-  "L'Armada Infinie": 17,
-};
-
-function getCycleNumber(cycleName) {
-  const norm = cycleName.toLowerCase().replace(/[-–—\s]+/g, ' ');
-  for (const [key, val] of Object.entries(CYCLE_MAP)) {
-    const normKey = key.toLowerCase().replace(/[-–—\s]+/g, ' ');
-    if (norm.includes(normKey)) return val;
-  }
-  return 1;
-}
-
 const ENTITIES = {
   '&eacute;': 'é', '&egrave;': 'è', '&ecirc;': 'ê', '&aelig;': 'æ',
   '&ccedil;': 'ç', '&agrave;': 'à', '&acirc;': 'â', '&icirc;': 'î',
@@ -49,6 +21,7 @@ const ENTITIES = {
   '&AElig;': 'Æ', '&lsquo;': '\u2018', '&rsquo;': '\u2019',
   '&ldquo;': '\u201C', '&rdquo;': '\u201D', '&ndash;': '\u2013',
   '&mdash;': '\u2014', '&hellip;': '\u2026', '&OElig;': 'Œ', '&oelig;': 'œ',
+  '&ntilde;': 'ñ',
 };
 
 function decodeEnt(str) {
@@ -60,18 +33,61 @@ function decodeEnt(str) {
   return r;
 }
 
-function cleanText(text) {
-  return decodeEnt(text)
-    .replace(/\r\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
+function escapeYaml(str) {
+  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+// Convert the synopsis <div align="justify"> HTML to Markdown while
+// preserving line breaks (<br>), italics (<i>), and bold (<b>).
+function convertSynopsisHtml(html) {
+  const $ = cheerio.load(html, null, false);
+  const root = $.root().get(0);
+  let out = '';
+  function walk(node) {
+    (node.children || []).forEach((child) => {
+      if (child.type === 'text') {
+        out += child.data || '';
+      } else if (child.type === 'tag') {
+        const tag = (child.tagName || '').toLowerCase();
+        if (tag === 'br') {
+          out += '\n';
+        } else if (tag === 'i' || tag === 'em') {
+          out += '*';
+          walk(child);
+          out += '*';
+        } else if (tag === 'b' || tag === 'strong') {
+          out += '**';
+          walk(child);
+          out += '**';
+        } else {
+          walk(child);
+        }
+      }
+    });
+  }
+  walk(root);
+  return decodeEnt(out)
+    .replace(/\u00a0/g, ' ')
     .replace(/[ \t]+/g, ' ')
-    .replace(/\(\s+/g, '(')
-    .replace(/\s+\)/g, ')')
+    .replace(/ ?\n ?/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .split('\n')
+    .map((l) => l.trim())
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
-function escapeYaml(str) {
-  return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ');
+function getField(central, $, label) {
+  let out = '';
+  central.find('b').each((_, el) => {
+    if ($(el).text().trim() === label) {
+      const clone = $(el).parent().clone();
+      clone.find('b').remove();
+      out = decodeEnt(clone.text()).replace(/\s+/g, ' ').trim();
+    }
+  });
+  return out;
 }
 
 async function scrapeVolume(num) {
@@ -81,66 +97,31 @@ async function scrapeVolume(num) {
     if (!res.ok) return null;
     const buffer = await res.arrayBuffer();
     const rawHtml = new TextDecoder('utf-8').decode(buffer);
-    const html = decodeEnt(rawHtml);
-    const $ = cheerio.load(html, { decodeEntities: false });
-
+    const $ = cheerio.load(rawHtml, { decodeEntities: false });
     const central = $('#central');
     if (!central.length) return null;
 
     const text = central.text();
 
     let bookNumber = num;
-    let title = '';
-
     const prMatch = text.match(/PERRY RHODAN n[°º]\s*(\d+)/i);
     if (prMatch) bookNumber = parseInt(prMatch[1]);
 
-    const bolds = [];
-    central.find('b').each((_, el) => {
-      const t = $(el).text().trim();
-      if (t && !t.includes('BASIS') && !t.includes('PERRY RHODAN') && t.length > 1 && t.length < 100) {
-        bolds.push(t);
-      }
-    });
-
-    const skipWords = ['Cycle', 'Traduction', 'Edition originale', 'Parution', 'FASCICULES', 'AUTRES EDITIONS', 'PREMIÈRE PARTIE', 'DEUXIÈME PARTIE', 'PREMIERE PARTIE', 'DEUXIEME PARTIE'];
-    for (const b of bolds) {
-      if (!skipWords.some(sw => b.includes(sw)) && !b.match(/^\d+$/) && b.length > 2) {
-        title = b;
-        break;
-      }
-    }
-
-    if (!title) title = `Tome ${bookNumber}`;
+    const title = central.find('font[size="4"]').first().text().trim() || `Tome ${bookNumber}`;
 
     const cycleLink = central.find('a[href*="cycle.php"]').first();
     const cycleName = cycleLink.text().trim();
-    const cycleNumber = getCycleNumber(cycleName);
+    const hrefMatch = (cycleLink.attr('href') || '').match(/init=(\d+)/);
+    const cycleNumber = hrefMatch ? parseInt(hrefMatch[1]) : 1;
 
-    const coverImg = central.find('img[src*="covers/pr_vf"]').first().attr('src');
-    let cover = '';
-    let remoteCover = '';
-    if (coverImg) {
-      const cleanPath = coverImg.replace(/\.\.\//g, '');
-      remoteCover = `http://rhodan.stellarque.com/${cleanPath}`;
-      cover = `/images/covers/FR_COVER_PLACEHOLDER`;
-    }
+    const traduction = getField(central, $, 'Traduction');
+    const edition = getField(central, $, 'Edition originale');
+    const parution = getField(central, $, 'Parution');
 
-    let synopsis = '';
-    const fullText = cleanText(text);
-    const allPartsMatch = fullText.match(/((?:PREMI[ÈE]RE|DEUXI[ÈE]ME|TROISI[ÈE]ME)\s+PARTIE[\s\S]*?)(?:FASCICULES\s+ORIGINAUX|AUTRES\s+EDITIONS|©)/i);
-    if (allPartsMatch) {
-      synopsis = cleanText(allPartsMatch[1]);
-    } else {
-      const afterParution = fullText.match(/Parution\s+(?:[a-zA-Zéèêàâûô]+\s+)?\d{4}\s*([\s\S]*)$/i);
-      if (afterParution) {
-        synopsis = cleanText(afterParution[1])
-          .split(/\b(?:FASCICULES\s+ORIGINAUX|AUTRES\s+EDITIONS|©)\b/i)[0]
-          .replace(/\s*SOURCE\s*$/i, '');
-      }
-    }
+    const justify = central.find('div[align="justify"]').first();
+    const synopsis = justify.length ? convertSynopsisHtml(justify.html() || '') : '';
 
-    return { bookNumber, title, cycleNumber, cycleName, cover, synopsis };
+    return { bookNumber, title, cycleNumber, cycleName, traduction, edition, parution, synopsis };
   } catch (e) {
     console.error(`Error volume ${num}:`, e.message);
     return null;
@@ -158,15 +139,18 @@ async function main() {
 
     const slug = `fr-${String(data.bookNumber).padStart(3, '0')}`;
     const synopsisBody = data.synopsis || 'Synopsis à compléter depuis la source.';
-    const titleEsc = data.title.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-    const coverPath = data.cover ? data.cover.replace('FR_COVER_PLACEHOLDER', `${slug}.jpg`) : '';
+    const titleEsc = escapeYaml(data.title);
 
     const content = `---
 title: "${titleEsc}"
 cycleNumber: ${data.cycleNumber}
 chapterNumber: ${data.bookNumber}
 type: synopsis
-${coverPath ? `cover: "${coverPath}"` : ''}
+cover: "/images/covers/${slug}.jpg"
+cycle: "${escapeYaml(data.cycleName)}"
+traduction: "${escapeYaml(data.traduction)}"
+edition: "${escapeYaml(data.edition)}"
+parution: "${escapeYaml(data.parution)}"
 ---
 
 ## ${data.title}
@@ -176,7 +160,7 @@ ${synopsisBody}
     writeFileSync(join(OUT, `${slug}.md`), content, 'utf-8');
     created++;
     if (i % 50 === 0) console.log(`${i}/379 (${created} created)`);
-    await new Promise(r => setTimeout(r, 250));
+    await new Promise((r) => setTimeout(r, 150));
   }
   console.log(`Done! ${created} volumes.`);
 }

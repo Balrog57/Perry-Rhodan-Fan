@@ -24,6 +24,10 @@ const chapters = defineCollection({
     cover: z.string().optional(),
     synopsis: z.string().optional(),
     originalTitle: z.string().optional(),
+    cycle: z.string().optional(),
+    traduction: z.string().optional(),
+    edition: z.string().optional(),
+    parution: z.string().optional(),
   }),
 });
 

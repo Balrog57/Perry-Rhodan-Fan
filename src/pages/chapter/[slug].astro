@@ -66,6 +66,34 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
           {chapter.data.originalTitle && (
             <p class="text-blue-300/50 italic">{chapter.data.originalTitle}</p>
           )}
+          {chapter.data.type === 'synopsis' && (
+            <dl class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 max-w-lg mx-auto text-sm text-blue-100/90">
+              {chapter.data.cycle && (
+                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
+                  <dt class="text-blue-400/80 font-medium">Cycle</dt>
+                  <dd class="text-right">{chapter.data.cycle}</dd>
+                </div>
+              )}
+              {chapter.data.traduction && (
+                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
+                  <dt class="text-blue-400/80 font-medium">Traduction</dt>
+                  <dd class="text-right">{chapter.data.traduction}</dd>
+                </div>
+              )}
+              {chapter.data.edition && (
+                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
+                  <dt class="text-blue-400/80 font-medium">Édition originale</dt>
+                  <dd class="text-right">{chapter.data.edition}</dd>
+                </div>
+              )}
+              {chapter.data.parution && (
+                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
+                  <dt class="text-blue-400/80 font-medium">Parution</dt>
+                  <dd class="text-right">{chapter.data.parution}</dd>
+                </div>
+              )}
+            </dl>
+          )}
         </header>
 
         <div class="text-blue-100 leading-relaxed reader-text">
