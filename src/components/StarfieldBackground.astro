@@ -17,21 +17,89 @@
   let last = 0;
   let frameCount = 0;
 
-  // ---- ship: local drawing box + offscreen buffer (for depth-of-field blur) ----
-  const SHIP_LOCAL_W = 240;
-  const SHIP_LOCAL_H = 160;
-  const MAX_SCALE = 4.0;
-  let shipBuf = null;
-  let GREEBLES = [];
-  let WINDOWS = [];
-  let curPitchShear = 0;
+  // ---- SHIP: PNG with alpha, orientation auto-detected at load ----
+const BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
+  const SHIP_LOCAL_LEN = 210; // nose-to-tail size in local units (relative to cone scale)
+  const SHIP_FLIP = false;    // set true if the ship flies nose-first backwards
+  const SHIP = { img: null, ready: false, corr: 0, drawW: 0, drawH: 0, offX: 0, offY: 0 };
 
-  const MET1 = '#dfe5ec';
-  const MET2 = '#a8b0bc';
-  const MET3 = '#6e7684';
-  const MET4 = '#3b414c';
-  const MET5 = '#232830';
-  const GOLD = '#ffc44d';
+  function loadShip() {
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const r = analyzeShip(img);
+        SHIP.img = img;
+        SHIP.ready = true;
+        SHIP.corr = r.corr;
+        SHIP.drawW = SHIP_LOCAL_LEN * (img.naturalWidth / r.length);
+        SHIP.drawH = SHIP_LOCAL_LEN * (img.naturalHeight / r.length);
+        SHIP.offX = ((r.cx - img.naturalWidth / 2) / img.naturalWidth) * SHIP.drawW;
+        SHIP.offY = ((r.cy - img.naturalHeight / 2) / img.naturalHeight) * SHIP.drawH;
+      } catch (e) { console.error('ship analyze failed', e); }
+    };
+    img.onerror = () => { console.error('ship image failed to load'); };
+    img.src = `${BASE}/images/spaceship.webp`;
+  }
+
+  // Detect ship axis, nose direction and alpha centroid from the image pixels.
+  function analyzeShip(img) {
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    const g = c.getContext('2d', { willReadFrequently: true });
+    g.drawImage(img, 0, 0);
+    const d = g.getImageData(0, 0, c.width, c.height).data;
+    const iw = c.width, ih = c.height;
+
+    const xs = [], ys = [];
+    let n = 0, sx = 0, sy = 0;
+    for (let y = 0; y < ih; y += 2) {
+      for (let x = 0; x < iw; x += 2) {
+        if (d[(y * iw + x) * 4 + 3] > 40) { xs.push(x); ys.push(y); sx += x; sy += y; n++; }
+      }
+    }
+    const cx = sx / n, cy = sy / n;
+    let cxx = 0, cyy = 0, cxy = 0;
+    for (let i = 0; i < n; i++) {
+      const dx = xs[i] - cx, dy = ys[i] - cy;
+      cxx += dx * dx; cyy += dy * dy; cxy += dx * dy;
+    }
+    cxx /= n; cyy /= n; cxy /= n;
+
+    const theta = 0.5 * Math.atan2(2 * cxy, cxx - cyy);
+    const u0 = Math.cos(theta), v0 = Math.sin(theta);
+
+    let umin = 1e9, umax = -1e9;
+    for (let i = 0; i < n; i++) {
+      const dx = xs[i] - cx, dy = ys[i] - cy;
+      const u = dx * u0 + dy * v0;
+      if (u < umin) umin = u;
+      if (u > umax) umax = u;
+    }
+    const L = umax - umin;
+    let vnMin = 1e9, vnMax = -1e9, vpMin = 1e9, vpMax = -1e9;
+    for (let i = 0; i < n; i++) {
+      const dx = xs[i] - cx, dy = ys[i] - cy;
+      const u = dx * u0 + dy * v0;
+      const v = -dx * v0 + dy * u0;
+      if (u < umin + 0.12 * L) {
+        if (v < vnMin) vnMin = v;
+        if (v > vnMax) vnMax = v;
+      } else if (u > umax - 0.12 * L) {
+        if (v < vpMin) vpMin = v;
+        if (v > vpMax) vpMax = v;
+      }
+    }
+    // nose = the end with the narrower cross-section (pointed tip)
+    const crossNeg = vnMax - vnMin;
+    const crossPos = vpMax - vpMin;
+    const noseNeg = crossNeg < crossPos;
+    let nx, ny;
+    if (noseNeg) { nx = -u0; ny = -v0; } else { nx = u0; ny = v0; }
+    const corr = -Math.atan2(ny, nx);
+
+    return { corr, length: L, cx, cy };
+  }
 
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -46,18 +114,6 @@
     buildNebulae();
     buildAsteroids();
     buildGravWaves();
-    buildShipSurface();
-    ensureShipBuffer();
-  }
-
-  function ensureShipBuffer() {
-    const w = Math.round(SHIP_LOCAL_W * MAX_SCALE * DPR);
-    const h = Math.round(SHIP_LOCAL_H * MAX_SCALE * DPR);
-    if (!shipBuf || shipBuf.width !== w || shipBuf.height !== h) {
-      shipBuf = document.createElement('canvas');
-      shipBuf.width = w;
-      shipBuf.height = h;
-    }
   }
 
   // ---- STARS (denser, colored: 10% red / 10% blue) ----
@@ -285,240 +341,19 @@
     ctx.restore();
   }
 
-  // ---- SHIP SURFACE DETAILS (stable greebling + windows, generated once) ----
-  function buildShipSurface() {
-    GREEBLES.length = 0;
-    WINDOWS.length = 0;
-    const gCols = [
-      'rgba(255,255,255,0.12)',
-      'rgba(0,0,0,0.24)',
-      'rgba(165,173,185,0.55)',
-      'rgba(55,62,72,0.55)',
-      'rgba(120,128,140,0.5)',
-    ];
-    let guard = 0;
-    while (GREEBLES.length < 170 && guard++ < 4000) {
-      const gx = 6 + (Math.random() - 0.5) * 104;
-      const gy = (Math.random() - 0.5) * 82;
-      const nx = (gx - 6) / 55;
-      const ny = gy / 44;
-      if (nx * nx + ny * ny > 1.0) continue;
-      const k = Math.random();
-      GREEBLES.push({
-        x: gx,
-        y: gy,
-        w: 1.2 + Math.random() * 2.6,
-        h: 1.0 + Math.random() * 2.2,
-        shape: k < 0.5 ? 0 : (k < 0.82 ? 1 : 2),
-        rot: Math.random() * Math.PI,
-        col: gCols[(Math.random() * gCols.length) | 0],
-      });
-    }
-    for (let row = 0; row < 3; row++) {
-      const wy = -30 + row * 7;
-      for (let i = 0; i < 48; i++) {
-        const wx = 6 - 43 + (i / 47) * 86;
-        const nx = (wx - 6) / 55;
-        const ny = wy / 44;
-        if (nx * nx + ny * ny > 0.95) continue;
-        const t = Math.random();
-        let col = 'rgba(255,214,150,0.85)';
-        if (t > 0.75) col = 'rgba(150,205,255,0.7)';
-        else if (t > 0.9) col = 'rgba(160,255,185,0.7)';
-        WINDOWS.push({ x: wx, y: wy, col });
-      }
-    }
-  }
-
-  function drawGreebles(b) {
-    for (const g of GREEBLES) {
-      b.fillStyle = g.col;
-      if (g.shape === 0) {
-        b.fillRect(g.x, g.y, g.w, g.h);
-      } else if (g.shape === 1) {
-        b.beginPath();
-        b.ellipse(g.x, g.y, g.w * 0.7, g.h * 0.55, g.rot, 0, Math.PI * 2);
-        b.fill();
-      } else {
-        b.fillRect(g.x, g.y, 0.8, 0.8);
-      }
-    }
-  }
-
-  // ---- THE CREST : spherical hull + segmented motor ring ----
-  function drawShipToBuffer() {
-    const b = shipBuf.getContext('2d');
-    b.setTransform(1, 0, 0, 1, 0, 0);
-    b.clearRect(0, 0, shipBuf.width, shipBuf.height);
-    const s = MAX_SCALE * DPR;
-    b.setTransform(s, 0, 0, s, shipBuf.width / 2, shipBuf.height / 2);
-    b.transform(1, curPitchShear, 0, 1, 0, 0);
-
-    // ---- MOTOR RING (behind sphere) ----
-    b.fillStyle = MET4;
-    b.beginPath();
-    b.ellipse(6, 0, 63, 47, 0, 0, Math.PI * 2);
-    b.fill();
-    b.strokeStyle = MET2;
-    b.lineWidth = 1.4;
-    b.beginPath();
-    b.ellipse(6, 0, 63, 47, 0, 0, Math.PI * 2);
-    b.stroke();
-    b.strokeStyle = MET3;
-    b.lineWidth = 0.8;
-    b.beginPath();
-    b.ellipse(6, 0, 50, 38, 0, 0, Math.PI * 2);
-    b.stroke();
-    b.strokeStyle = 'rgba(0,0,0,0.4)';
-    b.lineWidth = 0.7;
-    for (let i = 0; i < 20; i++) {
-      const a = (i / 20) * Math.PI * 2;
-      b.beginPath();
-      b.moveTo(6 + Math.cos(a) * 51, Math.sin(a) * 39);
-      b.lineTo(6 + Math.cos(a) * 62, Math.sin(a) * 46);
-      b.stroke();
-    }
-    // cobalt rear-face glow (left / rear-facing arc)
-    b.save();
-    b.globalCompositeOperation = 'lighter';
-    const cg = b.createLinearGradient(6 - 62, 0, 6 - 18, 0);
-    cg.addColorStop(0, 'rgba(30,90,255,0)');
-    cg.addColorStop(0.45, 'rgba(80,170,255,0.8)');
-    cg.addColorStop(1, 'rgba(130,230,255,0)');
-    b.strokeStyle = cg;
-    b.lineWidth = 3.2;
-    b.beginPath();
-    b.ellipse(6, 0, 63, 47, 0, Math.PI, Math.PI * 2, false);
-    b.stroke();
-    b.restore();
-
-    // ---- CENTRAL SPHERE ----
-    const sg = b.createRadialGradient(-10, -16, 4, 6, 0, 66);
-    sg.addColorStop(0, '#eef2f7');
-    sg.addColorStop(0.3, MET1);
-    sg.addColorStop(0.65, MET3);
-    sg.addColorStop(1, MET5);
-    b.fillStyle = sg;
-    b.beginPath();
-    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
-    b.fill();
-    b.strokeStyle = 'rgba(0,0,0,0.35)';
-    b.lineWidth = 1.8;
-    b.beginPath();
-    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
-    b.stroke();
-
-    // ---- GREEBLING + WINDOWS (clipped to sphere) ----
-    b.save();
-    b.beginPath();
-    b.ellipse(6, 0, 55, 44, 0, 0, Math.PI * 2);
-    b.clip();
-    b.strokeStyle = 'rgba(0,0,0,0.15)';
-    b.lineWidth = 0.5;
-    for (let i = 0; i < 4; i++) {
-      b.beginPath();
-      b.ellipse(6, 0, 26 + i * 8, 21 + i * 6, 0, 0, Math.PI * 2);
-      b.stroke();
-    }
-    drawGreebles(b);
-    for (const ww of WINDOWS) {
-      b.fillStyle = ww.col;
-      b.fillRect(ww.x, ww.y, 0.9, 0.9);
-    }
-    b.restore();
-
-    // ---- BRIDGE DOME ----
-    const bg = b.createLinearGradient(0, -45, 0, -31);
-    bg.addColorStop(0, MET1);
-    bg.addColorStop(1, MET3);
-    b.fillStyle = bg;
-    b.beginPath();
-    b.ellipse(8, -38, 10, 7, 0, 0, Math.PI * 2);
-    b.fill();
-    b.fillStyle = 'rgba(255,255,255,0.3)';
-    b.beginPath();
-    b.ellipse(4, -40, 3.5, 2, 0, 0, Math.PI * 2);
-    b.fill();
-    b.strokeStyle = MET3;
-    b.lineWidth = 1;
-    b.beginPath();
-    b.moveTo(10, -44);
-    b.lineTo(14, -54);
-    b.stroke();
-    b.fillStyle = '#ff5540';
-    b.fillRect(13.6, -56.5, 1.5, 1.5);
-
-    // ---- REGISTRATION (gold) ----
-    b.font = 'bold 6px "Courier New", monospace';
-    b.textAlign = 'center';
-    b.textBaseline = 'middle';
-    b.fillStyle = 'rgba(0,0,0,0.6)';
-    b.fillText('CREST IV', 6.5, 32.5);
-    b.fillText('U.S.O. · GANYMED', 6.5, 40);
-    b.fillStyle = GOLD;
-    b.fillText('CREST IV', 6, 32);
-    b.fillText('U.S.O. · GANYMED', 6, 39.5);
-
-    // ---- POSITION LIGHTS (discreet) ----
-    b.fillStyle = 'rgba(255,90,80,0.75)';
-    b.fillRect(6 - 51, -8, 1.2, 1.2);
-    b.fillStyle = 'rgba(90,255,150,0.75)';
-    b.fillRect(6 + 50, -8, 1.2, 1.2);
-
-    // ---- AMBER CREW-SECTION GLOW (diffuse) ----
-    const amb = b.createRadialGradient(6, -18, 0, 6, -18, 30);
-    amb.addColorStop(0, 'rgba(255,190,120,0.08)');
-    amb.addColorStop(1, 'rgba(255,190,120,0)');
-    b.fillStyle = amb;
-    b.beginPath();
-    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
-    b.fill();
-
-    // ---- DEFLECTOR / RING-COLLECTOR (front, intense cyan) ----
-    const halo = b.createRadialGradient(68, 0, 0, 68, 0, 24);
-    halo.addColorStop(0, 'rgba(90,225,255,0.4)');
-    halo.addColorStop(1, 'rgba(0,120,255,0)');
-    b.fillStyle = halo;
-    b.beginPath();
-    b.arc(68, 0, 24, 0, Math.PI * 2);
-    b.fill();
-    const dg = b.createRadialGradient(68, 0, 0, 68, 0, 9.5);
-    dg.addColorStop(0, 'rgba(255,255,255,0.98)');
-    dg.addColorStop(0.3, 'rgba(160,240,255,0.95)');
-    dg.addColorStop(0.65, 'rgba(60,180,255,0.6)');
-    dg.addColorStop(1, 'rgba(0,90,230,0)');
-    b.fillStyle = dg;
-    b.beginPath();
-    b.arc(68, 0, 9.5, 0, Math.PI * 2);
-    b.fill();
-    // collector rim on the front arc
-    b.strokeStyle = 'rgba(110,235,255,0.65)';
-    b.lineWidth = 1.1;
-    b.beginPath();
-    b.ellipse(6, 0, 65, 49, 0, -0.6, 0.6);
-    b.stroke();
-
-    // ---- HULL HIGHLIGHT OVERLAY ----
-    const hl = b.createRadialGradient(-4, -18, 0, -4, -18, 72);
-    hl.addColorStop(0, 'rgba(255,255,255,0.10)');
-    hl.addColorStop(1, 'rgba(255,255,255,0)');
-    b.fillStyle = hl;
-    b.beginPath();
-    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
-    b.fill();
-  }
-
+  // ---- SHIP (raster image, nose along +X after correction) ----
   function drawShip(x, y, scale, angle, depth) {
-    drawShipToBuffer();
+    if (!SHIP.ready) return;
     ctx.save();
     const blur = depth > 0.5 ? (depth - 0.5) * 6 : 0;
     ctx.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : 'none';
-    ctx.translate(x, y);
-    ctx.rotate(angle);
-    ctx.globalAlpha = 1 - depth * 0.35;
-    const w = SHIP_LOCAL_W * scale;
-    const h = SHIP_LOCAL_H * scale;
-    ctx.drawImage(shipBuf, -w / 2, -h / 2, w, h);
+    ctx.translate(x + SHIP.offX * scale, y + SHIP.offY * scale);
+    ctx.rotate(angle + SHIP.corr + (SHIP_FLIP ? Math.PI : 0));
+    ctx.transform(1, curPitchShear, 0, 1, 0, 0);
+    ctx.globalAlpha = Math.max(0.55, 1 - depth * 0.45);
+    const w = SHIP.drawW * scale;
+    const h = SHIP.drawH * scale;
+    ctx.drawImage(SHIP.img, -w / 2, -h / 2, w, h);
     ctx.restore();
   }
 
@@ -606,6 +441,7 @@
 
   // ---- TRAJECTORY : wobbling ellipse, variable speed, pitch up/down ----
   let theta = 0;
+  let curPitchShear = 0;
   function getShipState(dt) {
     const cx = W * 0.5;
     const cy = H * 0.42;
@@ -675,6 +511,7 @@
   }
 
   resize();
+  loadShip();
   window.addEventListener('resize', resize);
   requestAnimationFrame((n) => { last = n; frame(n); });
 })();
