@@ -116,6 +116,26 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
               </table>
             </div>
           )}
+          {collection === 'chapitres' && (item.data.auteur || item.data.parution) && (
+            <div class="mt-6 mx-auto max-w-md">
+              <table class="w-full text-sm theme-value border-collapse">
+                <tbody class="theme-divide">
+                  {item.data.auteur && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Auteur</th>
+                      <td class="py-2 text-right">{item.data.auteur}</td>
+                    </tr>
+                  )}
+                  {item.data.parution && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Parution (DE)</th>
+                      <td class="py-2 text-right">{item.data.parution}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </header>
 
         <div class="theme-body leading-relaxed reader-text">

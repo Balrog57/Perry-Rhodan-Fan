@@ -75,6 +75,8 @@ const chapitres = defineCollection({
     cover: z.string().optional(),
     synopsis: z.string().optional(),
     originalTitle: z.string().optional(),
+    auteur: z.string().optional(),
+    parution: z.string().optional(),
   }),
 });
 

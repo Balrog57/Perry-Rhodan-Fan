@@ -9,8 +9,29 @@
   let W = 0, H = 0, DPR = 1;
   const STAR_LAYERS = [];
   const NEBULAE = [];
+  const ASTEROIDS = [];
+  const SUPERNOVAE = [];
+  const RIPPLE = [];
+  const GRAVWAVES = [];
   let time = 0;
   let last = 0;
+  let frameCount = 0;
+
+  // ---- ship: local drawing box + offscreen buffer (for depth-of-field blur) ----
+  const SHIP_LOCAL_W = 240;
+  const SHIP_LOCAL_H = 160;
+  const MAX_SCALE = 4.0;
+  let shipBuf = null;
+  let GREEBLES = [];
+  let WINDOWS = [];
+  let curPitchShear = 0;
+
+  const MET1 = '#dfe5ec';
+  const MET2 = '#a8b0bc';
+  const MET3 = '#6e7684';
+  const MET4 = '#3b414c';
+  const MET5 = '#232830';
+  const GOLD = '#ffc44d';
 
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -23,30 +44,47 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     buildStars();
     buildNebulae();
+    buildAsteroids();
+    buildGravWaves();
+    buildShipSurface();
+    ensureShipBuffer();
   }
 
+  function ensureShipBuffer() {
+    const w = Math.round(SHIP_LOCAL_W * MAX_SCALE * DPR);
+    const h = Math.round(SHIP_LOCAL_H * MAX_SCALE * DPR);
+    if (!shipBuf || shipBuf.width !== w || shipBuf.height !== h) {
+      shipBuf = document.createElement('canvas');
+      shipBuf.width = w;
+      shipBuf.height = h;
+    }
+  }
+
+  // ---- STARS (denser, colored: 10% red / 10% blue) ----
   function buildStars() {
     STAR_LAYERS.length = 0;
     const layerConfigs = [
-      { count: Math.floor(W * H / 3500), speed: 0.05, max: 0.8, alpha: 0.55 },
-      { count: Math.floor(W * H / 7000), speed: 0.2, max: 1.3, alpha: 0.8 },
-      { count: Math.floor(W * H / 18000), speed: 0.55, max: 1.9, alpha: 1 },
+      { count: Math.floor(W * H / 1400), speed: 0.05, max: 0.8, alpha: 0.5 },
+      { count: Math.floor(W * H / 3000), speed: 0.16, max: 1.3, alpha: 0.75 },
+      { count: Math.floor(W * H / 8000), speed: 0.42, max: 1.9, alpha: 1 },
     ];
     for (const cfg of layerConfigs) {
       const arr = [];
       for (let i = 0; i < cfg.count; i++) {
-        const r = Math.random();
-        let color = [225, 232, 255];
-        if (r > 0.92) color = [255, 220, 180];
-        else if (r > 0.82) color = [180, 210, 255];
-        else if (r > 0.75) color = [255, 235, 210];
+        const rr = Math.random();
+        let color;
+        if (rr < 0.1) color = [205, 120, 110];
+        else if (rr < 0.2) color = [120, 185, 255];
+        else if (rr > 0.92) color = [255, 220, 180];
+        else if (rr > 0.82) color = [180, 210, 255];
+        else color = [225, 232, 255];
         arr.push({
           x: Math.random() * W,
           y: Math.random() * H,
           size: Math.random() * cfg.max + 0.2,
           base: 0.4 + Math.random() * 0.6,
           tw: Math.random() * Math.PI * 2,
-          twSpeed: 0.5 + Math.random() * 2,
+          twSpeed: 0.4 + Math.random() * 1.8,
           color,
         });
       }
@@ -54,64 +92,21 @@
     }
   }
 
-  function buildNebulae() {
-    NEBULAE.length = 0;
-    const palette = [
-      [40, 80, 180], [90, 50, 170], [30, 140, 200], [120, 60, 160], [200, 90, 140]
-    ];
-    for (let i = 0; i < 4; i++) {
-      NEBULAE.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: 200 + Math.random() * 300,
-        color: palette[Math.floor(Math.random() * palette.length)],
-        alpha: 0.05 + Math.random() * 0.08,
-        drift: 0.05 + Math.random() * 0.1,
-        driftY: (Math.random() - 0.5) * 0.05,
-      });
-    }
-  }
-
-  function drawNebulae() {
-    ctx.globalCompositeOperation = 'screen';
-    for (const n of NEBULAE) {
-      n.x -= n.drift;
-      n.y += n.driftY;
-      if (n.x + n.r < 0) { n.x = W + n.r; n.y = Math.random() * H; }
-      if (n.y < -n.r) n.y = H + n.r;
-      if (n.y - n.r > H) n.y = -n.r;
-      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-      const [r, gc, b] = n.color;
-      g.addColorStop(0, `rgba(${r},${gc},${b},${n.alpha})`);
-      g.addColorStop(0.4, `rgba(${r},${gc},${b},${n.alpha * 0.4})`);
-      g.addColorStop(1, `rgba(${r},${gc},${b},0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
-    }
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
   function drawStars() {
     for (const layer of STAR_LAYERS) {
-      const streak = layer.speed > 0.3;
       for (const s of layer.stars) {
         s.x -= layer.speed;
         if (s.x < 0) { s.x = W; s.y = Math.random() * H; }
-        const twinkle = streak ? 1 : 0.75 + Math.sin(time * s.twSpeed + s.tw) * 0.25;
+        const twinkle = 0.7 + Math.sin(time * s.twSpeed + s.tw) * 0.3;
         const alpha = s.base * twinkle * layer.alpha;
         const [r, g, b] = s.color;
-        if (streak) {
-          ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
-          ctx.fillRect(s.x - s.size * 5, s.y - s.size * 0.45, s.size * 6, s.size * 0.9);
-          continue;
-        }
         ctx.beginPath();
         ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
         ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         ctx.fill();
-        if (s.size > 1.4 && alpha > 0.85) {
+        if (s.size > 1.3 && alpha > 0.8) {
           ctx.beginPath();
-          ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.15})`;
+          ctx.fillStyle = `rgba(${r},${g},${b},${alpha * 0.12})`;
           ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
           ctx.fill();
         }
@@ -119,339 +114,542 @@
     }
   }
 
-  // ---- Engine exhaust + warp streaks behind the ship ----
-  const TRAIL = [];
-  const STREAKS = [];
-  let trailAcc = 0;
-  let streakAcc = 0;
-
-  function spawnTrail(s, dt) {
-    trailAcc += dt * 55;
-    const vx = Math.cos(s.angle), vy = Math.sin(s.angle);
-    const px = -vy, py = vx;
-    while (trailAcc >= 1) {
-      trailAcc -= 1;
-      const rear = (62 + Math.random() * 10) * s.scale;
-      const off = (Math.random() - 0.5) * 14 * s.scale;
-      TRAIL.push({
-        x: s.x - vx * rear + px * off,
-        y: s.y - vy * rear + py * off,
-        vx: -vx * (1.4 + Math.random() * 1.8),
-        vy: -vy * (1.4 + Math.random() * 1.8),
-        life: 1,
-        decay: 1.8 + Math.random() * 1.4,
-        size: 1.4 + Math.random() * 3.2,
-        cyan: Math.random() < 0.72,
+  // ---- NEBULAE (Perry Rhodan palette, slow rotation + breathing opacity) ----
+  function buildNebulae() {
+    NEBULAE.length = 0;
+    const palette = [
+      [16, 120, 92],
+      [150, 30, 180],
+      [20, 90, 210],
+      [180, 40, 90],
+      [60, 60, 200],
+    ];
+    for (let i = 0; i < 5; i++) {
+      NEBULAE.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 220 + Math.random() * 320,
+        color: palette[Math.floor(Math.random() * palette.length)],
+        alpha: 0.05 + Math.random() * 0.09,
+        drift: 0.03 + Math.random() * 0.07,
+        driftY: (Math.random() - 0.5) * 0.05,
+        rot: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.02,
+        squash: 0.5 + Math.random() * 0.4,
       });
     }
-    if (TRAIL.length > 260) TRAIL.splice(0, TRAIL.length - 260);
   }
 
-  function drawTrail(dt) {
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = TRAIL.length - 1; i >= 0; i--) {
-      const p = TRAIL[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= p.decay * dt;
-      if (p.life <= 0) { TRAIL.splice(i, 1); continue; }
-      const a = p.life;
-      ctx.fillStyle = p.cyan ? `rgba(120,246,255,${a * 0.65})` : `rgba(255,178,80,${a * 0.65})`;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * a, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  function spawnStreak(s, dt) {
-    streakAcc += dt * 34;
-    const vx = Math.cos(s.angle), vy = Math.sin(s.angle);
-    while (streakAcc >= 1) {
-      streakAcc -= 1;
-      STREAKS.push({
-        x: s.x + (Math.random() - 0.5) * 40,
-        y: s.y + (Math.random() - 0.5) * 40,
-        vx: -vx * (4 + Math.random() * 4),
-        vy: -vy * (4 + Math.random() * 4),
-        life: 1,
-        decay: 0.7 + Math.random() * 0.7,
-        len: 26 + Math.random() * 40,
-        w: 0.8 + Math.random() * 1.2,
-      });
-    }
-    if (STREAKS.length > 90) STREAKS.splice(0, STREAKS.length - 90);
-  }
-
-  function drawStreaks(dt) {
-    ctx.globalCompositeOperation = 'screen';
-    ctx.lineCap = 'round';
-    for (let i = STREAKS.length - 1; i >= 0; i--) {
-      const p = STREAKS[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= p.decay * dt;
-      if (p.life <= 0) { STREAKS.splice(i, 1); continue; }
-      const a = Math.max(p.life, 0);
-      ctx.strokeStyle = `rgba(170,235,255,${a * 0.85})`;
-      ctx.lineWidth = p.w * a + 0.3;
-      const L = Math.hypot(p.vx, p.vy) || 1;
-      ctx.beginPath();
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - (p.vx / L) * p.len, p.y - (p.vy / L) * p.len);
-      ctx.stroke();
-    }
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  function roundRect(c, x, y, w, h, r) {
-    c.beginPath();
-    c.moveTo(x + r, y);
-    c.lineTo(x + w - r, y);
-    c.quadraticCurveTo(x + w, y, x + w, y + r);
-    c.lineTo(x + w, y + h - r);
-    c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    c.lineTo(x + r, y + h);
-    c.quadraticCurveTo(x, y + h, x, y + h - r);
-    c.lineTo(x, y + r);
-    c.quadraticCurveTo(x, y, x + r, y);
-    c.closePath();
-  }
-
-  // ---- Ship rendering (Constitution-class style, nose points +X) ----
-  function drawShip(x, y, scale, angle, depth) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle);
-    ctx.scale(scale, scale);
-    ctx.globalAlpha = 1 - depth * 0.3;
-
-    const H0 = '#cdd6e2';
-    const H1 = '#85909f';
-    const H2 = '#46515f';
-    const H3 = '#2b3442';
-    const LINE = '#1f2836';
-    const WIN = '#ffe2a0';
-    const BUSS = '#ffb34d';
-    const GLOW = '#6ef7ff';
-
-    function ell(cx, cy, rx, ry, fill, rot) {
-      ctx.fillStyle = fill;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, rx, ry, rot || 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    function vgrad(y1, y2, c1, c2) {
-      const g = ctx.createLinearGradient(0, y1, 0, y2);
-      g.addColorStop(0, c1);
-      g.addColorStop(1, c2);
-      return g;
-    }
-
-    // ---- warp engine trails (behind) ----
+  function drawNebulae(dt) {
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
-    ctx.shadowColor = GLOW;
-    ctx.shadowBlur = 26;
-    ctx.fillStyle = GLOW;
-    ctx.beginPath();
-    ctx.moveTo(-36, -2);
-    ctx.lineTo(-86, -6);
-    ctx.lineTo(-86, 6);
-    ctx.lineTo(-36, 2);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillRect(-38, -2.5, 4, 5);
-    ctx.fillRect(-34, -1.5, 2, 3);
+    for (const n of NEBULAE) {
+      n.x -= n.drift;
+      n.y += n.driftY;
+      n.rot += n.rotSpeed * dt;
+      if (n.x + n.r < 0) { n.x = W + n.r; n.y = Math.random() * H; }
+      const pulse = 0.85 + 0.15 * Math.sin(time * 0.1 + n.rot);
+      ctx.save();
+      ctx.translate(n.x, n.y);
+      ctx.rotate(n.rot);
+      ctx.scale(1, n.squash);
+      const g = ctx.createRadialGradient(0, 0, 0, 0, 0, n.r);
+      const [r, gc, b] = n.color;
+      const a = n.alpha * pulse;
+      g.addColorStop(0, `rgba(${r},${gc},${b},${a})`);
+      g.addColorStop(0.4, `rgba(${r},${gc},${b},${a * 0.4})`);
+      g.addColorStop(1, `rgba(${r},${gc},${b},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(-n.r, -n.r, n.r * 2, n.r * 2);
+      ctx.restore();
+    }
     ctx.restore();
+  }
 
-    // ---- NACELLES (behind hull) ----
-    function nacelle(oy) {
-      const up = oy > 0;
-      // pylon
-      ctx.fillStyle = H2;
+  // ---- GRAVITY WAVES (space-time distortions drifting among the stars) ----
+  function buildGravWaves() {
+    GRAVWAVES.length = 0;
+    for (let i = 0; i < 5; i++) {
+      GRAVWAVES.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: 26 + Math.random() * 46,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.02 + Math.random() * 0.035,
+        color: [120, 190, 255],
+        alpha: 0.05 + Math.random() * 0.05,
+      });
+    }
+  }
+
+  function drawGravWaves(dt) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    for (const w of GRAVWAVES) {
+      w.x -= 0.07;
+      if (w.x < -w.r) { w.x = W + w.r; w.y = Math.random() * H; }
+      w.phase += dt * w.speed;
+      for (let k = 0; k < 3; k++) {
+        const r = w.r * (0.35 + k * 0.35 + Math.sin(w.phase) * 0.06);
+        ctx.strokeStyle = `rgba(${w.color},${w.alpha * (1 - k * 0.3)})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.arc(w.x, w.y, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // ---- SUPERNOVAE (rare, long-lived background events) ----
+  function maybeSpawnSupernova() {
+    if (frameCount % 500 !== 0 || SUPERNOVAE.length) return;
+    SUPERNOVAE.push({
+      x: W * 0.15 + Math.random() * W * 0.7,
+      y: H * 0.08 + Math.random() * H * 0.4,
+      age: 0,
+      total: 20,
+      maxR: 40 + Math.random() * 60,
+    });
+  }
+
+  function drawSupernovae(dt) {
+    if (!SUPERNOVAE.length) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (let i = SUPERNOVAE.length - 1; i >= 0; i--) {
+      const sn = SUPERNOVAE[i];
+      sn.age += dt;
+      if (sn.age > sn.total) { SUPERNOVAE.splice(i, 1); continue; }
+      const t = sn.age / sn.total;
+      const bright = Math.sin(Math.min(t * 1.15, 1) * Math.PI);
+      const r = sn.maxR * bright;
+      const g = ctx.createRadialGradient(sn.x, sn.y, 0, sn.x, sn.y, r);
+      g.addColorStop(0, `rgba(255,255,255,${0.95 * bright})`);
+      g.addColorStop(0.18, `rgba(255,225,190,${0.5 * bright})`);
+      g.addColorStop(0.45, `rgba(255,190,140,${0.18 * bright})`);
+      g.addColorStop(1, 'rgba(255,170,120,0)');
+      ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.moveTo(4, up ? 4 : -4);
-      ctx.lineTo(6, up ? 18 : -18);
-      ctx.lineTo(12, up ? 18 : -18);
-      ctx.lineTo(14, up ? 4 : -4);
+      ctx.arc(sn.x, sn.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ---- ASTEROID FIELD (foreground, drifting just below the ship's closest pass) ----
+  function buildAsteroids() {
+    ASTEROIDS.length = 0;
+    for (let i = 0; i < 14; i++) {
+      const r = 9 + Math.random() * 24;
+      const n = 7 + (Math.random() * 5 | 0);
+      const pts = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const rr = r * (0.7 + Math.random() * 0.5);
+        pts.push([Math.cos(a) * rr, Math.sin(a) * rr]);
+      }
+      ASTEROIDS.push({
+        x: Math.random() * W,
+        y: H * (0.72 + Math.random() * 0.3),
+        pts,
+        rot: Math.random() * Math.PI * 2,
+        rotS: (Math.random() - 0.5) * 0.2,
+        sp: 0.05 + Math.random() * 0.14,
+      });
+    }
+  }
+
+  function drawAsteroids(dt) {
+    ctx.save();
+    for (const a of ASTEROIDS) {
+      a.x -= a.sp;
+      a.rot += a.rotS * dt;
+      if (a.x < -70) { a.x = W + 70; a.y = H * (0.7 + Math.random() * 0.35); }
+      ctx.save();
+      ctx.translate(a.x, a.y);
+      ctx.rotate(a.rot);
+      ctx.scale(1, 0.55);
+      const g = ctx.createRadialGradient(0, -10, 0, 0, 0, 34);
+      g.addColorStop(0, 'rgba(125,132,144,0.55)');
+      g.addColorStop(0.55, 'rgba(72,78,90,0.5)');
+      g.addColorStop(1, 'rgba(28,32,42,0.45)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(a.pts[0][0], a.pts[0][1]);
+      for (let k = 1; k < a.pts.length; k++) ctx.lineTo(a.pts[k][0], a.pts[k][1]);
       ctx.closePath();
       ctx.fill();
-      // nacelle body shadow
-      ctx.fillStyle = H3;
-      roundRect(ctx, -20, oy - 4.5, 48, 9, 4);
-      ctx.fill();
-      const ng = ctx.createLinearGradient(0, oy - 4, 0, oy + 4);
-      ng.addColorStop(0, H0);
-      ng.addColorStop(0.5, H1);
-      ng.addColorStop(1, H3);
-      ctx.fillStyle = ng;
-      roundRect(ctx, -19, oy - 3.5, 46, 7, 3);
-      ctx.fill();
-      // grille
-      ctx.fillStyle = 'rgba(20,28,40,0.7)';
-      for (let i = 0; i < 6; i++) ctx.fillRect(-14 + i * 6, oy - 1.4, 0.6, 2.8);
-      // bussard collector (front)
-      ctx.save();
-      ctx.shadowColor = BUSS;
-      ctx.shadowBlur = 10;
-      const b = ctx.createRadialGradient(28, oy, 0, 28, oy, 6);
-      b.addColorStop(0, '#ffffff');
-      b.addColorStop(0.35, BUSS);
-      b.addColorStop(0.75, '#e06a00');
-      b.addColorStop(1, '#7a2f00');
-      ctx.fillStyle = b;
-      ctx.beginPath();
-      ctx.arc(28, oy, 4.4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-      // rear engine glow
-      ctx.save();
-      ctx.shadowColor = GLOW;
-      ctx.shadowBlur = 8;
-      ctx.fillStyle = GLOW;
-      ctx.fillRect(-21, oy - 2, 2, 4);
       ctx.restore();
     }
-    nacelle(23);
-    nacelle(-23);
-
-    // ---- SECONDARY HULL ----
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.45)';
-    ctx.shadowBlur = 14;
-    ell(4, 0, 30, 9, H3);
-    ctx.restore();
-    const hg = ctx.createLinearGradient(0, -9, 0, 9);
-    hg.addColorStop(0, H0);
-    hg.addColorStop(0.35, H1);
-    hg.addColorStop(0.75, H2);
-    hg.addColorStop(1, H3);
-    ctx.fillStyle = hg;
-    ctx.beginPath();
-    ctx.moveTo(18, -6);
-    ctx.lineTo(-32, -6);
-    ctx.quadraticCurveTo(-38, -6, -38, 0);
-    ctx.quadraticCurveTo(-38, 6, -32, 6);
-    ctx.lineTo(18, 6);
-    ctx.quadraticCurveTo(22, 6, 22, 0);
-    ctx.quadraticCurveTo(22, -6, 18, -6);
-    ctx.closePath();
-    ctx.fill();
-    // hull panel lines
-    ctx.strokeStyle = 'rgba(31,40,54,0.6)';
-    ctx.lineWidth = 0.6;
-    for (let i = 0; i < 4; i++) {
-      ctx.beginPath();
-      ctx.arc(-8 + i * 8, 0, 9, -0.5, 0.5);
-      ctx.stroke();
-    }
-    // registry markings
-    ctx.fillStyle = 'rgba(255,255,255,0.28)';
-    ctx.fillRect(-26, -2.5, 12, 1.1);
-
-    // ---- NECK ----
-    ctx.fillStyle = vgrad(-4, 4, H0, H2);
-    ctx.beginPath();
-    ctx.moveTo(18, -5);
-    ctx.lineTo(28, -3.5);
-    ctx.lineTo(28, 3.5);
-    ctx.lineTo(18, 5);
-    ctx.closePath();
-    ctx.fill();
-
-    // ---- SAUCER SECTION ----
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur = 16;
-    ell(46, 0, 34, 15, H3);
-    ctx.restore();
-    const sg = ctx.createLinearGradient(0, -15, 0, 15);
-    sg.addColorStop(0, H0);
-    sg.addColorStop(0.4, H1);
-    sg.addColorStop(0.8, H2);
-    sg.addColorStop(1, H3);
-    ctx.fillStyle = sg;
-    ctx.beginPath();
-    ctx.ellipse(46, 0, 33, 14, 0, 0, Math.PI * 2);
-    ctx.fill();
-    // rim highlight
-    ctx.strokeStyle = 'rgba(205,214,226,0.4)';
-    ctx.lineWidth = 0.7;
-    ctx.beginPath();
-    ctx.ellipse(46, 0, 33, 14, 0, 0, Math.PI * 2);
-    ctx.stroke();
-    // inner ridge
-    ctx.fillStyle = vgrad(-6, 6, H1, H3);
-    ctx.beginPath();
-    ctx.ellipse(42, 0, 23, 8.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-    // bridge dome
-    ctx.fillStyle = vgrad(-4, 4, H0, H2);
-    ctx.beginPath();
-    ctx.ellipse(54, -2.5, 5, 3.2, 0, 0, Math.PI * 2);
-    ctx.fill();
-    // windows along saucer rear edge
-    ctx.fillStyle = WIN;
-    for (let i = 0; i < 12; i++) {
-      const a = Math.PI + (i / 11) * Math.PI;
-      const wx = 46 + Math.cos(a) * 29;
-      const wy = Math.sin(a) * 12;
-      ctx.fillRect(wx - 0.6, wy - 0.5, 1.2, 1);
-    }
-    // saucer port/starboard running lights
-    ctx.fillStyle = '#ff5a5a';
-    ctx.fillRect(46, -13.5, 1.6, 1.4);
-    ctx.fillStyle = '#59ff9a';
-    ctx.fillRect(46, 12.2, 1.6, 1.4);
-    // deflector dish glow (front)
-    ctx.save();
-    ctx.shadowColor = BUSS;
-    ctx.shadowBlur = 10;
-    const dg = ctx.createRadialGradient(74, 0, 0, 74, 0, 5);
-    dg.addColorStop(0, '#ffffff');
-    dg.addColorStop(0.5, BUSS);
-    dg.addColorStop(1, 'rgba(224,106,0,0)');
-    ctx.fillStyle = dg;
-    ctx.beginPath();
-    ctx.arc(74, 0, 4.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
     ctx.restore();
   }
 
-  // ---- Smooth elliptical orbit with banking ----
-  function getShipState(t) {
+  // ---- SHIP SURFACE DETAILS (stable greebling + windows, generated once) ----
+  function buildShipSurface() {
+    GREEBLES.length = 0;
+    WINDOWS.length = 0;
+    const gCols = [
+      'rgba(255,255,255,0.12)',
+      'rgba(0,0,0,0.24)',
+      'rgba(165,173,185,0.55)',
+      'rgba(55,62,72,0.55)',
+      'rgba(120,128,140,0.5)',
+    ];
+    let guard = 0;
+    while (GREEBLES.length < 170 && guard++ < 4000) {
+      const gx = 6 + (Math.random() - 0.5) * 104;
+      const gy = (Math.random() - 0.5) * 82;
+      const nx = (gx - 6) / 55;
+      const ny = gy / 44;
+      if (nx * nx + ny * ny > 1.0) continue;
+      const k = Math.random();
+      GREEBLES.push({
+        x: gx,
+        y: gy,
+        w: 1.2 + Math.random() * 2.6,
+        h: 1.0 + Math.random() * 2.2,
+        shape: k < 0.5 ? 0 : (k < 0.82 ? 1 : 2),
+        rot: Math.random() * Math.PI,
+        col: gCols[(Math.random() * gCols.length) | 0],
+      });
+    }
+    for (let row = 0; row < 3; row++) {
+      const wy = -30 + row * 7;
+      for (let i = 0; i < 48; i++) {
+        const wx = 6 - 43 + (i / 47) * 86;
+        const nx = (wx - 6) / 55;
+        const ny = wy / 44;
+        if (nx * nx + ny * ny > 0.95) continue;
+        const t = Math.random();
+        let col = 'rgba(255,214,150,0.85)';
+        if (t > 0.75) col = 'rgba(150,205,255,0.7)';
+        else if (t > 0.9) col = 'rgba(160,255,185,0.7)';
+        WINDOWS.push({ x: wx, y: wy, col });
+      }
+    }
+  }
+
+  function drawGreebles(b) {
+    for (const g of GREEBLES) {
+      b.fillStyle = g.col;
+      if (g.shape === 0) {
+        b.fillRect(g.x, g.y, g.w, g.h);
+      } else if (g.shape === 1) {
+        b.beginPath();
+        b.ellipse(g.x, g.y, g.w * 0.7, g.h * 0.55, g.rot, 0, Math.PI * 2);
+        b.fill();
+      } else {
+        b.fillRect(g.x, g.y, 0.8, 0.8);
+      }
+    }
+  }
+
+  // ---- THE CREST : spherical hull + segmented motor ring ----
+  function drawShipToBuffer() {
+    const b = shipBuf.getContext('2d');
+    b.setTransform(1, 0, 0, 1, 0, 0);
+    b.clearRect(0, 0, shipBuf.width, shipBuf.height);
+    const s = MAX_SCALE * DPR;
+    b.setTransform(s, 0, 0, s, shipBuf.width / 2, shipBuf.height / 2);
+    b.transform(1, curPitchShear, 0, 1, 0, 0);
+
+    // ---- MOTOR RING (behind sphere) ----
+    b.fillStyle = MET4;
+    b.beginPath();
+    b.ellipse(6, 0, 63, 47, 0, 0, Math.PI * 2);
+    b.fill();
+    b.strokeStyle = MET2;
+    b.lineWidth = 1.4;
+    b.beginPath();
+    b.ellipse(6, 0, 63, 47, 0, 0, Math.PI * 2);
+    b.stroke();
+    b.strokeStyle = MET3;
+    b.lineWidth = 0.8;
+    b.beginPath();
+    b.ellipse(6, 0, 50, 38, 0, 0, Math.PI * 2);
+    b.stroke();
+    b.strokeStyle = 'rgba(0,0,0,0.4)';
+    b.lineWidth = 0.7;
+    for (let i = 0; i < 20; i++) {
+      const a = (i / 20) * Math.PI * 2;
+      b.beginPath();
+      b.moveTo(6 + Math.cos(a) * 51, Math.sin(a) * 39);
+      b.lineTo(6 + Math.cos(a) * 62, Math.sin(a) * 46);
+      b.stroke();
+    }
+    // cobalt rear-face glow (left / rear-facing arc)
+    b.save();
+    b.globalCompositeOperation = 'lighter';
+    const cg = b.createLinearGradient(6 - 62, 0, 6 - 18, 0);
+    cg.addColorStop(0, 'rgba(30,90,255,0)');
+    cg.addColorStop(0.45, 'rgba(80,170,255,0.8)');
+    cg.addColorStop(1, 'rgba(130,230,255,0)');
+    b.strokeStyle = cg;
+    b.lineWidth = 3.2;
+    b.beginPath();
+    b.ellipse(6, 0, 63, 47, 0, Math.PI, Math.PI * 2, false);
+    b.stroke();
+    b.restore();
+
+    // ---- CENTRAL SPHERE ----
+    const sg = b.createRadialGradient(-10, -16, 4, 6, 0, 66);
+    sg.addColorStop(0, '#eef2f7');
+    sg.addColorStop(0.3, MET1);
+    sg.addColorStop(0.65, MET3);
+    sg.addColorStop(1, MET5);
+    b.fillStyle = sg;
+    b.beginPath();
+    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
+    b.fill();
+    b.strokeStyle = 'rgba(0,0,0,0.35)';
+    b.lineWidth = 1.8;
+    b.beginPath();
+    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
+    b.stroke();
+
+    // ---- GREEBLING + WINDOWS (clipped to sphere) ----
+    b.save();
+    b.beginPath();
+    b.ellipse(6, 0, 55, 44, 0, 0, Math.PI * 2);
+    b.clip();
+    b.strokeStyle = 'rgba(0,0,0,0.15)';
+    b.lineWidth = 0.5;
+    for (let i = 0; i < 4; i++) {
+      b.beginPath();
+      b.ellipse(6, 0, 26 + i * 8, 21 + i * 6, 0, 0, Math.PI * 2);
+      b.stroke();
+    }
+    drawGreebles(b);
+    for (const ww of WINDOWS) {
+      b.fillStyle = ww.col;
+      b.fillRect(ww.x, ww.y, 0.9, 0.9);
+    }
+    b.restore();
+
+    // ---- BRIDGE DOME ----
+    const bg = b.createLinearGradient(0, -45, 0, -31);
+    bg.addColorStop(0, MET1);
+    bg.addColorStop(1, MET3);
+    b.fillStyle = bg;
+    b.beginPath();
+    b.ellipse(8, -38, 10, 7, 0, 0, Math.PI * 2);
+    b.fill();
+    b.fillStyle = 'rgba(255,255,255,0.3)';
+    b.beginPath();
+    b.ellipse(4, -40, 3.5, 2, 0, 0, Math.PI * 2);
+    b.fill();
+    b.strokeStyle = MET3;
+    b.lineWidth = 1;
+    b.beginPath();
+    b.moveTo(10, -44);
+    b.lineTo(14, -54);
+    b.stroke();
+    b.fillStyle = '#ff5540';
+    b.fillRect(13.6, -56.5, 1.5, 1.5);
+
+    // ---- REGISTRATION (gold) ----
+    b.font = 'bold 6px "Courier New", monospace';
+    b.textAlign = 'center';
+    b.textBaseline = 'middle';
+    b.fillStyle = 'rgba(0,0,0,0.6)';
+    b.fillText('CREST IV', 6.5, 32.5);
+    b.fillText('U.S.O. · GANYMED', 6.5, 40);
+    b.fillStyle = GOLD;
+    b.fillText('CREST IV', 6, 32);
+    b.fillText('U.S.O. · GANYMED', 6, 39.5);
+
+    // ---- POSITION LIGHTS (discreet) ----
+    b.fillStyle = 'rgba(255,90,80,0.75)';
+    b.fillRect(6 - 51, -8, 1.2, 1.2);
+    b.fillStyle = 'rgba(90,255,150,0.75)';
+    b.fillRect(6 + 50, -8, 1.2, 1.2);
+
+    // ---- AMBER CREW-SECTION GLOW (diffuse) ----
+    const amb = b.createRadialGradient(6, -18, 0, 6, -18, 30);
+    amb.addColorStop(0, 'rgba(255,190,120,0.08)');
+    amb.addColorStop(1, 'rgba(255,190,120,0)');
+    b.fillStyle = amb;
+    b.beginPath();
+    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
+    b.fill();
+
+    // ---- DEFLECTOR / RING-COLLECTOR (front, intense cyan) ----
+    const halo = b.createRadialGradient(68, 0, 0, 68, 0, 24);
+    halo.addColorStop(0, 'rgba(90,225,255,0.4)');
+    halo.addColorStop(1, 'rgba(0,120,255,0)');
+    b.fillStyle = halo;
+    b.beginPath();
+    b.arc(68, 0, 24, 0, Math.PI * 2);
+    b.fill();
+    const dg = b.createRadialGradient(68, 0, 0, 68, 0, 9.5);
+    dg.addColorStop(0, 'rgba(255,255,255,0.98)');
+    dg.addColorStop(0.3, 'rgba(160,240,255,0.95)');
+    dg.addColorStop(0.65, 'rgba(60,180,255,0.6)');
+    dg.addColorStop(1, 'rgba(0,90,230,0)');
+    b.fillStyle = dg;
+    b.beginPath();
+    b.arc(68, 0, 9.5, 0, Math.PI * 2);
+    b.fill();
+    // collector rim on the front arc
+    b.strokeStyle = 'rgba(110,235,255,0.65)';
+    b.lineWidth = 1.1;
+    b.beginPath();
+    b.ellipse(6, 0, 65, 49, 0, -0.6, 0.6);
+    b.stroke();
+
+    // ---- HULL HIGHLIGHT OVERLAY ----
+    const hl = b.createRadialGradient(-4, -18, 0, -4, -18, 72);
+    hl.addColorStop(0, 'rgba(255,255,255,0.10)');
+    hl.addColorStop(1, 'rgba(255,255,255,0)');
+    b.fillStyle = hl;
+    b.beginPath();
+    b.ellipse(6, 0, 56, 45, 0, 0, Math.PI * 2);
+    b.fill();
+  }
+
+  function drawShip(x, y, scale, angle, depth) {
+    drawShipToBuffer();
+    ctx.save();
+    const blur = depth > 0.5 ? (depth - 0.5) * 6 : 0;
+    ctx.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : 'none';
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.globalAlpha = 1 - depth * 0.35;
+    const w = SHIP_LOCAL_W * scale;
+    const h = SHIP_LOCAL_H * scale;
+    ctx.drawImage(shipBuf, -w / 2, -h / 2, w, h);
+    ctx.restore();
+  }
+
+  // ---- KALUP TRANSITION CONE (magenta -> violet, behind the ship) ----
+  function drawKalupCone(s) {
+    const pulse = 0.8 + 0.2 * Math.sin(time * 7);
+    const len = (120 + 130 * s.speed) * s.scale;
+    const wHalf = (22 + 16 * (1 - s.speed)) * s.scale;
+    ctx.save();
+    ctx.translate(s.x, s.y);
+    ctx.rotate(s.angle);
+    ctx.globalCompositeOperation = 'screen';
+    const g = ctx.createLinearGradient(0, 0, -len, 0);
+    g.addColorStop(0, `rgba(200,60,220,${0.9 * pulse})`);
+    g.addColorStop(0.3, `rgba(150,60,240,${0.55 * pulse})`);
+    g.addColorStop(0.7, `rgba(120,50,255,${0.22 * pulse})`);
+    g.addColorStop(1, 'rgba(110,40,255,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(-10 * s.scale, -wHalf);
+    ctx.quadraticCurveTo(-len * 0.7, -wHalf * 0.4, -len, -wHalf * 0.12);
+    ctx.lineTo(-len, wHalf * 0.12);
+    ctx.quadraticCurveTo(-len * 0.7, wHalf * 0.4, -10 * s.scale, wHalf);
+    ctx.closePath();
+    ctx.fill();
+    // bright inner stream
+    const core = ctx.createLinearGradient(-10 * s.scale, 0, -len * 0.85, 0);
+    core.addColorStop(0, `rgba(255,180,255,${0.5 * pulse})`);
+    core.addColorStop(1, 'rgba(255,180,255,0)');
+    ctx.strokeStyle = core;
+    ctx.lineWidth = 3 * s.scale * (0.5 + s.speed * 0.5);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-12 * s.scale, 0);
+    ctx.lineTo(-len * 0.85, 0);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ---- WAKE RIPPLE RINGS (expanding, fading, drawn above the ship) ----
+  let rippleAcc = 0;
+  function spawnRipple(s, dt) {
+    rippleAcc += dt * 1.2;
+    if (rippleAcc < 1) return;
+    rippleAcc -= 1;
+    const vx = Math.cos(s.angle);
+    const vy = Math.sin(s.angle);
+    const back = ((120 + 130 * s.speed) + 50) * s.scale;
+    RIPPLE.push({
+      x: s.x - vx * back,
+      y: s.y - vy * back,
+      r: 8 * s.scale,
+      maxR: (90 + Math.random() * 70) * s.scale,
+      grow: (70 + Math.random() * 50) * s.scale,
+      life: 1,
+      decay: 0.5 + Math.random() * 0.25,
+      color: Math.random() < 0.5 ? '255,215,130' : '190,120,255',
+    });
+  }
+
+  function drawRipples(dt) {
+    if (!RIPPLE.length) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    ctx.lineCap = 'round';
+    for (let i = RIPPLE.length - 1; i >= 0; i--) {
+      const p = RIPPLE[i];
+      p.r += p.grow * dt;
+      p.life -= p.decay * dt;
+      if (p.life <= 0 || p.r >= p.maxR) { RIPPLE.splice(i, 1); continue; }
+      const a = Math.max(p.life, 0);
+      ctx.strokeStyle = `rgba(${p.color},${a * 0.3})`;
+      ctx.lineWidth = 1.6 * a + 0.3;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = `rgba(${p.color},${a * 0.12})`;
+      ctx.lineWidth = 2.4 * a;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 0.7, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  // ---- TRAJECTORY : wobbling ellipse, variable speed, pitch up/down ----
+  let theta = 0;
+  function getShipState(dt) {
     const cx = W * 0.5;
     const cy = H * 0.42;
-    const rx = Math.min(W * 0.35, 470);
-    const ry = Math.min(H * 0.26, 200);
-
-    const theta = t * 0.12;
-    const x = cx + Math.cos(theta) * rx;
-    const y = cy + Math.sin(theta) * ry;
+    const rx = Math.min(W * 0.4, 560);
+    const ry = Math.min(H * 0.27, 210);
+    const wob = Math.min(ry * 0.35, 70);
 
     const depth = (1 - Math.sin(theta)) / 2;
-    const vf = Math.min(H / 800, 1.25);
-    const scale = (1.9 - depth * 0.75) * vf;
+    const base = 0.1;
+    const boost = 0.16;
+    const dTheta = base + boost * (1 - depth);
+    theta += dTheta * dt;
+
+    const x = cx + Math.cos(theta) * rx;
+    const y = cy + Math.sin(theta) * ry + Math.sin(theta * 2) * wob;
 
     const dx = -Math.sin(theta) * rx;
-    const dy = Math.cos(theta) * ry;
+    const dy = Math.cos(theta) * ry + 2 * Math.cos(theta * 2) * wob;
     const ddx = -Math.cos(theta) * rx;
-    const ddy = -Math.sin(theta) * ry;
+    const ddy = -Math.sin(theta) * ry - 4 * Math.sin(theta * 2) * wob;
     const sp2 = dx * dx + dy * dy || 1;
     const angAccel = (ddx * dy - dx * ddy) / sp2;
-    const steer = Math.max(-0.25, Math.min(0.25, angAccel * 0.06));
+    const steer = Math.max(-0.22, Math.min(0.22, angAccel * 0.05));
     const angle = Math.atan2(dy, dx) + steer;
 
-    return { x, y, scale, angle, depth };
+    // pitch: cabre vers le haut au premier plan, pique vers le bas à l'arrière-plan
+    const pitch = Math.max(-1, Math.min(1, (0.55 - depth) * 1.7));
+    curPitchShear = pitch * 0.13;
+
+    const vf = Math.max(0.55, Math.min(1, H / 900));
+    const scale = (3.2 - depth * 2.4) * vf;
+
+    const vx = dx * dTheta;
+    const vy = dy * dTheta;
+    const speed = Math.max(0.4, Math.min(1, Math.hypot(vx, vy) / 240));
+
+    return { x, y, scale, angle, depth, speed };
   }
 
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 0.05) || 0.016;
     last = now;
     time += dt;
+    frameCount++;
 
     const bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, '#020617');
@@ -460,15 +658,18 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    drawNebulae();
+    drawNebulae(dt);
     drawStars();
+    drawGravWaves(dt);
+    drawSupernovae(dt);
+    maybeSpawnSupernova();
 
-    const s = getShipState(time);
-    spawnTrail(s, dt);
-    spawnStreak(s, dt);
-    drawStreaks(dt);
-    drawTrail(dt);
+    const s = getShipState(dt);
+    spawnRipple(s, dt);
+    drawKalupCone(s);
     drawShip(s.x, s.y, s.scale, s.angle, s.depth);
+    drawRipples(dt);
+    drawAsteroids(dt);
 
     requestAnimationFrame(frame);
   }
