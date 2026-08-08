@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const tomes = await getCollection('tomes');
+  return tomes.map((item) => ({
+    params: { slug: item.id },
+    props: { item },
+  }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const base = import.meta.env.BASE_URL;
+
+const allTomes = await getCollection('tomes');
+const ordered = allTomes.sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
+const currentIndex = ordered.findIndex((t) => t.id === item.id);
+const prevItem = currentIndex > 0 ? ordered[currentIndex - 1] : null;
+const nextItem = currentIndex < ordered.length - 1 ? ordered[currentIndex + 1] : null;
+
+const cycles = await getCollection('cycles');
+const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
+---
+
+<Layout title={`${item.data.title} - Perry Rhodan Fan`}>
+  <div class="min-h-screen bg-slate-900">
+    <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
+      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href={`${base}tomes`} class="text-blue-200 hover:text-cyan-300 transition-colors">← Les Tomes</a>
+        <div class="text-sm text-blue-200">PERRY RHODAN · {item.data.chapterNumber}</div>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-12">
+      <div class="flex flex-col md:flex-row gap-10 mb-12">
+        {item.data.cover && (
+          <div class="md:w-64 shrink-0">
+            <img
+              src={`${base}${item.data.cover}`}
+              alt={item.data.title}
+              class="w-full rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20"
+            />
+          </div>
+        )}
+        <div class="flex-1">
+          <p class="text-blue-400 font-mono text-sm mb-2">Tome n° {item.data.chapterNumber} · Édition française</p>
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-6">{item.data.title}</h1>
+
+          <table class="w-full text-sm text-blue-200 border-collapse">
+            <tbody>
+              {cycle && (
+                <tr>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top w-40">Cycle</th>
+                  <td class="py-2">
+                    <a href={`/Perry-Rhodan-Fan/cycles/${cycle.data.cycleNumber}`} class="text-cyan-300 hover:text-cyan-200 transition-colors">
+                      {String(cycle.data.cycleNumber).padStart(2, '0')} — {item.data.cycle || cycle.data.title}
+                    </a>
+                  </td>
+                </tr>
+              )}
+              {item.data.originalTitle && (
+                <tr>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Titre original</th>
+                  <td class="py-2 italic">{item.data.originalTitle}</td>
+                </tr>
+              )}
+              {item.data.traduction && (
+                <tr>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Traduction</th>
+                  <td class="py-2">{item.data.traduction}</td>
+                </tr>
+              )}
+              {item.data.edition && (
+                <tr>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Édition originale</th>
+                  <td class="py-2">{item.data.edition}</td>
+                </tr>
+              )}
+              {item.data.parution && (
+                <tr>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Parution</th>
+                  <td class="py-2">{item.data.parution}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    <article class="prose prose-lg prose-invert max-w-none text-blue-100/90 leading-relaxed">
+      <Content />
+    </article>
+
+      <div class="mt-16 flex items-center justify-between border-t border-blue-500/20 pt-8">
+        {prevItem ? (
+          <a href={`/Perry-Rhodan-Fan/tomes/${prevItem.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors">
+            <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <div class="text-left">
+              <div class="text-xs text-blue-400">Précédent</div>
+              <div class="font-semibold text-white">N° {prevItem.data.chapterNumber} — {prevItem.data.title}</div>
+            </div>
+          </a>
+        ) : <div></div>}
+
+        {nextItem ? (
+          <a href={`/Perry-Rhodan-Fan/tomes/${nextItem.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors text-right">
+            <div>
+              <div class="text-xs text-blue-400">Suivant</div>
+              <div class="font-semibold text-white">N° {nextItem.data.chapterNumber} — {nextItem.data.title}</div>
+            </div>
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        ) : <div></div>}
+      </div>
+    </main>
+  </div>
+</Layout>
