@@ -23,6 +23,10 @@ const { item, collection } = Astro.props;
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
 
+const allCycles = await getCollection('cycles');
+const itemCycle = allCycles.find(c => c.data.cycleNumber === item.data.cycleNumber);
+const itemCycleName = itemCycle ? itemCycle.data.title : null;
+
 const sameCollection = collection === 'tomes'
   ? await getCollection('tomes')
   : await getCollection('chapitres');
@@ -80,8 +84,16 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
               ? `Chapitre ${item.data.chapterNumber} · Traduction fan`
               : `Tome n° ${item.data.chapterNumber} · Édition française`}
           </p>
+          {collection === 'chapitres' && itemCycleName && (
+            <p class="theme-muted text-sm mb-2">
+              Cycle {item.data.cycleNumber} : {itemCycleName}
+            </p>
+          )}
           <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{item.data.title}</h1>
-          {item.data.originalTitle && (
+          {item.data.titleFr && (
+            <p class="theme-muted italic">{item.data.titleFr}</p>
+          )}
+          {!item.data.titleFr && item.data.originalTitle && (
             <p class="theme-muted italic">{item.data.originalTitle}</p>
           )}
           {collection === 'tomes' && (

@@ -69,6 +69,7 @@ const chapitres = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/chapitres' }),
   schema: z.object({
     title: z.string(),
+    titleFr: z.string().optional(),
     cycleNumber: z.number(),
     chapterNumber: z.number(),
     type: z.enum(['synopsis', 'translation']).default('translation'),
