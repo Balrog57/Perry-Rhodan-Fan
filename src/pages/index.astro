@@ -1,168 +1,220 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import StarfieldBackground from '../components/StarfieldBackground.astro';
 ---
 
-<Layout title="Perry Rhodan Fan - Traduction Fan">
-  <div class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black" id="hero">
-    <canvas id="starfield" class="absolute inset-0 w-full h-full"></canvas>
-    
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/30 to-slate-950/80 pointer-events-none"></div>
-    
-    <div id="ship-container" class="absolute z-10 pointer-events-none">
-      <svg id="ship" viewBox="0 0 200 80" class="w-48 md:w-64 drop-shadow-[0_0_15px_rgba(56,189,248,0.6)]">
-        <defs>
-          <linearGradient id="hull" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1" />
-            <stop offset="50%" style="stop-color:#3b82f6;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#1e3a5f;stop-opacity:1" />
-          </linearGradient>
-          <radialGradient id="engine" cx="0%" cy="50%" r="50%">
-            <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:0" />
-          </radialGradient>
-        </defs>
-        <ellipse cx="100" cy="40" rx="90" ry="18" fill="url(#hull)" stroke="#60a5fa" stroke-width="0.5"/>
-        <ellipse cx="100" cy="40" rx="95" ry="6" fill="none" stroke="#3b82f6" stroke-width="0.3" opacity="0.6"/>
-        <circle cx="100" cy="40" r="12" fill="#0c4a6e" stroke="#22d3ee" stroke-width="0.5"/>
-        <circle cx="100" cy="40" r="6" fill="#22d3ee" opacity="0.8"/>
-        <rect x="2" y="34" width="20" height="12" rx="6" fill="url(#engine)" opacity="0.9"/>
-        <rect x="178" y="34" width="20" height="12" rx="6" fill="url(#engine)" opacity="0.9"/>
-      </svg>
-    </div>
+<Layout title="Perry Rhodan Fan - La plus grande saga de science-fiction">
+  <StarfieldBackground />
 
-    <div class="relative z-20 text-center px-4 max-w-4xl mx-auto">
-      <h1 class="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
-        <span class="bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite]">PERRY RHODAN</span>
+  <section class="relative z-10 min-h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-950/20 to-slate-950/60 pointer-events-none"></div>
+
+    <div class="relative z-20 text-center px-4 max-w-5xl mx-auto pt-20">
+      <h1 class="text-7xl md:text-9xl font-bold mb-6 tracking-wider">
+        <span class="bg-gradient-to-r from-blue-300 via-cyan-200 to-blue-300 bg-clip-text text-transparent animate-[shimmer_4s_ease-in-out_infinite] drop-shadow-[0_0_40px_rgba(103,232,249,0.4)]">PERRY RHODAN</span>
       </h1>
-      
-      <p class="text-xl md:text-2xl text-blue-200 mb-4 font-light animate-[fadeInUp_1s_ease-out_0.3s_both]">
+
+      <p class="text-2xl md:text-3xl text-blue-100 mb-4 font-light animate-[fadeInUp_1s_ease-out_0.3s_both]">
         La plus grande saga de science-fiction de tous les temps
       </p>
-      
+
       <p class="text-lg text-blue-300/80 mb-12 max-w-2xl mx-auto animate-[fadeInUp_1s_ease-out_0.6s_both]">
-        Plongez dans l'univers épique de Perry Rhodan à travers des traductions fan exclusives et les éditions françaises originales
+        Depuis 1961, une aventure humaine et spatiale sans précédent à travers les galaxies et les époques
       </p>
 
-      <a 
-        href="/Perry-Rhodan-Fan/cycles" 
-        class="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300 animate-[fadeInUp_1s_ease-out_0.9s_both]"
-      >
-        Commencer la lecture
-      </a>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-[fadeInUp_1s_ease-out_0.9s_both]">
+        <a
+          href="/Perry-Rhodan-Fan/cycles"
+          class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300"
+        >
+          Commencer la lecture →
+        </a>
+        <a
+          href="#about"
+          class="px-8 py-4 bg-slate-800/60 hover:bg-slate-700/80 text-blue-100 font-semibold rounded-lg border border-blue-500/30 hover:border-cyan-400/50 backdrop-blur-sm transition-all duration-300"
+        >
+          Découvrir la saga
+        </a>
+      </div>
 
-      <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center animate-[fadeInUp_1s_ease-out_1.2s_both]">
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
-          <div class="text-4xl font-bold text-cyan-400 mb-2">379</div>
-          <div class="text-blue-200">Tomes en français</div>
+      <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-6 text-center animate-[fadeInUp_1s_ease-out_1.2s_both]">
+        <div class="p-6 bg-slate-900/50 rounded-lg backdrop-blur-md border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
+          <div class="text-5xl font-bold text-cyan-400 mb-2">60+</div>
+          <div class="text-blue-200">Années d'aventures</div>
         </div>
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
-          <div class="text-4xl font-bold text-cyan-400 mb-2">46</div>
+        <div class="p-6 bg-slate-900/50 rounded-lg backdrop-blur-md border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
+          <div class="text-5xl font-bold text-cyan-400 mb-2">3400+</div>
+          <div class="text-blue-200">Fascicules publiés</div>
+        </div>
+        <div class="p-6 bg-slate-900/50 rounded-lg backdrop-blur-md border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
+          <div class="text-5xl font-bold text-cyan-400 mb-2">46</div>
           <div class="text-blue-200">Cycles épiques</div>
-        </div>
-        <div class="p-6 bg-slate-800/50 rounded-lg backdrop-blur-sm border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
-          <div class="text-4xl font-bold text-cyan-400 mb-2">3399+</div>
-          <div class="text-blue-200">Fascicules allemands</div>
         </div>
       </div>
     </div>
+  </section>
 
-    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
-      <svg class="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
+  <section id="about" class="relative z-10 bg-slate-950/95 backdrop-blur-sm py-24 px-4 overflow-hidden">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.08),transparent_60%)]"></div>
+    <div class="relative max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+          L'Univers de Perry Rhodan
+        </h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto"></div>
+      </div>
+
+      <div class="prose prose-lg prose-invert max-w-none text-blue-100/90 leading-relaxed space-y-6">
+        <p class="text-xl text-center text-blue-200 font-light italic max-w-3xl mx-auto">
+          « Vivez le futur d'une Humanité dispersée dans l'Univers, confrontée à d'autres peuples stellaires et à des puissances d'ordre supérieur. »
+        </p>
+
+        <p>
+          <strong class="text-cyan-300">Perry Rhodan</strong>, c'est l'invitation à l'aventure humaine et spatiale la plus dépaysante jamais écrite — une captivante réflexion sur la place de l'Homme dans le cosmos, son origine, son évolution, sa destinée. Plus de soixante années d'aventures ininterrompues dans l'espace et le temps, dont l'édition française ne constitue que la face émergée de l'iceberg.
+        </p>
+
+        <p>
+          L'histoire débute en <strong class="text-cyan-300">1971</strong>, lorsque le major Perry Rhodan et son équipage découvrent sur la Lune un vaisseau extraterrestre écrasé. À bord, deux survivants : <strong class="text-cyan-300">Krest</strong> et <strong class="text-cyan-300">Thora</strong>, membres de la race arkonide, un empire galactique autrefois puissant mais désormais en déclin. Plutôt que de remettre cette technologie aux puissances terrestres rivales, Rhodan prend une décision audacieuse : unir l'humanité sous une bannière commune. C'est la naissance de la <strong class="text-cyan-300">Troisième Force</strong>.
+        </p>
+      </div>
+
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-xl border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white">Conception de la série</h3>
+          </div>
+          <p class="text-blue-100/80">
+            Née en <strong class="text-cyan-300">1961</strong> sous la plume de <strong class="text-cyan-300">K.H. Scheer</strong> et <strong class="text-cyan-300">Clark Darlton</strong> (Walter Ernsting) pour les éditions Moewig, la série était prévue à l'origine pour durer cinquante numéros. Le 8 septembre 1961 paraît le n°1 <em>Opération Astrée</em> — et c'est le succès immédiat.
+          </p>
+          <p class="text-blue-100/80 mt-3">
+            Sous l'égide de rédacteurs d'exposé, une équipe d'auteurs rédige chaque épisode selon un plan précis, garantissant une cohésion narrative qu'aucune autre série n'a jamais atteinte.
+          </p>
+        </div>
+
+        <div class="p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-xl border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
+              <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white">L'édition française</h3>
+          </div>
+          <p class="text-blue-100/80">
+            L'édition française voit le jour en <strong class="text-cyan-300">1966</strong> au sein de la collection <em>Anticipation</em> du Fleuve Noir, traduite d'abord par <strong class="text-cyan-300">Jacqueline H. Osterrath</strong> qui imposera sa patte jusqu'à nos jours.
+          </p>
+          <p class="text-blue-100/80 mt-3">
+            Avec <strong class="text-cyan-300">379 numéros</strong> et 54 ans d'existence, la série française détient un record de longévité, même si elle s'est malheureusement arrêtée en <strong class="text-cyan-300">février 2020</strong>. En Allemagne, la série poursuit sa route et a dépassé le numéro 3400.
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <script>
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
-    const shipContainer = document.getElementById('ship-container');
-    
-    let width, height;
-    const stars = [];
-    const STAR_COUNT = 400;
-    
-    function resize() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-    
-    function initStars() {
-      stars.length = 0;
-      for (let i = 0; i < STAR_COUNT; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          z: Math.random() * 3 + 0.5,
-          size: Math.random() * 1.5 + 0.5,
-          brightness: Math.random()
-        });
-      }
-    }
-    
-    let time = 0;
-    function animate() {
-      time += 0.005;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-      ctx.fillRect(0, 0, width, height);
-      
-      stars.forEach(star => {
-        star.x -= star.z * 0.3;
-        if (star.x < 0) {
-          star.x = width;
-          star.y = Math.random() * height;
-        }
-        
-        const flicker = 0.7 + Math.sin(time * 3 + star.brightness * 10) * 0.3;
-        const alpha = star.brightness * flicker;
-        const size = star.size * (1 + Math.sin(time * 2 + star.x) * 0.1);
-        
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 220, 255, ${alpha})`;
-        ctx.fill();
-        
-        if (star.z > 2 && alpha > 0.8) {
-          ctx.beginPath();
-          ctx.moveTo(star.x, star.y);
-          ctx.lineTo(star.x + star.z * 8, star.y);
-          ctx.strokeStyle = `rgba(150, 200, 255, ${alpha * 0.3})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      });
-      
-      const shipX = width * 0.15 + Math.sin(time * 0.7) * width * 0.35;
-      const shipY = height * 0.3 + Math.cos(time * 0.5) * height * 0.08;
-      const tilt = Math.cos(time * 0.7) * 5;
-      
-      if (shipContainer) {
-        shipContainer.style.left = shipX + 'px';
-        shipContainer.style.top = shipY + 'px';
-        shipContainer.style.transform = `rotate(${tilt}deg)`;
-      }
-      
-      requestAnimationFrame(animate);
-    }
-    
-    resize();
-    initStars();
-    animate();
-    
-    window.addEventListener('resize', () => {
-      resize();
-      initStars();
-    });
-  </script>
+  <section class="relative z-10 bg-gradient-to-b from-slate-950 via-blue-950/40 to-slate-950 py-24 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">
+          Une œuvre démesurée
+        </h2>
+        <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="text-center p-8 rounded-xl bg-slate-900/60 border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
+          <svg class="w-12 h-12 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <h3 class="text-xl font-bold text-white mb-2">Des cycles épiques</h3>
+          <p class="text-blue-100/70 text-sm">
+            La série est découpée en cycles — des blocs de 50 à 100 épisodes constituant une unité de temps, de lieux et de thématiques. Les auteurs ont le temps de planter un décor et de développer des thèmes qui s'appuieront sur les cycles suivants.
+          </p>
+        </div>
+
+        <div class="text-center p-8 rounded-xl bg-slate-900/60 border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
+          <svg class="w-12 h-12 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+          <h3 class="text-xl font-bold text-white mb-2">Un univers foisonnant</h3>
+          <p class="text-blue-100/70 text-sm">
+            Des milliers de personnages, planètes, vaisseaux et peuples extraterrestres. Arkonides, Bioposis, Antis, Francs-Passeurs, Halutiens... Une cosmogonie d'une richesse inégalée dans la science-fiction.
+          </p>
+        </div>
+
+        <div class="text-center p-8 rounded-xl bg-slate-900/60 border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
+          <svg class="w-12 h-12 mx-auto mb-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3 class="text-xl font-bold text-white mb-2">Une longévité record</h3>
+          <p class="text-blue-100/70 text-sm">
+            Depuis 1961, un rythme hebdomadaire jamais démenti en Allemagne. Un reboot — <em>Perry Rhodan Neo</em> — a vu le jour et dépasse les 300 numéros. Un univers en perpétuelle expansion.
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <p class="text-xl text-blue-200 mb-8 font-light max-w-2xl mx-auto">
+          L'édition française s'est arrêtée en 2020, mais l'aventure continue grâce aux traductions fan. Plongez dans la saga complète.
+        </p>
+        <a
+          href="/Perry-Rhodan-Fan/cycles"
+          class="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white text-lg font-semibold rounded-lg shadow-xl shadow-blue-500/40 transform hover:scale-105 transition-all duration-300"
+        >
+          Explorer les 46 cycles →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="relative z-10 bg-slate-950 border-t border-blue-500/20 py-12 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-blue-200/70">
+        <div>
+          <h4 class="text-cyan-400 font-bold mb-3 text-base">La saga</h4>
+          <ul class="space-y-1">
+            <li>• 379 tomes en français</li>
+            <li>• 16 cycles parus en France</li>
+            <li>• 46 cycles au total</li>
+            <li>• De 1961 à aujourd'hui</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-cyan-400 font-bold mb-3 text-base">Navigation</h4>
+          <ul class="space-y-1">
+            <li><a href="/Perry-Rhodan-Fan/cycles" class="hover:text-cyan-300 transition-colors">Tous les cycles →</a></li>
+            <li><a href="/Perry-Rhodan-Fan/cycles/1" class="hover:text-cyan-300 transition-colors">Cycle 1 - La Troisième Force →</a></li>
+            <li><a href="/Perry-Rhodan-Fan/cycles/10" class="hover:text-cyan-300 transition-colors">Traductions fan DE→FR →</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-cyan-400 font-bold mb-3 text-base">Ressources</h4>
+          <ul class="space-y-1">
+            <li><a href="http://rhodan.stellarque.com/" target="_blank" rel="noopener" class="hover:text-cyan-300 transition-colors">rhodan.stellarque.com →</a></li>
+            <li><a href="https://www.facebook.com/groups/1412641662316572/" target="_blank" rel="noopener" class="hover:text-cyan-300 transition-colors">Groupe Facebook →</a></li>
+            <li>• Association BASIS</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-10 pt-6 border-t border-blue-500/10 text-center text-xs text-blue-300/40">
+        Perry Rhodan Fan — Projet de traduction fan non officiel. Œuvre originale © Pabel-Moewig Verlag.
+      </div>
+    </div>
+  </footer>
 
   <style is:global>
     @keyframes shimmer {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
+      0%, 100% { background-position: 0% 50%; background-size: 200% 200%; }
+      50% { background-position: 100% 50%; background-size: 200% 200%; }
     }
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    html { scroll-behavior: smooth; }
   </style>
 </Layout>
