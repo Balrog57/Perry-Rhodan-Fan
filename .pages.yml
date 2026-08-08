@@ -29,5 +29,9 @@ content:
       - { name: chapterNumber, label: "Numéro de tome", type: number, required: true }
       - { name: type, label: Type, type: select, options: [{ value: synopsis, label: "Synopsis (FR)" }, { value: translation, label: "Traduction fan (DE→FR)" }], required: true }
       - { name: originalTitle, label: "Titre original", type: string }
+      - { name: cycle, label: Cycle, type: string }
+      - { name: traduction, label: Traduction, type: string }
+      - { name: edition, label: "Édition originale", type: string }
+      - { name: parution, label: Parution, type: string }
       - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
       - { name: body, label: Contenu, type: rich-text }

@@ -19,5 +19,103 @@ html {
 
 ::selection {
   background-color: rgba(56, 189, 248, 0.3);
-  color: white;
+  color: inherit;
+}
+
+#reader-page {
+  background-color: #0f172a;
+  color: #f8fafc;
+  --nav-bg: rgba(30, 41, 59, 0.8);
+  --nav-border: rgba(59, 130, 246, 0.2);
+  --title-text: #ffffff;
+  --meta-label: #60a5fa;
+  --meta-value: #dbeafe;
+  --body-text: #dbeafe;
+  --muted: rgba(147, 197, 253, 0.5);
+  --link: #bfdbfe;
+  --link-hover: #67e8f9;
+  --track-bg: #334155;
+  --fill: linear-gradient(to right, #3b82f6, #22d3ee);
+}
+
+#reader-page[data-theme="light"] {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --nav-border: rgba(59, 130, 246, 0.2);
+  --title-text: #0f172a;
+  --meta-label: #1d4ed8;
+  --meta-value: #1e293b;
+  --body-text: #1e293b;
+  --muted: rgba(100, 116, 139, 0.7);
+  --link: #1d4ed8;
+  --link-hover: #2563eb;
+  --track-bg: #cbd5e1;
+  --fill: linear-gradient(to right, #2563eb, #0ea5e9);
+}
+
+#reader-page[data-theme="sepia"] {
+  background-color: #f3e9d7;
+  color: #3d2f1f;
+  --nav-bg: rgba(255, 250, 240, 0.92);
+  --nav-border: rgba(139, 94, 60, 0.25);
+  --title-text: #3d2f1f;
+  --meta-label: #8a6d3b;
+  --meta-value: #4a3a2a;
+  --body-text: #4a3a2a;
+  --muted: rgba(90, 70, 50, 0.6);
+  --link: #8a6d3b;
+  --link-hover: #b8860b;
+  --track-bg: #ddd3bb;
+  --fill: linear-gradient(to right, #a16207, #d97706);
+}
+
+.theme-nav {
+  background-color: var(--nav-bg);
+  border-bottom-color: var(--nav-border);
+}
+
+.theme-border-t {
+  border-top-color: var(--nav-border);
+}
+
+.theme-divide > * + * {
+  border-top-width: 1px;
+  border-top-color: var(--nav-border);
+}
+
+.theme-title {
+  color: var(--title-text);
+}
+
+.theme-label {
+  color: var(--meta-label);
+}
+
+.theme-value {
+  color: var(--meta-value);
+}
+
+.theme-body {
+  color: var(--body-text);
+}
+
+.theme-muted {
+  color: var(--muted);
+}
+
+.theme-link {
+  color: var(--link);
+}
+
+.theme-link:hover {
+  color: var(--link-hover);
+}
+
+.theme-track {
+  background-color: var(--track-bg);
+}
+
+.theme-fill {
+  background-image: var(--fill);
 }

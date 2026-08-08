@@ -10,6 +10,7 @@
   const STAR_LAYERS = [];
   const NEBULAE = [];
   let time = 0;
+  let last = 0;
 
   function resize() {
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -126,216 +127,242 @@
     c.closePath();
   }
 
-  function drawShip(x, y, scale, angle, depth) {
+  // ---- Ship rendering (Constitution-class style, nose points +X) ----
+  function drawShip(x, y, scale, angle, bank, depth) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
-    ctx.scale(scale, scale);
-    ctx.globalAlpha = 0.35 + depth * 0.65;
+    // banking: compress perpendicular to heading for a natural roll feel
+    const squash = 1 - Math.min(Math.abs(bank) * 0.12, 0.18);
+    ctx.scale(scale, scale * squash);
+    ctx.globalAlpha = 0.6 + depth * 0.4;
 
-    const hullColor = '#64748b';
-    const hullDark = '#1e293b';
-    const hullLight = '#cbd5e1';
-    const window = '#fde68a';
-    const bussardHot = '#fbbf24';
-    const bussardGlow = '#67e8f9';
-    const engineGlow = '#22d3ee';
+    const H0 = '#cdd6e2';
+    const H1 = '#85909f';
+    const H2 = '#46515f';
+    const H3 = '#2b3442';
+    const LINE = '#1f2836';
+    const WIN = '#ffe2a0';
+    const BUSS = '#ffb34d';
+    const GLOW = '#6ef7ff';
 
-    ctx.strokeStyle = hullDark;
-    ctx.lineWidth = 1.5;
-
-    function drawNacelle(ox, oy) {
-      ctx.fillStyle = hullDark;
-      roundRect(ctx, ox, oy, 62, 9, 3);
-      ctx.fill();
-      const grad = ctx.createLinearGradient(ox, oy, ox, oy + 9);
-      grad.addColorStop(0, hullLight);
-      grad.addColorStop(0.3, hullColor);
-      grad.addColorStop(1, hullDark);
-      ctx.fillStyle = grad;
-      roundRect(ctx, ox + 2, oy + 1, 58, 7, 2);
-      ctx.fill();
-
-      ctx.save();
-      ctx.shadowColor = bussardHot;
-      ctx.shadowBlur = 15;
-      const bg = ctx.createRadialGradient(ox + 60, oy + 4.5, 0, ox + 60, oy + 4.5, 7);
-      bg.addColorStop(0, '#ffffff');
-      bg.addColorStop(0.4, bussardHot);
-      bg.addColorStop(0.8, bussardGlow);
-      bg.addColorStop(1, 'rgba(103,232,249,0)');
-      ctx.fillStyle = bg;
+    function ell(cx, cy, rx, ry, fill, rot) {
+      ctx.fillStyle = fill;
       ctx.beginPath();
-      ctx.ellipse(ox + 61, oy + 4.5, 5, 4, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy, rx, ry, rot || 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
+    }
+    function vgrad(y1, y2, c1, c2) {
+      const g = ctx.createLinearGradient(0, y1, 0, y2);
+      g.addColorStop(0, c1);
+      g.addColorStop(1, c2);
+      return g;
+    }
 
-      ctx.fillStyle = engineGlow;
-      ctx.shadowColor = engineGlow;
-      ctx.shadowBlur = 8;
-      ctx.fillRect(ox - 3, oy + 2, 3, 5);
-      ctx.shadowBlur = 0;
+    // ---- warp engine trails (behind) ----
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    ctx.shadowColor = GLOW;
+    ctx.shadowBlur = 22;
+    ctx.fillStyle = GLOW;
+    ctx.beginPath();
+    ctx.moveTo(-36, -3);
+    ctx.lineTo(-62, -7);
+    ctx.lineTo(-62, 9);
+    ctx.lineTo(-36, 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillRect(-38, -2.5, 3, 5);
+    ctx.restore();
 
-      ctx.fillStyle = 'rgba(34,211,238,0.15)';
+    // ---- NACELLES (behind hull) ----
+    function nacelle(oy) {
+      const up = oy > 0;
+      // pylon
+      ctx.fillStyle = H2;
       ctx.beginPath();
-      ctx.moveTo(ox - 3, oy + 2);
-      ctx.lineTo(ox - 25, oy - 2);
-      ctx.lineTo(ox - 25, oy + 11);
-      ctx.lineTo(ox - 3, oy + 7);
+      ctx.moveTo(4, up ? 4 : -4);
+      ctx.lineTo(6, up ? 18 : -18);
+      ctx.lineTo(12, up ? 18 : -18);
+      ctx.lineTo(14, up ? 4 : -4);
       ctx.closePath();
       ctx.fill();
-
-      ctx.fillStyle = 'rgba(15,23,42,0.6)';
-      for (let i = 0; i < 6; i++) {
-        ctx.fillRect(ox + 10 + i * 8, oy + 2.5, 0.5, 4);
-      }
+      // nacelle body shadow
+      ctx.fillStyle = H3;
+      roundRect(ctx, -20, oy - 4.5, 48, 9, 4);
+      ctx.fill();
+      const ng = ctx.createLinearGradient(0, oy - 4, 0, oy + 4);
+      ng.addColorStop(0, H0);
+      ng.addColorStop(0.5, H1);
+      ng.addColorStop(1, H3);
+      ctx.fillStyle = ng;
+      roundRect(ctx, -19, oy - 3.5, 46, 7, 3);
+      ctx.fill();
+      // grille
+      ctx.fillStyle = 'rgba(20,28,40,0.7)';
+      for (let i = 0; i < 6; i++) ctx.fillRect(-14 + i * 6, oy - 1.4, 0.6, 2.8);
+      // bussard collector (front)
+      ctx.save();
+      ctx.shadowColor = BUSS;
+      ctx.shadowBlur = 10;
+      const b = ctx.createRadialGradient(28, oy, 0, 28, oy, 6);
+      b.addColorStop(0, '#ffffff');
+      b.addColorStop(0.35, BUSS);
+      b.addColorStop(0.75, '#e06a00');
+      b.addColorStop(1, '#7a2f00');
+      ctx.fillStyle = b;
+      ctx.beginPath();
+      ctx.arc(28, oy, 4.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      // rear engine glow
+      ctx.save();
+      ctx.shadowColor = GLOW;
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = GLOW;
+      ctx.fillRect(-21, oy - 2, 2, 4);
+      ctx.restore();
     }
+    nacelle(23);
+    nacelle(-23);
 
-    ctx.beginPath();
-    ctx.moveTo(-18, -5);
-    ctx.lineTo(-28, -22);
-    ctx.lineTo(-10, -22);
-    ctx.lineTo(-5, -5);
-    ctx.closePath();
-    ctx.fillStyle = hullDark;
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(-18, 5);
-    ctx.lineTo(-28, 22);
-    ctx.lineTo(-10, 22);
-    ctx.lineTo(-5, 5);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    drawNacelle(-80, -27);
-    drawNacelle(-80, 18);
-
-    ctx.fillStyle = hullDark;
-    roundRect(ctx, -30, -7, 85, 14, 3);
-    ctx.fill();
-    const eg = ctx.createLinearGradient(0, -7, 0, 7);
-    eg.addColorStop(0, hullLight);
-    eg.addColorStop(0.4, hullColor);
-    eg.addColorStop(1, hullDark);
-    ctx.fillStyle = eg;
-    roundRect(ctx, -28, -5.5, 81, 11, 2);
-    ctx.fill();
-
-    ctx.fillStyle = window;
-    for (let i = 0; i < 7; i++) {
-      ctx.fillRect(-15 + i * 8, -2.5, 1.5, 1);
-      ctx.fillRect(-15 + i * 8, 1.5, 1.5, 1);
-    }
-
+    // ---- SECONDARY HULL ----
     ctx.save();
-    ctx.shadowColor = engineGlow;
-    ctx.shadowBlur = 12;
-    ctx.fillStyle = engineGlow;
-    ctx.fillRect(55, -3, 3, 6);
+    ctx.shadowColor = 'rgba(0,0,0,0.45)';
+    ctx.shadowBlur = 14;
+    ell(4, 0, 30, 9, H3);
     ctx.restore();
-
-    ctx.fillStyle = 'rgba(34,211,238,0.2)';
+    const hg = ctx.createLinearGradient(0, -9, 0, 9);
+    hg.addColorStop(0, H0);
+    hg.addColorStop(0.35, H1);
+    hg.addColorStop(0.75, H2);
+    hg.addColorStop(1, H3);
+    ctx.fillStyle = hg;
     ctx.beginPath();
-    ctx.moveTo(58, -3);
-    ctx.lineTo(85, -8);
-    ctx.lineTo(85, 8);
-    ctx.lineTo(58, 3);
+    ctx.moveTo(18, -6);
+    ctx.lineTo(-32, -6);
+    ctx.quadraticCurveTo(-38, -6, -38, 0);
+    ctx.quadraticCurveTo(-38, 6, -32, 6);
+    ctx.lineTo(18, 6);
+    ctx.quadraticCurveTo(22, 6, 22, 0);
+    ctx.quadraticCurveTo(22, -6, 18, -6);
+    ctx.closePath();
+    ctx.fill();
+    // hull panel lines
+    ctx.strokeStyle = 'rgba(31,40,54,0.6)';
+    ctx.lineWidth = 0.6;
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath();
+      ctx.arc(-8 + i * 8, 0, 9, -0.5, 0.5);
+      ctx.stroke();
+    }
+    // registry markings
+    ctx.fillStyle = 'rgba(255,255,255,0.28)';
+    ctx.fillRect(-26, -2.5, 12, 1.1);
+
+    // ---- NECK ----
+    ctx.fillStyle = vgrad(-4, 4, H0, H2);
+    ctx.beginPath();
+    ctx.moveTo(18, -5);
+    ctx.lineTo(28, -3.5);
+    ctx.lineTo(28, 3.5);
+    ctx.lineTo(18, 5);
     ctx.closePath();
     ctx.fill();
 
-    ctx.fillStyle = hullDark;
-    ctx.beginPath();
-    ctx.ellipse(-55, 0, 48, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
-    const sg = ctx.createRadialGradient(-55, -6, 2, -55, 0, 48);
-    sg.addColorStop(0, hullLight);
-    sg.addColorStop(0.5, hullColor);
-    sg.addColorStop(1, hullDark);
+    // ---- SAUCER SECTION ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 16;
+    ell(46, 0, 34, 15, H3);
+    ctx.restore();
+    const sg = ctx.createLinearGradient(0, -15, 0, 15);
+    sg.addColorStop(0, H0);
+    sg.addColorStop(0.4, H1);
+    sg.addColorStop(0.8, H2);
+    sg.addColorStop(1, H3);
     ctx.fillStyle = sg;
     ctx.beginPath();
-    ctx.ellipse(-55, 0, 46, 16, 0, 0, Math.PI * 2);
+    ctx.ellipse(46, 0, 33, 14, 0, 0, Math.PI * 2);
     ctx.fill();
-
-    ctx.strokeStyle = 'rgba(203,213,225,0.4)';
-    ctx.lineWidth = 0.5;
+    // rim highlight
+    ctx.strokeStyle = 'rgba(205,214,226,0.4)';
+    ctx.lineWidth = 0.7;
     ctx.beginPath();
-    ctx.ellipse(-55, 0, 46, 16, 0, 0, Math.PI * 2);
+    ctx.ellipse(46, 0, 33, 14, 0, 0, Math.PI * 2);
     ctx.stroke();
+    // inner ridge
+    ctx.fillStyle = vgrad(-6, 6, H1, H3);
     ctx.beginPath();
-    ctx.ellipse(-55, 0, 35, 11, 0, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.ellipse(-55, 0, 18, 6, 0, 0, Math.PI * 2);
+    ctx.ellipse(42, 0, 23, 8.5, 0, 0, Math.PI * 2);
     ctx.fill();
-
+    // bridge dome
+    ctx.fillStyle = vgrad(-4, 4, H0, H2);
+    ctx.beginPath();
+    ctx.ellipse(54, -2.5, 5, 3.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // windows along saucer rear edge
+    ctx.fillStyle = WIN;
+    for (let i = 0; i < 12; i++) {
+      const a = Math.PI + (i / 11) * Math.PI;
+      const wx = 46 + Math.cos(a) * 29;
+      const wy = Math.sin(a) * 12;
+      ctx.fillRect(wx - 0.6, wy - 0.5, 1.2, 1);
+    }
+    // saucer port/starboard running lights
+    ctx.fillStyle = '#ff5a5a';
+    ctx.fillRect(46, -13.5, 1.6, 1.4);
+    ctx.fillStyle = '#59ff9a';
+    ctx.fillRect(46, 12.2, 1.6, 1.4);
+    // deflector dish glow (front)
     ctx.save();
-    ctx.shadowColor = bussardHot;
-    ctx.shadowBlur = 8;
-    const dg = ctx.createRadialGradient(-55, 0, 0, -55, 0, 6);
+    ctx.shadowColor = BUSS;
+    ctx.shadowBlur = 10;
+    const dg = ctx.createRadialGradient(74, 0, 0, 74, 0, 5);
     dg.addColorStop(0, '#ffffff');
-    dg.addColorStop(0.5, bussardHot);
-    dg.addColorStop(1, '#78350f');
+    dg.addColorStop(0.5, BUSS);
+    dg.addColorStop(1, 'rgba(224,106,0,0)');
     ctx.fillStyle = dg;
     ctx.beginPath();
-    ctx.ellipse(-55, 0, 5, 2, 0, 0, Math.PI * 2);
+    ctx.arc(74, 0, 4.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
-
-    ctx.fillStyle = window;
-    const windowR = 36;
-    for (let i = 0; i < 14; i++) {
-      const a = (i / 14) * Math.PI * 2;
-      const wx = -55 + Math.cos(a) * windowR;
-      const wy = Math.sin(a) * (windowR * 0.35);
-      ctx.fillRect(wx, wy, 1.2, 0.8);
-    }
-
-    ctx.fillStyle = hullDark;
-    ctx.beginPath();
-    ctx.ellipse(-55, -10, 9, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = window;
-    for (let i = 0; i < 5; i++) {
-      ctx.fillRect(-59 + i * 2, -10.5, 1, 0.6);
-    }
-
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(52, -4, 1, 1);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(52, 3, 1, 1);
 
     ctx.restore();
   }
 
+  // ---- Smooth elliptical orbit with banking ----
   function getShipState(t) {
     const cx = W * 0.5;
-    const cy = H * 0.5;
-    const rx = Math.min(W * 0.55, 700);
-    const ry = Math.min(H * 0.28, 220);
+    const cy = H * 0.42;
+    const rx = Math.min(W * 0.32, 440);
+    const ry = Math.min(H * 0.24, 190);
 
-    const theta = t * 0.08;
-    const wobX = Math.sin(t * 0.15) * 30;
-    const wobY = Math.cos(t * 0.12) * 15;
-    const x = cx + Math.cos(theta) * rx + wobX;
-    const y = cy + Math.sin(theta * 2) * ry * 0.4 + wobY;
+    const theta = t * 0.045;
+    const x = cx + Math.cos(theta) * rx;
+    const y = cy + Math.sin(theta) * ry;
 
-    const depth = (Math.sin(theta) + 1) / 2;
-    const scale = 0.55 + depth * 0.9;
+    const depth = (1 - Math.sin(theta)) / 2;
+    const vf = Math.min(H / 800, 1.25);
+    const scale = (0.55 + depth * 0.8) * vf;
 
     const dx = -Math.sin(theta) * rx;
-    const dy = Math.cos(theta * 2) * ry * 0.4 * 2;
-    const angle = Math.atan2(dy, dx) + Math.PI;
+    const dy = Math.cos(theta) * ry;
+    const angle = Math.atan2(dy, dx);
 
-    return { x, y, scale, angle, depth };
+    const ddx = -Math.cos(theta) * rx;
+    const ddy = -Math.sin(theta) * ry;
+    const sp2 = dx * dx + dy * dy || 1;
+    const angAccel = (ddx * dy - dx * ddy) / sp2;
+    const bank = -angAccel * 0.14;
+
+    return { x, y, scale, angle, bank, depth };
   }
 
-  function frame() {
-    time += 0.016;
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05) || 0.016;
+    last = now;
+    time += dt;
 
     const bg = ctx.createLinearGradient(0, 0, 0, H);
     bg.addColorStop(0, '#020617');
@@ -348,13 +375,13 @@
     drawStars();
 
     const s = getShipState(time);
-    drawShip(s.x, s.y, s.scale, s.angle, s.depth);
+    drawShip(s.x, s.y, s.scale, s.angle, s.bank, s.depth);
 
     requestAnimationFrame(frame);
   }
 
   resize();
   window.addEventListener('resize', resize);
-  frame();
+  requestAnimationFrame((n) => { last = n; frame(n); });
 })();
 </script>

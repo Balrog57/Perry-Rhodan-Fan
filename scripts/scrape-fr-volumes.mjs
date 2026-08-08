@@ -153,8 +153,6 @@ edition: "${escapeYaml(data.edition)}"
 parution: "${escapeYaml(data.parution)}"
 ---
 
-## ${data.title}
-
 ${synopsisBody}
 `;
     writeFileSync(join(OUT, `${slug}.md`), content, 'utf-8');

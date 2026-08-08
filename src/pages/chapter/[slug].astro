@@ -25,31 +25,37 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
 ---
 
 <Layout title={`${chapter.data.title} - Perry Rhodan Fan`}>
-  <div class="min-h-screen bg-slate-900" id="reader-page">
-    <nav class="bg-slate-800/80 backdrop-blur-md border-b border-blue-500/20 sticky top-0 z-50">
+  <div class="min-h-screen" id="reader-page">
+    <nav class="theme-nav backdrop-blur-md border-b sticky top-0 z-50">
       <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-        <a href={`/Perry-Rhodan-Fan/cycles/${chapter.data.cycleNumber}`} class="text-blue-200 hover:text-cyan-300 transition-colors text-sm">
+        <a href={`/Perry-Rhodan-Fan/cycles/${chapter.data.cycleNumber}`} class="theme-link transition-colors text-sm">
           ← Cycle {chapter.data.cycleNumber}
         </a>
         <div class="flex items-center gap-3">
-          <button id="theme-toggle" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Mode sombre/clair">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button id="theme-toggle" class="p-2 theme-link transition-colors" title="Mode : sombre / clair / sépia">
+            <svg class="w-5 h-5" id="icon-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="w-5 h-5 hidden" id="icon-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+            <svg class="w-5 h-5 hidden" id="icon-sepia" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
             </svg>
           </button>
           <div class="flex items-center gap-1">
-            <button id="font-decrease" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Réduire la police">A-</button>
-            <button id="font-increase" class="p-2 text-blue-200 hover:text-cyan-300 transition-colors" title="Agrandir la police">A+</button>
+            <button id="font-decrease" class="p-2 theme-link transition-colors" title="Réduire la police">A-</button>
+            <button id="font-increase" class="p-2 theme-link transition-colors" title="Agrandir la police">A+</button>
           </div>
         </div>
       </div>
-      <div class="h-1 bg-slate-700">
-        <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 w-0 transition-all duration-100"></div>
+      <div class="h-1 theme-track">
+        <div id="progress-bar" class="h-full theme-fill w-0 transition-all duration-100"></div>
       </div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-12">
-      <article id="chapter-content" class="prose prose-invert prose-lg max-w-none">
+      <article id="chapter-content" class="prose prose-lg max-w-none">
         {chapter.data.cover && (
           <div class="not-prose mb-8 flex justify-center">
             <img src={`${base}${chapter.data.cover}`} alt={chapter.data.title} class="max-w-xs rounded-lg shadow-2xl shadow-blue-500/20 border border-blue-500/20" />
@@ -57,68 +63,72 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
         )}
 
         <header class="mb-8 text-center not-prose">
-          <p class="text-blue-400 font-mono text-sm mb-2">
+          <p class="theme-label font-mono text-sm mb-2">
             {chapter.data.type === 'translation'
               ? `Chapitre ${chapter.data.chapterNumber} · Traduction fan`
               : `Tome n° ${chapter.data.chapterNumber} · Édition française`}
           </p>
-          <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">{chapter.data.title}</h1>
+          <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{chapter.data.title}</h1>
           {chapter.data.originalTitle && (
-            <p class="text-blue-300/50 italic">{chapter.data.originalTitle}</p>
+            <p class="theme-muted italic">{chapter.data.originalTitle}</p>
           )}
           {chapter.data.type === 'synopsis' && (
-            <dl class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1 max-w-lg mx-auto text-sm text-blue-100/90">
-              {chapter.data.cycle && (
-                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
-                  <dt class="text-blue-400/80 font-medium">Cycle</dt>
-                  <dd class="text-right">{chapter.data.cycle}</dd>
-                </div>
-              )}
-              {chapter.data.traduction && (
-                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
-                  <dt class="text-blue-400/80 font-medium">Traduction</dt>
-                  <dd class="text-right">{chapter.data.traduction}</dd>
-                </div>
-              )}
-              {chapter.data.edition && (
-                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
-                  <dt class="text-blue-400/80 font-medium">Édition originale</dt>
-                  <dd class="text-right">{chapter.data.edition}</dd>
-                </div>
-              )}
-              {chapter.data.parution && (
-                <div class="flex justify-between gap-2 border-b border-blue-500/10 py-1">
-                  <dt class="text-blue-400/80 font-medium">Parution</dt>
-                  <dd class="text-right">{chapter.data.parution}</dd>
-                </div>
-              )}
-            </dl>
+            <div class="mt-6 mx-auto max-w-md">
+              <table class="w-full text-sm theme-value border-collapse">
+                <tbody class="theme-divide">
+                  {chapter.data.cycle && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Cycle</th>
+                      <td class="py-2 text-right">{chapter.data.cycle}</td>
+                    </tr>
+                  )}
+                  {chapter.data.traduction && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Traduction</th>
+                      <td class="py-2 text-right">{chapter.data.traduction}</td>
+                    </tr>
+                  )}
+                  {chapter.data.edition && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Édition originale</th>
+                      <td class="py-2 text-right">{chapter.data.edition}</td>
+                    </tr>
+                  )}
+                  {chapter.data.parution && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Parution</th>
+                      <td class="py-2 text-right">{chapter.data.parution}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
         </header>
 
-        <div class="text-blue-100 leading-relaxed reader-text">
+        <div class="theme-body leading-relaxed reader-text">
           <Content />
         </div>
       </article>
 
-      <div class="mt-16 flex items-center justify-between border-t border-blue-500/20 pt-8">
+      <div class="mt-16 flex items-center justify-between theme-border-t pt-8">
         {prevChapter ? (
-          <a href={`/Perry-Rhodan-Fan/chapter/${prevChapter.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors">
+          <a href={`/Perry-Rhodan-Fan/chapter/${prevChapter.id}`} class="group flex items-center gap-3 theme-link transition-colors">
             <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
             <div class="text-left">
-              <div class="text-xs text-blue-400">Précédent</div>
-              <div class="font-semibold">{prevChapter.data.title}</div>
+              <div class="text-xs theme-label">Précédent</div>
+              <div class="font-semibold theme-title">{prevChapter.data.title}</div>
             </div>
           </a>
         ) : <div></div>}
 
         {nextChapter ? (
-          <a href={`/Perry-Rhodan-Fan/chapter/${nextChapter.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors text-right">
+          <a href={`/Perry-Rhodan-Fan/chapter/${nextChapter.id}`} class="group flex items-center gap-3 theme-link transition-colors text-right">
             <div>
-              <div class="text-xs text-blue-400">Suivant</div>
-              <div class="font-semibold">{nextChapter.data.title}</div>
+              <div class="text-xs theme-label">Suivant</div>
+              <div class="font-semibold theme-title">{nextChapter.data.title}</div>
             </div>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -136,18 +146,21 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
     const fontDecrease = document.getElementById('font-decrease');
     const readerText = document.querySelector('.reader-text');
     const page = document.getElementById('reader-page');
+    const iconDark = document.getElementById('icon-dark');
+    const iconLight = document.getElementById('icon-light');
+    const iconSepia = document.getElementById('icon-sepia');
 
+    const THEMES = ['dark', 'light', 'sepia'];
     let fontSize = parseInt(localStorage.getItem('pr-font-size') || '18');
-    let darkMode = localStorage.getItem('pr-theme') !== 'light';
+    let themeIndex = THEMES.indexOf(localStorage.getItem('pr-theme'));
+    if (themeIndex < 0) themeIndex = 0;
 
     function applyTheme() {
-      if (darkMode) {
-        page.classList.remove('bg-slate-100', 'text-slate-900');
-        page.classList.add('bg-slate-900', 'text-white');
-      } else {
-        page.classList.remove('bg-slate-900', 'text-white');
-        page.classList.add('bg-slate-100', 'text-slate-900');
-      }
+      page.dataset.theme = THEMES[themeIndex];
+      localStorage.setItem('pr-theme', THEMES[themeIndex]);
+      if (iconDark) iconDark.classList.toggle('hidden', themeIndex !== 0);
+      if (iconLight) iconLight.classList.toggle('hidden', themeIndex !== 1);
+      if (iconSepia) iconSepia.classList.toggle('hidden', themeIndex !== 2);
     }
 
     function applyFontSize() {
@@ -166,8 +179,7 @@ const nextChapter = currentIndex < cycleChapters.length - 1 ? cycleChapters[curr
     });
 
     themeToggle?.addEventListener('click', () => {
-      darkMode = !darkMode;
-      localStorage.setItem('pr-theme', darkMode ? 'dark' : 'light');
+      themeIndex = (themeIndex + 1) % THEMES.length;
       applyTheme();
     });
 
