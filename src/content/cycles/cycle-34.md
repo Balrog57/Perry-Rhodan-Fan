@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-34.jpg"
 title: "Terranova"
 cycleNumber: 34
 bookStart: 2300

@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-044.webp"
 title: "Les Bioposis"
 cycleNumber: 3
 bookStart: 44

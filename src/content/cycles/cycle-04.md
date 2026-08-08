@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-066.webp"
 title: "Le Deuxième Empire"
 cycleNumber: 4
 bookStart: 66

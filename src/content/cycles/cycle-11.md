@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-242.webp"
 title: "Le Concile"
 cycleNumber: 11
 bookStart: 242

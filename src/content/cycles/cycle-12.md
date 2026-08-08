@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-256.webp"
 title: "Aphilie"
 cycleNumber: 12
 bookStart: 256

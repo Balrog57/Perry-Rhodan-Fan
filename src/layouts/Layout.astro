@@ -9,6 +9,7 @@ interface Props {
 
 const { title, description = 'Traduction fan de Perry Rhodan', image = '/images/covers/fr-001.webp' } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 const siteUrl = 'https://balrog57.github.io/Perry-Rhodan-Fan';
 const fullDescription = `${description} — 379 tomes de l'édition française (1966-2020) et la suite inédite traduite en français, pour le plaisir des lecteurs francophones.`;
 ---
@@ -20,7 +21,7 @@ const fullDescription = `${description} — 379 tomes de l'édition française (
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={fullDescription} />
-    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="icon" type="image/svg+xml" href={path('favicon.svg')} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -35,14 +36,14 @@ const fullDescription = `${description} — 379 tomes de l'édition française (
   <body class="bg-slate-900 text-white min-h-screen">
     <nav class="fixed top-0 inset-x-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-blue-500/20">
       <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-        <a href={`${base}`} class="font-bold text-lg bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent whitespace-nowrap">
+        <a href={path('')} class="font-bold text-lg bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent whitespace-nowrap">
           PERRY RHODAN
         </a>
         <div class="flex items-center gap-1 md:gap-6 text-sm">
-          <a href={`${base}`} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Accueil</a>
-          <a href={`${base}tomes`} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Tomes</a>
-          <a href={`${base}cycles`} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Cycles</a>
-          <a href={`${base}suite`} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">La suite</a>
+          <a href={path('')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Accueil</a>
+          <a href={path('tomes')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Tomes</a>
+          <a href={path('cycles')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Cycles</a>
+          <a href={path('suite')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">La suite</a>
         </div>
       </div>
       <div class="h-px bg-gradient-to-r from-blue-500/40 via-cyan-400/40 to-blue-500/40"></div>

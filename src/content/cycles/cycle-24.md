@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-24.jpg"
 title: "Le Grand Vide"
 cycleNumber: 24
 bookStart: 1650

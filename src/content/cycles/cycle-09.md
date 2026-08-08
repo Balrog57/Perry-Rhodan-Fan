@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-234.webp"
 title: "Les Vieux Mutants"
 cycleNumber: 9
 bookStart: 234

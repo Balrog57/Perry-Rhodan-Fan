@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-27.jpg"
 title: "Les Tolkandiens"
 cycleNumber: 27
 bookStart: 1800

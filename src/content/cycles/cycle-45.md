@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-45.jpg"
 title: "Phénix"
 cycleNumber: 45
 bookStart: 3300

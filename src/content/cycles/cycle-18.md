@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-18.jpg"
 title: "Chronofossiles"
 cycleNumber: 18
 bookStart: 1200

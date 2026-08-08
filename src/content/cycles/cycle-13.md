@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-282.webp"
 title: "Bardioc"
 cycleNumber: 13
 bookStart: 282

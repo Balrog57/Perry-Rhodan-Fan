@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-35.jpg"
 title: "Négasphère"
 cycleNumber: 35
 bookStart: 2400

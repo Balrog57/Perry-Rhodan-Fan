@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-36.jpg"
 title: "Astrée"
 cycleNumber: 36
 bookStart: 2500

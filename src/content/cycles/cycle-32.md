@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-32.jpg"
 title: "L'Empire de Tradom"
 cycleNumber: 32
 bookStart: 2100

@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-354.webp"
 title: "L'Armada Infinie"
 cycleNumber: 17
 bookStart: 354

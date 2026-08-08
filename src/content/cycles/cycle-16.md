@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-332.webp"
 title: "La Hanse Cosmique"
 cycleNumber: 16
 bookStart: 332

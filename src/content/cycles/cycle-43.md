@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-43.jpg"
 title: "Chaotarques"
 cycleNumber: 43
 bookStart: 3100

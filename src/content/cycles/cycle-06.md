@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-138.webp"
 title: "M 87"
 cycleNumber: 6
 bookStart: 138

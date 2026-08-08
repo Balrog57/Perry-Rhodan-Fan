@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-44.jpg"
 title: "Fragments"
 cycleNumber: 44
 bookStart: 3200

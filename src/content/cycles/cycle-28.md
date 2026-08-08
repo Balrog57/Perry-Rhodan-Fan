@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-28.jpg"
 title: "Les Bastions Héliotiques"
 cycleNumber: 28
 bookStart: 1876

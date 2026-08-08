@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-088.webp"
 title: "Les Maîtres Insulaires"
 cycleNumber: 5
 bookStart: 88

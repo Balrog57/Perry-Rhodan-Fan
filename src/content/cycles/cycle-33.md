@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-33.jpg"
 title: "L'Océan d'Étoiles"
 cycleNumber: 33
 bookStart: 2200

@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-38.jpg"
 title: "Le Tribunal Atopique"
 cycleNumber: 38
 bookStart: 2700

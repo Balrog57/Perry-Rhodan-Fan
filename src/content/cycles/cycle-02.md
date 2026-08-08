@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-022.webp"
 title: "Atlan et Arkonis"
 cycleNumber: 2
 bookStart: 22

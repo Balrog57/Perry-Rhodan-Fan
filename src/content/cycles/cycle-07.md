@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-188.webp"
 title: "Les Cappins"
 cycleNumber: 7
 bookStart: 188

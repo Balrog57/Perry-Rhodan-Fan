@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-25.jpg"
 title: "Les Ayindis"
 cycleNumber: 25
 bookStart: 1700

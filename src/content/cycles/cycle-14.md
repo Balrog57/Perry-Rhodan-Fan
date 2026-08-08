@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-298.webp"
 title: "Pan-thau-ra"
 cycleNumber: 14
 bookStart: 298

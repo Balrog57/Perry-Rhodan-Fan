@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-216.webp"
 title: "L'Essaim"
 cycleNumber: 8
 bookStart: 216

@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-31.jpg"
 title: "La Résidence Solaire"
 cycleNumber: 31
 bookStart: 2000

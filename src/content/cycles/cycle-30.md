@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-30.jpg"
 title: "Matéria"
 cycleNumber: 30
 bookStart: 1950

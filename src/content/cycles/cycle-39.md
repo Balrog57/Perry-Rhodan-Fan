@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-39.jpg"
 title: "Les Terres d'Outretemps"
 cycleNumber: 39
 bookStart: 2800

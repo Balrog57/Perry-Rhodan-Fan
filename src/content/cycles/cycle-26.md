@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-26.jpg"
 title: "Les Hamameschs"
 cycleNumber: 26
 bookStart: 1750

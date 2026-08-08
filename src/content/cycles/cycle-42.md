@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-42.jpg"
 title: "Mythes"
 cycleNumber: 42
 bookStart: 3000

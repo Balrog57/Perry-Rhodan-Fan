@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-22.jpg"
 title: "Les Linguides"
 cycleNumber: 22
 bookStart: 1500

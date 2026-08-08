@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-41.jpg"
 title: "Genesis"
 cycleNumber: 41
 bookStart: 2900

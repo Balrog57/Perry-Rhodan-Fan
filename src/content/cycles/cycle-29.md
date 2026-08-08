@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-29.jpg"
 title: "Le Sixième Messager"
 cycleNumber: 29
 bookStart: 1900

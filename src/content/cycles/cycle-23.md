@@ -1,4 +1,5 @@
-﻿---
+---
+cover: "/images/covers/cycle-23.jpg"
 title: "Les Ennox"
 cycleNumber: 23
 bookStart: 1600

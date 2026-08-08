@@ -1,4 +1,5 @@
 ---
+cover: "/images/covers/fr-306.webp"
 title: "Les Citadelles Cosmiques"
 cycleNumber: 15
 bookStart: 306
