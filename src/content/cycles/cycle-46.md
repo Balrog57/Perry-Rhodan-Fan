@@ -1,8 +1,8 @@
 ﻿---
-title: "Daedalos"
+title: "Pegasos"
 cycleNumber: 46
 bookStart: 3350
-bookEnd: 3399
-description: "Traduction fan. Daedalos, le labyrinthe cosmique ultime, teste les limites de l'humanité."
+bookEnd: 3411
+description: "Traduction fan. Pegasos, le cycle en cours, ouvre un nouveau chapitre des aventures de l'humanité parmi les étoiles."
 type: de
 ---
