@@ -130,7 +130,6 @@ function directCandidates(issue) {
     `${CDN}/S999000/PR_${n4}.jpg`,
     `${CDN}/S999000/PR_${n4}_cover.jpg`,
     `${CDN}/S999000/PR${issue}.jpg`,
-    `${CDN}/S999000/${n4}.jpg`,
     `${CDN}/S999000/${n4}cover.jpg`,
   ];
   return [...new Set(pats)];
