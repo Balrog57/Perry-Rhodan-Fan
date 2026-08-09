@@ -4,7 +4,7 @@ media:
 
 content:
   - name: accueil
-    label: Accueil
+    label: Accueil (page d'accueil)
     type: file
     path: src/content/accueil/accueil.md
     fields:
@@ -22,7 +22,7 @@ content:
       - { name: sectionAboutTitle, label: "Titre section Univers", type: string }
       - { name: sectionAboutQuote, label: Citation, type: string }
       - { name: sectionAboutIntro, label: Introduction, type: string }
-      - { name: sectionAboutText, label: Texte principal, type: string }
+      - { name: sectionAboutText, label: "Texte principal", type: string }
       - { name: card1Title, label: "Titre carte 1", type: string }
       - { name: card1Text, label: "Texte carte 1", type: string }
       - { name: card2Title, label: "Titre carte 2", type: string }
@@ -36,6 +36,73 @@ content:
       - { name: oeuvre3Text, label: "Texte bloc 3", type: string }
       - { name: ctaText, label: "Texte d'appel", type: string }
       - { name: ctaLabel, label: "Libellé bouton final", type: string }
+
+  - name: texte-accueil
+    label: "Accueil — sections"
+    type: file
+    path: src/content/textes/accueil.md
+    fields:
+      - { name: galleryTitle, label: "Titre galerie", type: string }
+      - { name: galleryText, label: "Texte galerie ({count})", type: string }
+      - { name: heroesTitle, label: "Titre héros", type: string }
+      - { name: heroesText, label: "Texte héros", type: string }
+      - { name: peoplesTitle, label: "Titre peuples", type: string }
+      - { name: peoplesText, label: "Texte peuples", type: string }
+      - { name: wallpapersTitle, label: "Titre fonds d'écran", type: string }
+      - { name: wallpapersText, label: "Texte fonds d'écran", type: string }
+      - { name: startTitle, label: "Titre Par où commencer", type: string }
+      - { name: card1Title, label: "Carte 1 — titre", type: string }
+      - { name: card1Text, label: "Carte 1 — texte", type: string }
+      - { name: card2Title, label: "Carte 2 — titre", type: string }
+      - { name: card2Text, label: "Carte 2 — texte", type: string }
+      - { name: card3Title, label: "Carte 3 — titre", type: string }
+      - { name: card3Text, label: "Carte 3 — texte", type: string }
+      - { name: timelineTitle, label: "Titre frise des cycles", type: string }
+      - { name: timelineText, label: "Texte frise des cycles", type: string }
+
+  - name: tomes
+    label: "Tomes français (résumés)"
+    type: collection
+    path: src/content/tomes
+    view:
+      fields: [title, chapterNumber, cycleNumber]
+    fields:
+      - { name: title, label: Titre, type: string, required: true }
+      - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
+      - { name: chapterNumber, label: "Numéro du tome", type: number, required: true }
+      - { name: cycle, label: "Nom du cycle", type: string }
+      - { name: traduction, label: Traducteur, type: string }
+      - { name: edition, label: "Édition originale", type: string }
+      - { name: parution, label: "Année de parution", type: string }
+      - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
+      - { name: body, label: Résumé, type: rich-text }
+
+  - name: texte-tomes
+    label: "Page Tomes — textes"
+    type: file
+    path: src/content/textes/tomes.md
+    fields:
+      - { name: title, label: "Titre de page", type: string }
+      - { name: subtitle, label: "Sous-titre ({count})", type: string }
+      - { name: searchPlaceholder, label: "Placeholder recherche", type: string }
+      - { name: allCycles, label: "Option Tous les cycles", type: string }
+      - { name: emptyMessage, label: "Message si aucun résultat", type: string }
+      - { name: badgeN, label: "Préfixe numéro (N°)", type: string }
+
+  - name: texte-tome
+    label: "Page tome — textes"
+    type: file
+    path: src/content/textes/tome.md
+    fields:
+      - { name: labelTome, label: "Libellé tome", type: string }
+      - { name: editionFR, label: "Édition française", type: string }
+      - { name: fieldCycle, label: "Champ Cycle", type: string }
+      - { name: fieldOriginalTitle, label: "Champ Titre original", type: string }
+      - { name: fieldTraduction, label: "Champ Traduction", type: string }
+      - { name: fieldEdition, label: "Champ Édition originale", type: string }
+      - { name: fieldParution, label: "Champ Parution", type: string }
+      - { name: prev, label: "Bouton Précédent", type: string }
+      - { name: next, label: "Bouton Suivant", type: string }
 
   - name: cycles
     label: Cycles
@@ -52,31 +119,43 @@ content:
       - { name: type, label: Type, type: select, options: [{ value: fr, label: "Édition française" }, { value: de, label: "Traduction fan DE→FR" }], required: true }
       - { name: cover, label: Couverture, type: image }
 
-  - name: tomes
-    label: Tomes français
-    type: collection
-    path: src/content/tomes
-    view:
-      fields: [title, chapterNumber, cycleNumber]
+  - name: texte-cycles
+    label: "Page cycles — textes"
+    type: file
+    path: src/content/textes/cycles.md
     fields:
-      - { name: title, label: Titre, type: string, required: true }
-      - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
-      - { name: chapterNumber, label: "Numéro du tome", type: number, required: true }
-      - { name: cycle, label: "Nom du cycle", type: string }
-      - { name: traduction, label: Traducteur, type: string }
-      - { name: edition, label: "Édition originale", type: string }
-      - { name: parution, label: "Année de parution", type: string }
-      - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
-      - { name: body, label: Synopsis, type: rich-text }
+      - { name: title, label: "Titre de page", type: string }
+      - { name: subtitle, label: "Sous-titre ({count})", type: string }
+      - { name: frSection, label: "Section cycles FR", type: string }
+      - { name: deSection, label: "Section cycles DE", type: string }
+      - { name: badgeTomes, label: "Badge tomes ({start}-{end})", type: string }
+      - { name: badgeFasc, label: "Badge fascicules ({start}-{end})", type: string }
+
+  - name: texte-cycle
+    label: "Page cycle — textes"
+    type: file
+    path: src/content/textes/cycle.md
+    fields:
+      - { name: tomesLabel, label: "Libellé Tomes ({start}-{end})", type: string }
+      - { name: fascLabel, label: "Libellé Fascicules ({start}-{end})", type: string }
+      - { name: badgeSuite, label: "Badge suite inédite", type: string }
+      - { name: chapitresTitleDE, label: "Titre chapitres DE", type: string }
+      - { name: chapitresTitle, label: "Titre chapitres", type: string }
+      - { name: chapitresCount, label: "Compteur chapitres ({count})", type: string }
+      - { name: lire, label: "Bouton Lire", type: string }
+      - { name: badgeTraduction, label: "Badge Traduction", type: string }
+      - { name: tomesTitle, label: "Titre tomes FR", type: string }
+      - { name: tomesCount, label: "Compteur tomes ({count})", type: string }
+      - { name: empty, label: "Message vide", type: string }
 
   - name: chapitres
-    label: Chapitres allemands
+    label: "Fascicules allemands (à traduire)"
     type: collection
     path: src/content/chapitres
     view:
       fields: [title, chapterNumber, cycleNumber, statut]
     fields:
-      - { name: title, label: Titre, type: string, required: true }
+      - { name: title, label: Titre allemand, type: string, required: true }
       - { name: titleFr, label: "Titre français", type: string }
       - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
       - { name: chapterNumber, label: "Numéro de chapitre", type: number, required: true }
@@ -86,4 +165,39 @@ content:
       - { name: statut, label: "Statut de la traduction", type: select, options: [{ value: wip, label: "En cours (WIP)" }, { value: traduit, label: "Terminé" }] }
       - { name: synopsis, label: Résumé, type: string }
       - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
-      - { name: body, label: Texte de la traduction, type: rich-text }
+      - { name: body, label: "Texte de la traduction (supprimer WIP)", type: rich-text }
+
+  - name: texte-traduction
+    label: "Page Traduction — textes"
+    type: file
+    path: src/content/textes/traduction.md
+    fields:
+      - { name: badge, label: Badge, type: string }
+      - { name: title, label: "Titre de page", type: string }
+      - { name: intro, label: Introduction, type: string }
+      - { name: whatTitle, label: "Titre bloc présentation", type: string }
+      - { name: whatText, label: "Texte bloc présentation", type: string }
+      - { name: progressTitle, label: "Titre progression globale", type: string }
+      - { name: progressCount, label: "Compteur ({done}/{total}/{pct})", type: string }
+      - { name: progressHint, label: "Astuce progression", type: string }
+      - { name: byCycleTitle, label: "Titre progression par cycle", type: string }
+      - { name: fascLabel, label: "Libellé fascicules ({start}-{end})", type: string }
+      - { name: cta, label: "Libellé bouton final", type: string }
+
+  - name: texte-chapitre
+    label: "Page chapitre — textes"
+    type: file
+    path: src/content/textes/chapitre.md
+    fields:
+      - { name: labelChapitre, label: "Libellé chapitre ({num})", type: string }
+      - { name: labelTome, label: "Libellé tome ({num})", type: string }
+      - { name: fieldCycle, label: "Ligne Cycle ({num}:{name})", type: string }
+      - { name: fieldAuteur, label: "Champ Auteur", type: string }
+      - { name: fieldParution, label: "Champ Parution (DE)", type: string }
+      - { name: fieldCycle2, label: "Champ Cycle (tomes)", type: string }
+      - { name: fieldOriginalTitle, label: "Champ Titre original", type: string }
+      - { name: fieldTraduction, label: "Champ Traduction", type: string }
+      - { name: fieldEdition, label: "Champ Édition originale", type: string }
+      - { name: fieldParution2, label: "Champ Parution (tomes)", type: string }
+      - { name: prev, label: "Bouton Précédent", type: string }
+      - { name: next, label: "Bouton Suivant", type: string }

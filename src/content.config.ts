@@ -14,6 +14,11 @@ const cycles = defineCollection({
   }),
 });
 
+const textes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/textes' }),
+  schema: z.object({}).passthrough(),
+});
+
 const accueil = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/accueil' }),
   schema: z.object({
@@ -82,4 +87,4 @@ const chapitres = defineCollection({
   }),
 });
 
-export const collections = { cycles, accueil, tomes, chapitres };
+export const collections = { cycles, accueil, tomes, chapitres, textes };

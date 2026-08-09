@@ -5,6 +5,7 @@ import { getEntry, getCollection } from 'astro:content';
 
 const accueil = await getEntry('accueil', 'accueil');
 const a = accueil.data;
+const ht = (await getEntry('textes', 'accueil')).data;
 const base = import.meta.env.BASE_URL;
 const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 
@@ -168,8 +169,8 @@ const timeline = sortedCycles.map((c) => {
   <!-- GALERIE : bandeau défilant de couvertures -->
   <section class="relative z-10 py-16 overflow-hidden bg-slate-950/60">
     <div class="text-center mb-8 px-4">
-      <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">L'édition française</h2>
-      <p class="text-blue-200 mt-2">{sortedTomes.length} tomes, 54 ans d'aventure — un aperçu des couvertures</p>
+      <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">{ht.galleryTitle}</h2>
+      <p class="text-blue-200 mt-2">{ht.galleryText.replace('{count}', sortedTomes.length)}</p>
     </div>
     <div class="marquee">
       <div class="marquee-track">
@@ -195,8 +196,8 @@ const timeline = sortedCycles.map((c) => {
     </div>
     <div class="relative max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">Les héros du Perryversum</h2>
-        <p class="text-blue-200 max-w-2xl mx-auto">Les personnages qui, depuis 1961, conduisent l'humanité vers les étoiles — tels que présentés par l'édition officielle.</p>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">{ht.heroesTitle}</h2>
+        <p class="text-blue-200 max-w-2xl mx-auto">{ht.heroesText}</p>
         <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto mt-4"></div>
       </div>
 
@@ -229,8 +230,8 @@ const timeline = sortedCycles.map((c) => {
     </div>
     <div class="relative max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">Les peuples du Perryversum</h2>
-        <p class="text-blue-200 max-w-2xl mx-auto">Terriens, Arkonides, Mausbiber… une mosaïque de civilisations qui peuple le Perryversum — à découvrir en images.</p>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">{ht.peoplesTitle}</h2>
+        <p class="text-blue-200 max-w-2xl mx-auto">{ht.peoplesText}</p>
         <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-4"></div>
       </div>
 
@@ -250,8 +251,8 @@ const timeline = sortedCycles.map((c) => {
   <!-- WALLPAPERS : galerie de fonds d'écran officiels -->
   <section class="relative z-10 py-16 overflow-hidden bg-slate-950/90">
     <div class="text-center mb-8 px-4">
-      <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">Le Perryversum sur votre écran</h2>
-      <p class="text-blue-200 mt-2">Les fonds d'écran officiels — passez votre souris sur les images pour les voir en pleine taille</p>
+      <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">{ht.wallpapersTitle}</h2>
+      <p class="text-blue-200 mt-2">{ht.wallpapersText}</p>
     </div>
     <div class="marquee">
       <div class="marquee-track">
@@ -281,7 +282,7 @@ const timeline = sortedCycles.map((c) => {
   <section class="relative z-10 py-24 px-4 bg-slate-950/95">
     <div class="max-w-5xl mx-auto">
       <div class="text-center mb-16">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">Par où commencer ?</h2>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">{ht.startTitle}</h2>
         <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto"></div>
       </div>
 
@@ -290,24 +291,24 @@ const timeline = sortedCycles.map((c) => {
           <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Découvrir les tomes</h3>
-          <p class="text-blue-100/70 text-sm">La découverte du vaisseau arkonide sur la Lune, l'aventure fondatrice. Toute la saga commence ici, en 1966.</p>
+          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">{ht.card1Title}</h3>
+          <p class="text-blue-100/70 text-sm">{ht.card1Text}</p>
         </a>
 
         <a href={path('cycles')} class="group block p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-xl border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
           <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Les Cycles</h3>
-          <p class="text-blue-100/70 text-sm">Unité de temps, de lieux et de thèmes — 46 cycles pour structurer des décennies d'aventure.</p>
+          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">{ht.card2Title}</h3>
+          <p class="text-blue-100/70 text-sm">{ht.card2Text}</p>
         </a>
 
         <a href={path('suite')} class="group block p-8 bg-gradient-to-br from-slate-800/60 to-slate-900/60 rounded-xl border border-blue-500/20 hover:border-cyan-400/40 transition-all backdrop-blur-sm">
           <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Voir la traduction</h3>
-          <p class="text-blue-100/70 text-sm">L'édition française s'arrête au n° 379 (2020) — l'aventure continue en allemand, traduite ici en français.</p>
+          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">{ht.card3Title}</h3>
+          <p class="text-blue-100/70 text-sm">{ht.card3Text}</p>
         </a>
       </div>
     </div>
@@ -317,8 +318,8 @@ const timeline = sortedCycles.map((c) => {
   <section class="relative z-10 py-24 px-4 bg-slate-950/60">
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">46 cycles, une saga sans fin</h2>
-        <p class="text-blue-200">Chronologie des cycles — tomes français jusqu'au cycle 17, fascicules traduits ensuite</p>
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">{ht.timelineTitle}</h2>
+        <p class="text-blue-200">{ht.timelineText}</p>
         <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-4"></div>
       </div>
 

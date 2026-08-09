@@ -1,6 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const tomes = await getCollection('tomes');
@@ -22,6 +22,7 @@ export async function getStaticPaths() {
 const { item, collection } = Astro.props;
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
+const t = (await getEntry('textes', 'chapitre')).data;
 
 const allCycles = await getCollection('cycles');
 const itemCycle = allCycles.find(c => c.data.cycleNumber === item.data.cycleNumber);
@@ -81,12 +82,12 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
         <header class="mb-8 text-center not-prose">
           <p class="theme-label font-mono text-sm mb-2">
             {collection === 'chapitres'
-              ? `Chapitre ${item.data.chapterNumber} · Traduction fan`
-              : `Tome n° ${item.data.chapterNumber} · Édition française`}
+              ? t.labelChapitre.replace('{num}', item.data.chapterNumber)
+              : t.labelTome.replace('{num}', item.data.chapterNumber)}
           </p>
           {collection === 'chapitres' && itemCycleName && (
             <p class="theme-muted text-sm mb-2">
-              Cycle {item.data.cycleNumber} : {itemCycleName}
+              {t.fieldCycle.replace('{num}', item.data.cycleNumber).replace('{name}', itemCycleName)}
             </p>
           )}
           <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{item.data.title}</h1>
@@ -102,25 +103,25 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
                 <tbody class="theme-divide">
                   {item.data.cycle && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Cycle</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldCycle2}</th>
                       <td class="py-2 text-right">{item.data.cycle}</td>
                     </tr>
                   )}
                   {item.data.traduction && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Traduction</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldTraduction}</th>
                       <td class="py-2 text-right">{item.data.traduction}</td>
                     </tr>
                   )}
                   {item.data.edition && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Édition originale</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldEdition}</th>
                       <td class="py-2 text-right">{item.data.edition}</td>
                     </tr>
                   )}
                   {item.data.parution && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Parution</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldParution2}</th>
                       <td class="py-2 text-right">{item.data.parution}</td>
                     </tr>
                   )}
@@ -134,13 +135,13 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
                 <tbody class="theme-divide">
                   {item.data.auteur && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Auteur</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldAuteur}</th>
                       <td class="py-2 text-right">{item.data.auteur}</td>
                     </tr>
                   )}
                   {item.data.parution && (
                     <tr>
-                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Parution (DE)</th>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldParution}</th>
                       <td class="py-2 text-right">{item.data.parution}</td>
                     </tr>
                   )}
@@ -162,7 +163,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
             <div class="text-left">
-              <div class="text-xs theme-label">Précédent</div>
+              <div class="text-xs theme-label">{t.prev}</div>
               <div class="font-semibold theme-title">{prevItem.data.title}</div>
             </div>
           </a>
@@ -171,7 +172,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
         {nextItem ? (
           <a href={`/Perry-Rhodan-Fan/chapter/${collection}/${nextItem.id}`} class="group flex items-center gap-3 theme-link transition-colors text-right">
             <div>
-              <div class="text-xs theme-label">Suivant</div>
+              <div class="text-xs theme-label">{t.next}</div>
               <div class="font-semibold theme-title">{nextItem.data.title}</div>
             </div>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

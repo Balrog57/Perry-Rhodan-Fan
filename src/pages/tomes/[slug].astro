@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const tomes = await getCollection('tomes');
@@ -13,15 +13,18 @@ export async function getStaticPaths() {
 const { item } = Astro.props;
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
+const t = (await getEntry('textes', 'tome')).data;
 
 const allTomes = await getCollection('tomes');
 const ordered = allTomes.sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
-const currentIndex = ordered.findIndex((t) => t.id === item.id);
+const currentIndex = ordered.findIndex((t2) => t2.id === item.id);
 const prevItem = currentIndex > 0 ? ordered[currentIndex - 1] : null;
 const nextItem = currentIndex < ordered.length - 1 ? ordered[currentIndex + 1] : null;
 
 const cycles = await getCollection('cycles');
 const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
+const prevLabel = `${t.prev}`;
+const nextLabel = `${t.next}`;
 ---
 
 <Layout title={`${item.data.title} - Perry Rhodan Fan`}>
@@ -38,14 +41,14 @@ const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
           </div>
         )}
         <div class="flex-1">
-          <p class="text-blue-400 font-mono text-sm mb-2">Tome n° {item.data.chapterNumber} · Édition française</p>
+          <p class="text-blue-400 font-mono text-sm mb-2">{t.labelTome} {item.data.chapterNumber} · {t.editionFR}</p>
           <h1 class="text-3xl md:text-4xl font-bold text-white mb-6">{item.data.title}</h1>
 
           <table class="w-full text-sm text-blue-200 border-collapse">
             <tbody>
               {cycle && (
                 <tr>
-                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top w-40">Cycle</th>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top w-40">{t.fieldCycle}</th>
                   <td class="py-2">
                     <a href={`/Perry-Rhodan-Fan/cycles/${cycle.data.cycleNumber}`} class="text-cyan-300 hover:text-cyan-200 transition-colors">
                       {String(cycle.data.cycleNumber).padStart(2, '0')} — {item.data.cycle || cycle.data.title}
@@ -55,25 +58,25 @@ const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
               )}
               {item.data.originalTitle && (
                 <tr>
-                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Titre original</th>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-300 whitespace-nowrap align-top">{t.fieldOriginalTitle}</th>
                   <td class="py-2 italic">{item.data.originalTitle}</td>
                 </tr>
               )}
               {item.data.traduction && (
                 <tr>
-                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Traduction</th>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-300 whitespace-nowrap align-top">{t.fieldTraduction}</th>
                   <td class="py-2">{item.data.traduction}</td>
                 </tr>
               )}
-              {item.data.edition && (
+              {item.data.EDITION && (
                 <tr>
-                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Édition originale</th>
-                  <td class="py-2">{item.data.edition}</td>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-300 whitespace-nowrap align-top">{t.fieldEDITION}</th>
+                  <td class="py-2">{item.data.EDITION}</td>
                 </tr>
               )}
               {item.data.parution && (
                 <tr>
-                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-400 whitespace-nowrap align-top">Parution</th>
+                  <th scope="row" class="py-2 pr-6 text-left font-medium text-blue-300 whitespace-nowrap align-top">{t.fieldParution}</th>
                   <td class="py-2">{item.data.parution}</td>
                 </tr>
               )}
@@ -93,7 +96,7 @@ const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
             <div class="text-left">
-              <div class="text-xs text-blue-400">Précédent</div>
+              <div class="text-xs text-blue-400">{prevLabel}</div>
               <div class="font-semibold text-white">N° {prevItem.data.chapterNumber} — {prevItem.data.title}</div>
             </div>
           </a>
@@ -102,7 +105,7 @@ const cycle = cycles.find((c) => c.data.cycleNumber === item.data.cycleNumber);
         {nextItem ? (
           <a href={`/Perry-Rhodan-Fan/tomes/${nextItem.id}`} class="group flex items-center gap-3 text-blue-200 hover:text-cyan-300 transition-colors text-right">
             <div>
-              <div class="text-xs text-blue-400">Suivant</div>
+              <div class="text-xs text-blue-400">{nextLabel}</div>
               <div class="font-semibold text-white">N° {nextItem.data.chapterNumber} — {nextItem.data.title}</div>
             </div>
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
