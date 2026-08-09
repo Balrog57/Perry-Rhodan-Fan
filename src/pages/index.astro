@@ -21,7 +21,73 @@ const selectedTomes = cycleStarts
   .map((n) => sortedTomes.find((t) => t.data.chapterNumber === n))
   .filter(Boolean);
 
-// Frise : année début/fin par cycle (tomes FR 1-17, chapitres DE 18-46)
+// Les héros du Perryversum (fiches du site officiel perry-rhodan.net/fuer-einsteiger)
+const heroes = [
+  {
+    name: 'Perry Rhodan',
+    role: 'Le héros',
+    img: 'images/characters/perry.jpg',
+    desc: 'L\'homme qui a conduit l\'humanité vers les étoiles. Surnommé le « Sofortschalter » pour sa capacité à s\'adapter à toute situation, il est le Terranien par excellence : logique, auto-critique et d\'un humour flegmatique.',
+  },
+  {
+    name: 'Atlan da Gonozal',
+    role: 'Le prince de cristal',
+    img: 'images/characters/atlan.jpg',
+    desc: 'L\'Arkonide immortel, aventurier et héros de quatre séries dérivées. Prétendant au trône de l\'Empire, il survécut 8 000 ans sur Terre, influençant l\'Histoire et devenant le paladin de l\'humanité.',
+  },
+  {
+    name: 'Sichu Dorksteiger',
+    role: 'La scientifique',
+    img: 'images/characters/sichu.jpg',
+    desc: 'L\'Ator à la peau verte et aux motifs dorés, scientifique de génie et redoutable combattante. En dépit de son caractère solitaire, elle est réputée pour sa passion du Garrabo et son esprit d\'équipe forgé à l\'armée.',
+  },
+  {
+    name: 'Reginald Bull',
+    role: 'Le « Bully »',
+    img: 'images/characters/bull.jpg',
+    desc: 'Membre de l\'équipage de la STARDUST, il est l\'ami le plus fidèle de Perry Rhodan. Cet optimiste inébranlable — « l\'éternel second » — tient la maison quand le héros sillonne l\'univers.',
+  },
+  {
+    name: 'Gucky',
+    role: 'Le « sauveur de l\'univers »',
+    img: 'images/characters/gucky.jpg',
+    desc: 'Le Mausbiber, passager clandestin de la STARDUST, télépathe, télékinéticien et téléporteur. Menue en apparence, il a sauvé l\'univers plus d\'une fois — et il ne vous laissera pas l\'oublier.',
+  },
+  {
+    name: 'Icho Tolot',
+    role: 'Le doux géant',
+    img: 'images/characters/tolot.jpg',
+    desc: 'Haluter de 3,50 mètres, quatre bras, deux cerveaux : l\'incarnation de la force pacifique. Depuis près de 3 500 ans, il accompagne les Terraniens qu\'il appelle affectueusement « mes petits ».',
+  },
+];
+
+// Les principaux peuples du Perryversum (fiches du site officiel)
+const peoples = [
+  { name: 'Les Terraniens', img: 'images/peoples/terraner.png' },
+  { name: 'Les Arkonides', img: 'images/peoples/arkoniden.png' },
+  { name: 'Les Haluters', img: 'images/peoples/haluter.png' },
+  { name: 'Les Maahks', img: 'images/peoples/maahks.png' },
+  { name: 'Les Jülziish', img: 'images/peoples/juelziish.png' },
+  { name: 'Les Topsides', img: 'images/peoples/topsider.png' },
+  { name: 'Les Ators', img: 'images/peoples/ator.png' },
+  { name: 'Les Ilts', img: 'images/peoples/ilts.png' },
+  { name: 'Les Ferroni', img: 'images/peoples/ferronen.jpg' },
+  { name: 'Les Positroniks', img: 'images/peoples/positronik.jpg' },
+  { name: 'Les Superintelligences', img: 'images/peoples/superintelligenz.jpg' },
+];
+
+// Fond d'écran officiels (galerie perry-rhudan.net/wallpaper)
+const wallpapers = [
+  { img: 'images/wallpapers/wp-cantaro.png', label: 'PR 1400 — Les dieux de la nuit' },
+  { img: 'images/wallpapers/wp-pr3368.jpg', label: 'PR 3368 — Sous des étoiles étrangères' },
+  { img: 'images/wallpapers/wp-neo380.jpg', label: 'NEO 380 — Au-delà du voile' },
+  { img: 'images/wallpapers/wp-neo-crew.jpg', label: 'L\'équipage NEO 2025' },
+  { img: 'images/wallpapers/wp-pr3349.jpg', label: 'PR 3349 — Bataille pour Luna' },
+  { img: 'images/wallpapers/wp-pr3350.jpg', label: 'PR 3350 — La chute de Ragnarök' },
+  { img: 'images/wallpapers/wp-pr3300.png', label: 'PR 3300 — Terra doit tomber' },
+];
+
+// Frise : année  début/fin par cycle (tomes FR 1-17, chapitres DE 18-46)
 function yearFromParution(p) {
   if (!p) return null;
   const m = String(p).match(/(19|20)\d{2}/);
@@ -53,15 +119,15 @@ const timeline = sortedCycles.map((c) => {
   })} />
   <StarfieldBackground />
 
-  <!-- HERO : couverture emblématique + texte -->
+  <!-- HERO : wallpaper officiel + texte -->
   <section class="relative z-10 min-h-screen flex items-center justify-center overflow-hidden">
     <div class="absolute inset-0">
       <img
-        src={path('images/covers/fr-001.webp')}
+        src={path('images/wallpapers/wp-pr3300.png')}
         alt=""
-        class="w-full h-full object-cover opacity-20 blur-sm scale-105"
+        class="w-full h-full object-cover opacity-40"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-blue-950/50 to-slate-950/90"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-blue-950/60 to-slate-950/95"></div>
     </div>
 
     <div class="relative z-20 text-center px-4 max-w-5xl mx-auto pt-20">
@@ -115,6 +181,96 @@ const timeline = sortedCycles.map((c) => {
               class="w-full aspect-[2/3] object-cover rounded-lg border border-blue-500/20 hover:border-cyan-400/60 transition-colors"
               loading="lazy"
             />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- LES HÉROS : personnages avec images -->
+  <section class="relative z-10 py-24 px-4 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src={path('images/wallpapers/wp-pr3368.jpg')} alt="" class="w-full h-full object-cover opacity-10" />
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/85 to-slate-950"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-300 bg-clip-text text-transparent">Les héros du Perryversum</h2>
+        <p class="text-blue-200 max-w-2xl mx-auto">Les personnages qui, depuis 1961, conduisent l'humanité vers les étoiles — tels que présentés par l'édition officielle.</p>
+        <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto mt-4"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {heroes.map((h) => (
+          <article class="group relative overflow-hidden rounded-2xl border border-blue-500/20 hover:border-cyan-400/60 transition-all duration-300 bg-slate-900/70 backdrop-blur-sm hover:-translate-y-1">
+            <div class="relative h-64 overflow-hidden">
+              <img
+                src={path(h.img)}
+                alt={h.name}
+                class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent"></div>
+              <span class="absolute top-3 left-3 px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-blue-600/80 backdrop-blur-sm text-white">{h.role}</span>
+              <h3 class="absolute bottom-3 left-4 right-4 text-2xl font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">{h.name}</h3>
+            </div>
+            <p class="p-5 text-sm text-blue-100/80 leading-relaxed">{h.desc}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- LES PEUPLES : galerie d'images circulaires -->
+  <section class="relative z-10 py-24 px-4 bg-slate-950/95 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src={path('images/wallpapers/wp-neo380.jpg')} alt="" class="w-full h-full object-cover opacity-10" />
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/85 to-slate-950"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">Les peuples du Perryversum</h2>
+        <p class="text-blue-200 max-w-2xl mx-auto">Terriens, Arkonides, Mausbiber… une mosaïque de civilisations qui peuple le Perryversum — à découvrir en images.</p>
+        <div class="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mt-4"></div>
+      </div>
+
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 justify-items-center">
+        {peoples.map((p) => (
+          <div class="group flex flex-col items-center text-center">
+            <div class="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden ring-2 ring-blue-500/40 group-hover:ring-cyan-400/70 transition-all group-hover:scale-105 duration-300">
+              <img src={path(p.img)} alt={p.name} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+            <span class="mt-3 text-xs md:text-sm font-medium text-blue-100 group-hover:text-cyan-300 transition-colors">{p.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WALLPAPERS : galerie de fonds d'écran officiels -->
+  <section class="relative z-10 py-16 overflow-hidden bg-slate-950/90">
+    <div class="text-center mb-8 px-4">
+      <h2 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">Le Perryversum sur votre écran</h2>
+      <p class="text-blue-200 mt-2">Les fonds d'écran officiels — passez votre souris sur les images pour les voir en pleine taille</p>
+    </div>
+    <div class="marquee">
+      <div class="marquee-track">
+        {[...wallpapers, ...wallpapers].map((w, i) => (
+          <a
+            key={`${w.label}-${i}`}
+            href={path(w.img)}
+            target="_blank"
+            rel="noopener"
+            class="shrink-0 w-72 md:w-96 group"
+            aria-label={`Télécharger le fond d'écran ${w.label}`}
+          >
+            <img
+              src={path(w.img)}
+              alt={w.label}
+              class="w-full h-44 md:h-56 object-cover rounded-lg border border-blue-500/20 group-hover:border-cyan-400/60 transition-colors"
+              loading="lazy"
+            />
+            <span class="block mt-1 text-xs text-blue-200/80 text-center">{w.label}</span>
           </a>
         ))}
       </div>
