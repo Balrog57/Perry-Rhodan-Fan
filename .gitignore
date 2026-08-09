@@ -4,3 +4,7 @@ dist/
 .env
 .env.*
 *.log
+
+.coverprobe/
+scripts/_coverplan.json
+scripts/_replaced.json
