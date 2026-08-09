@@ -138,8 +138,8 @@ const timeline = sortedCycles.map((c) => {
       <p class="text-lg text-blue-300/80 mb-12 max-w-3xl mx-auto animate-[fadeUp_1s_ease-out_0.6s_both]">{a.subtitle}</p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center animate-[fadeUp_1s_ease-out_0.9s_both]">
-        <a href={path('tomes')} class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300">Commencer par les Tomes →</a>
-        <a href={path('cycles')} class="px-8 py-4 bg-slate-800/60 hover:bg-slate-700/80 text-blue-100 font-semibold rounded-lg border border-blue-500/30 hover:border-cyan-400/50 backdrop-blur-sm transition-all duration-300">{a.ctaPrimary}</a>
+        <a href={path('tomes')} class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-lg shadow-lg shadow-blue-500/50 transform hover:scale-105 transition-all duration-300">Découvrir les tomes →</a>
+        <a href={path('suite')} class="px-8 py-4 bg-slate-800/60 hover:bg-slate-700/80 text-blue-100 font-semibold rounded-lg border border-blue-500/30 hover:border-cyan-400/50 backdrop-blur-sm transition-all duration-300">Voir la traduction</a>
       </div>
 
       <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-4 text-center animate-[fadeUp_1s_ease-out_1.2s_both]">
@@ -148,8 +148,8 @@ const timeline = sortedCycles.map((c) => {
           <div class="text-blue-200">Tomes parus en France</div>
         </div>
         <div class="p-6 bg-slate-900/50 rounded-lg backdrop-blur-md border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
-          <div class="text-5xl font-bold text-cyan-400 mb-2">{chapitres.length}</div>
-          <div class="text-blue-200">Fascicules inédits disponibles</div>
+          <div class="text-5xl font-bold text-cyan-400 mb-2">3390</div>
+          <div class="text-blue-200">Fascicules parus en Allemagne</div>
         </div>
         <div class="p-6 bg-slate-900/50 rounded-lg backdrop-blur-md border border-blue-500/20 hover:border-cyan-400/40 transition-colors">
           <div class="text-5xl font-bold text-cyan-400 mb-2">{sortedCycles.length}</div>
@@ -290,7 +290,7 @@ const timeline = sortedCycles.map((c) => {
           <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Commencer au Tome 1</h3>
+          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Découvrir les tomes</h3>
           <p class="text-blue-100/70 text-sm">La découverte du vaisseau arkonide sur la Lune, l'aventure fondatrice. Toute la saga commence ici, en 1966.</p>
         </a>
 
@@ -306,7 +306,7 @@ const timeline = sortedCycles.map((c) => {
           <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
             <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">La suite inédite</h3>
+          <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors mb-2">Voir la traduction</h3>
           <p class="text-blue-100/70 text-sm">L'édition française s'arrête au n° 379 (2020) — l'aventure continue en allemand, traduite ici en français.</p>
         </a>
       </div>
@@ -325,13 +325,27 @@ const timeline = sortedCycles.map((c) => {
       <div class="relative overflow-x-auto pb-4">
         <div class="flex gap-2 min-w-max px-4">
           {timeline.map((t) => (
-            <a key={t.cycle.data.cycleNumber} href={path(`cycles/${t.cycle.data.cycleNumber}`)} class="group w-40 shrink-0">
-              <div class="h-16 bg-gradient-to-b from-blue-700/60 to-slate-800/60 rounded-lg border border-blue-500/20 hover:border-cyan-400/60 transition-all p-2 flex flex-col justify-between">
-                <div class="text-[10px] font-mono text-blue-400">{t.cycle.data.type === 'fr' ? 'FR' : 'DE'}</div>
-                <div class="text-2xl font-bold text-white group-hover:text-cyan-300">{String(t.cycle.data.cycleNumber).padStart(2, '0')}</div>
-                <div class="text-[10px] text-blue-200/80">{t.startYear}-{t.endYear}</div>
+            <a key={t.cycle.data.cycleNumber} href={path(`cycles/${t.cycle.data.cycleNumber}`)} class="group w-36 shrink-0">
+              <div class="relative overflow-hidden rounded-lg border border-blue-500/20 hover:border-cyan-400/60 transition-all">
+                {t.cycle.data.cover ? (
+                  <img
+                    src={path(t.cycle.data.cover)}
+                    alt={t.cycle.data.title}
+                    class="w-full aspect-[2/3] object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div class="w-full aspect-[2/3] bg-gradient-to-b from-blue-700/60 to-slate-800/60 flex items-center justify-center">
+                    <span class="text-3xl font-bold text-blue-500/40">{String(t.cycle.data.cycleNumber).padStart(2, '0')}</span>
+                  </div>
+                )}
+                <div class="absolute top-1 left-1 text-[10px] font-mono bg-slate-950/70 px-1.5 py-0.5 rounded text-blue-300">{t.cycle.data.type === 'fr' ? 'FR' : 'DE'}</div>
+                <div class="absolute bottom-1 right-1 text-[10px] font-mono bg-slate-950/70 px-1.5 py-0.5 rounded text-blue-200/90">{t.startYear}-{t.endYear}</div>
               </div>
-              <div class="text-xs mt-1 text-blue-200/90 line-clamp-2">{t.cycle.data.title}</div>
+              <div class="mt-1.5 flex items-center gap-1.5">
+                <span class="text-sm font-bold text-white group-hover:text-cyan-300">{String(t.cycle.data.cycleNumber).padStart(2, '0')}</span>
+                <span class="text-xs text-blue-200/90 line-clamp-2">{t.cycle.data.title}</span>
+              </div>
             </a>
           ))}
         </div>

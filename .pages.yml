@@ -74,12 +74,16 @@ content:
     type: collection
     path: src/content/chapitres
     view:
-      fields: [title, chapterNumber, cycleNumber]
+      fields: [title, chapterNumber, cycleNumber, statut]
     fields:
       - { name: title, label: Titre, type: string, required: true }
+      - { name: titleFr, label: "Titre français", type: string }
       - { name: cycleNumber, label: "Numéro de cycle", type: number, required: true }
       - { name: chapterNumber, label: "Numéro de chapitre", type: number, required: true }
       - { name: originalTitle, label: "Titre original allemand", type: string }
+      - { name: auteur, label: Auteur, type: string }
+      - { name: parution, label: "Date de parution", type: string }
+      - { name: statut, label: "Statut de la traduction", type: select, options: [{ value: wip, label: "En cours (WIP)" }, { value: traduit, label: "Terminé" }] }
       - { name: synopsis, label: Résumé, type: string }
       - { name: cover, label: Jaquette, type: image, options: { input: public/images/covers, output: /images/covers } }
       - { name: body, label: Texte de la traduction, type: rich-text }

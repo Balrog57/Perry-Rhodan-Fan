@@ -35,15 +35,14 @@ const fullDescription = `${description} — 379 tomes de l'édition française (
   </head>
   <body class="bg-slate-900 text-white min-h-screen">
     <nav class="fixed top-0 inset-x-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-blue-500/20">
-      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between gap-2">
         <a href={path('')} class="font-bold text-lg bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent whitespace-nowrap">
           PERRY RHODAN
         </a>
-        <div class="flex items-center gap-1 md:gap-6 text-sm">
-          <a href={path('')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Accueil</a>
-          <a href={path('tomes')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Tomes</a>
-          <a href={path('cycles')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Cycles</a>
-          <a href={path('suite')} class="px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">La suite</a>
+        <div class="flex items-center gap-0.5 md:gap-4 text-sm whitespace-nowrap overflow-x-auto">
+          <a href={path('tomes')} class="px-2 md:px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Tomes</a>
+          <a href={path('cycles')} class="px-2 md:px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Cycles</a>
+          <a href={path('suite')} class="px-2 md:px-3 py-2 text-blue-200 hover:text-cyan-300 transition-colors">Traduction</a>
         </div>
       </div>
       <div class="h-px bg-gradient-to-r from-blue-500/40 via-cyan-400/40 to-blue-500/40"></div>

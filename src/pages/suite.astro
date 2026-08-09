@@ -14,7 +14,7 @@ const deCycles = cycles
 const progress = deCycles.map((c) => {
   const items = chapitres.filter((ch) => ch.data.cycleNumber === c.data.cycleNumber);
   const total = c.data.bookEnd - c.data.bookStart + 1;
-  const done = items.length;
+  const done = items.filter((ch) => ch.data.statut === 'traduit').length;
   return {
     cycle: c,
     done,
@@ -23,12 +23,12 @@ const progress = deCycles.map((c) => {
   };
 });
 
-const totalDone = chapitres.length;
+const totalDone = chapitres.filter((ch) => ch.data.statut === 'traduit').length;
 const totalAvailable = deCycles.reduce((sum, c) => sum + (c.data.bookEnd - c.data.bookStart + 1), 0);
 const overallPct = totalAvailable > 0 ? Math.round((totalDone / totalAvailable) * 100) : 0;
 ---
 
-<Layout title="La suite inédite - Perry Rhodan Fan" description="L'aventure continua en allemand après le n° 379 de l'édition française — découvrez les fascicules inédits traduits en français.">
+<Layout title="La traduction - Perry Rhodan Fan" description="La traduction fan en français des fascicules de Perry Rhodan inédits en France, après l'arrêt de l'édition française au n° 379 (2020).">
   <div class="min-h-screen bg-slate-900">
     <main class="max-w-5xl mx-auto px-4 py-16 pt-24">
       <div class="text-center mb-12">
@@ -37,11 +37,12 @@ const overallPct = totalAvailable > 0 ? Math.round((totalDone / totalAvailable) 
           Traduction fan
         </div>
         <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-300 via-cyan-200 to-blue-300 bg-clip-text text-transparent mb-6">
-          La suite inédite en France
+          La traduction
         </h1>
         <p class="text-lg text-blue-200 max-w-3xl mx-auto">
           L'édition française de Perry Rhodan s'est arrêtée au n° 379 en février 2020.
           Mais l'aventure se poursuit en Allemagne, semaine après semaine, de fascicule en fascicule.
+          Découvrez ici les fascicules traduits en français.
         </p>
       </div>
 
