@@ -8,3 +8,6 @@ dist/
 .coverprobe/
 scripts/_coverplan.json
 scripts/_replaced.json
+
+.verify/
+scripts/_verify.json
