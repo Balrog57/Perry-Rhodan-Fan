@@ -1,6 +1,6 @@
 ---
 cover: "/images/covers/de-0600.webp"
-title: "Le Jeu d'Échecs Cosmique"
+title: "Le Jeu d'Echecs Cosmique"
 cycleNumber: 10
 bookStart: 600
 bookEnd: 649
