@@ -132,12 +132,26 @@ def main() -> None:
             seen.append(p)
             final.append(p)
 
-        # write md
-        body = "\n".join(
-            "" if x.strip() == "" else ("* * *" if x.strip() == "*" else x.strip())
-            for x in final
-        )
-        # dedupe consecutive blank lines
+        # write md with proper paragraph spacing: separate every paragraph
+        # (and every scene separator) with a blank line so the rendered text
+        # does not merge into a single block.
+        processed = []
+        for x in final:
+            if x.strip() == "":
+                processed.append("")
+            elif x.strip() == "*":
+                processed.append("* * *")
+            else:
+                processed.append(x.strip())
+
+        spaced = []
+        for i, line in enumerate(processed):
+            spaced.append(line)
+            if i < len(processed) - 1 and line.strip() and processed[i + 1].strip():
+                spaced.append("")
+
+        body = "\n".join(spaced)
+        # collapse 3+ consecutive blank lines into a single blank line
         body = re.sub(r"\n{3,}", "\n\n", body)
         md = CHAP / f"de-{pr:04d}.md"
         text = md.read_text(encoding="utf-8")
