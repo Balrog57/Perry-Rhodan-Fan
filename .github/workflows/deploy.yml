@@ -29,6 +29,11 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_GH_REPO: Balrog57/Perry-Rhodan-Fan
+          # Fine-grained PAT, this repo only, Contents: Read.
+          # After adding the secret, re-run this workflow so the form can open PRs.
+          PUBLIC_GH_DISPATCH_TOKEN: ${{ secrets.GH_DISPATCH_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

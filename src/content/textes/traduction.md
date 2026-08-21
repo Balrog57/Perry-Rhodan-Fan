@@ -10,6 +10,9 @@ progressHint: "Parcours progressif — les chapitres s'ajoutent au fil de la tra
 byCycleTitle: "Progression par cycle"
 fascLabel: "Fascicules {start}-{end}"
 cta: "Découvrir les cycles"
+contributeTitle: "Proposer une traduction"
+contributeText: "Chaque fascicule allemand peut recevoir une traduction française. Choisissez un chapitre « à traduire » ou soumettez une version déjà traduite : une pull request sera ouverte automatiquement, en attente de relecture."
+contributeCta: "Voir les fascicules à traduire"
 ---
 
 Textes de la page « La traduction ».

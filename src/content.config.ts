@@ -84,6 +84,7 @@ const chapitres = defineCollection({
     auteur: z.string().optional(),
     parution: z.string().optional(),
     statut: z.enum(['wip', 'traduit']).default('wip'),
+    traducteur: z.string().optional(),
   }),
 });
 

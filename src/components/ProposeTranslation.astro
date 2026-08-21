@@ -1,0 +1,323 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  titleFr?: string;
+  body: string;
+  chapterNumber: number;
+}
+
+const { slug, title, titleFr = '', body, chapterNumber } = Astro.props;
+const repo = import.meta.env.PUBLIC_GH_REPO || 'Balrog57/Perry-Rhodan-Fan';
+const initialBody = (body || '').trim().replace(/^WIP$/i, '');
+const config = {
+  repo,
+  token: import.meta.env.PUBLIC_GH_DISPATCH_TOKEN || '',
+  slug,
+  title,
+  titleFr,
+  chapterNumber,
+  initialBody,
+  pullsUrl: `https://github.com/${repo}/pulls?q=is%3Apr+is%3Aopen+label%3Atraduction`,
+};
+---
+
+<style>
+  :global(#propose-dialog::backdrop) {
+    background: rgba(2, 6, 23, 0.78);
+  }
+</style>
+
+<button
+  id="propose-open"
+  type="button"
+  class="propose-open-btn px-3 py-1.5 text-sm font-semibold rounded-md border border-purple-400/50 text-purple-200 hover:bg-purple-500/20 transition-colors"
+>
+  Proposer une traduction
+</button>
+
+<dialog
+  id="propose-dialog"
+  class="w-[min(56rem,calc(100vw-1.5rem))] max-h-[92vh] bg-slate-900 text-white rounded-xl border border-blue-500/30 p-0 shadow-2xl shadow-black/50"
+>
+  <form id="propose-form" class="flex flex-col max-h-[92vh]">
+    <div class="flex items-start justify-between gap-4 px-5 py-4 border-b border-blue-500/20">
+      <div>
+        <p class="text-purple-300 font-mono text-xs mb-1">Fascicule n° {chapterNumber}</p>
+        <h2 class="text-lg font-bold">Proposer une traduction</h2>
+        <p class="text-sm text-blue-200/70">{title}</p>
+      </div>
+      <button type="button" id="propose-close" class="text-blue-300 hover:text-white text-xl leading-none px-1" aria-label="Fermer">×</button>
+    </div>
+
+    <div class="px-5 py-4 space-y-3 overflow-y-auto flex-1">
+      <div class="grid sm:grid-cols-2 gap-3">
+        <label class="block text-sm">
+          <span class="text-blue-200 mb-1 block">Votre nom</span>
+          <input
+            id="propose-contributor"
+            name="contributor"
+            type="text"
+            required
+            maxlength="80"
+            placeholder="Jean Dupont"
+            class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg border border-blue-500/20 focus:border-cyan-400/60 focus:outline-none"
+          />
+        </label>
+        <label class="block text-sm">
+          <span class="text-blue-200 mb-1 block">Titre français</span>
+          <input
+            id="propose-title-fr"
+            name="titleFr"
+            type="text"
+            required
+            maxlength="200"
+            value={titleFr}
+            placeholder="Titre en français"
+            class="w-full px-3 py-2 bg-slate-800 text-white rounded-lg border border-blue-500/20 focus:border-cyan-400/60 focus:outline-none"
+          />
+        </label>
+      </div>
+
+      <label class="block text-sm">
+        <span class="text-blue-200 mb-1 block">Texte (modifiable dans le navigateur)</span>
+        <textarea
+          id="propose-body"
+          name="body"
+          required
+          minlength="200"
+          rows="16"
+          placeholder="Écrivez ou collez ici la traduction française complète…"
+          class="w-full min-h-[50vh] px-3 py-2 bg-slate-800 text-blue-50 rounded-lg border border-blue-500/20 focus:border-cyan-400/60 focus:outline-none font-mono text-sm leading-relaxed"
+        >{initialBody}</textarea>
+      </label>
+
+      <input type="text" name="website" id="propose-website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+      <p id="propose-status" class="text-sm text-blue-200/80 hidden"></p>
+      <p id="propose-error" class="text-sm text-red-300 hidden"></p>
+      <p id="propose-success" class="text-sm text-emerald-300 hidden"></p>
+    </div>
+
+    <div class="flex items-center justify-end gap-3 px-5 py-4 border-t border-blue-500/20">
+      <button type="button" id="propose-cancel" class="px-4 py-2 text-sm text-blue-200 hover:text-white">Annuler</button>
+      <button
+        id="propose-submit"
+        type="submit"
+        class="px-5 py-2 text-sm font-semibold rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white"
+      >
+        Soumettre une traduction
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<script define:vars={{ config }}>
+  const dialog = document.getElementById('propose-dialog');
+  const openBtns = document.querySelectorAll('.propose-open-btn');
+  const closeBtn = document.getElementById('propose-close');
+  const cancelBtn = document.getElementById('propose-cancel');
+  const form = document.getElementById('propose-form');
+  const submitBtn = document.getElementById('propose-submit');
+  const statusEl = document.getElementById('propose-status');
+  const errorEl = document.getElementById('propose-error');
+  const successEl = document.getElementById('propose-success');
+  const CHUNK_SIZE = 25000;
+
+  function show(el, text) {
+    if (!el) return;
+    el.textContent = text || '';
+    el.classList.remove('hidden');
+  }
+  function hide(el) {
+    el?.classList.add('hidden');
+  }
+
+  let loadedOnce = false;
+
+  openBtns.forEach((openBtn) => {
+    openBtn.addEventListener('click', async () => {
+    dialog?.showModal();
+    hide(errorEl);
+    hide(successEl);
+    hide(statusEl);
+    if (loadedOnce) return;
+    const ta = document.getElementById('propose-body');
+    const titleInput = document.getElementById('propose-title-fr');
+    show(statusEl, 'Chargement du texte…');
+    try {
+      const raw = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/src/content/chapitres/${config.slug}.md`);
+      if (raw.ok) {
+        const text = await raw.text();
+        const match = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/);
+        const loaded = (match ? match[1] : text).trim().replace(/^WIP$/i, '');
+        if (ta && loaded) ta.value = loaded;
+        const titleMatch = text.match(/^titleFr:\s*(.*)$/m);
+        if (titleMatch && titleInput && !titleInput.value) {
+          titleInput.value = titleMatch[1].trim().replace(/^["']|["']$/g, '');
+        }
+      }
+    } catch { /* keep built-in text */ }
+    loadedOnce = true;
+    hide(statusEl);
+    });
+  });
+  closeBtn?.addEventListener('click', () => dialog?.close());
+  cancelBtn?.addEventListener('click', () => dialog?.close());
+
+  function splitChunks(text) {
+    const chunks = [];
+    for (let i = 0; i < text.length; i += CHUNK_SIZE) chunks.push(text.slice(i, i + CHUNK_SIZE));
+    return chunks.length ? chunks : [''];
+  }
+
+  async function dispatchChunk(payload) {
+    const response = await fetch(`https://api.github.com/repos/${config.repo}/dispatches`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${config.token}`,
+        'X-GitHub-Api-Version': '2022-11-28',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        event_type: 'translation-proposal',
+        client_payload: payload,
+      }),
+    });
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(`GitHub ${response.status}: ${detail.slice(0, 180)}`);
+    }
+  }
+
+  async function waitForPr(headRef) {
+    const owner = config.repo.split('/')[0];
+    const url = `https://api.github.com/repos/${config.repo}/pulls?state=open&head=${owner}:${headRef}`;
+    for (let i = 0; i < 36; i += 1) {
+      await new Promise((r) => setTimeout(r, 5000));
+      try {
+        const res = await fetch(url, { headers: { Accept: 'application/vnd.github+json' } });
+        if (!res.ok) continue;
+        const prs = await res.json();
+        if (Array.isArray(prs) && prs[0]) return prs[0];
+      } catch { /* polling */ }
+    }
+    return null;
+  }
+
+  function yamlQuote(value) {
+    return JSON.stringify(String(value).replace(/\r\n/g, '\n').trim());
+  }
+
+  function upsertFrontmatter(yaml, key, value) {
+    const re = new RegExp(`^${key}:.*$`, 'm');
+    const line = `${key}: ${value}`;
+    return re.test(yaml) ? yaml.replace(re, line) : `${yaml.trimEnd()}\n${line}`;
+  }
+
+  function applyProposal(existing, { titleFr, contributor, body }) {
+    const match = existing.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+    if (!match) return '';
+    let frontmatter = match[1];
+    frontmatter = upsertFrontmatter(frontmatter, 'statut', 'traduit');
+    if (titleFr) frontmatter = upsertFrontmatter(frontmatter, 'titleFr', yamlQuote(titleFr));
+    if (contributor) frontmatter = upsertFrontmatter(frontmatter, 'traducteur', yamlQuote(contributor));
+    return `---\n${frontmatter.trimEnd()}\n---\n\n${body.trim()}\n`;
+  }
+
+  async function copyAndOpenGithub(fields) {
+    let file = '';
+    try {
+      const raw = await fetch(`https://raw.githubusercontent.com/${config.repo}/main/src/content/chapitres/${config.slug}.md`);
+      const existing = raw.ok ? await raw.text() : '';
+      file = existing && applyProposal(existing, fields);
+    } catch { /* ignore */ }
+    if (!file) {
+      file = [
+        '---',
+        `title: ${JSON.stringify(config.title)}`,
+        `titleFr: ${JSON.stringify(fields.titleFr)}`,
+        'statut: traduit',
+        `traducteur: ${JSON.stringify(fields.contributor)}`,
+        '---',
+        '',
+        fields.body.trim(),
+        '',
+      ].join('\n');
+    }
+    try { await navigator.clipboard.writeText(file); } catch { /* ignore */ }
+    window.open(`https://github.com/${config.repo}/edit/main/src/content/chapitres/${config.slug}.md`, '_blank', 'noopener');
+    show(statusEl, 'Texte copié. Sur GitHub, collez-le puis cliquez sur « Propose changes ».');
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    hide(errorEl);
+    hide(successEl);
+    hide(statusEl);
+
+    const data = new FormData(form);
+    if (data.get('website')) return;
+
+    const fields = {
+      contributor: String(data.get('contributor') || '').trim(),
+      titleFr: String(data.get('titleFr') || '').trim(),
+      body: String(data.get('body') || '').trim(),
+      mode: config.initialBody ? 'deja-traduit' : 'traduire',
+    };
+
+    if (fields.body.length < 200) {
+      show(errorEl, 'La traduction est trop courte (200 caractères minimum).');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    const previous = submitBtn.textContent;
+    submitBtn.textContent = 'Envoi en cours…';
+
+    const proposalId = crypto.randomUUID();
+    const headRef = `traduction/${config.slug}-${proposalId.slice(0, 8)}`;
+
+    try {
+      if (!config.token) {
+        await copyAndOpenGithub(fields);
+        return;
+      }
+
+      const chunks = splitChunks(fields.body);
+      for (let i = 0; i < chunks.length; i += 1) {
+        show(statusEl, `Envoi du fragment ${i + 1}/${chunks.length}…`);
+        await dispatchChunk({
+          slug: config.slug,
+          proposalId,
+          chunkIndex: i,
+          chunkTotal: chunks.length,
+          chunk: chunks[i],
+          titleFr: fields.titleFr,
+          contributor: fields.contributor,
+          mode: fields.mode,
+        });
+      }
+
+      show(statusEl, 'Création de la pull request…');
+      const pr = await waitForPr(headRef);
+      hide(statusEl);
+      if (pr) {
+        successEl.innerHTML = `Proposition envoyée. <a class="text-cyan-300 underline" href="${pr.html_url}" target="_blank" rel="noopener">Voir la PR #${pr.number}</a> (en attente de validation).`;
+        successEl.classList.remove('hidden');
+      } else {
+        successEl.innerHTML = `Envoi reçu. La PR apparaîtra dans un instant : <a class="text-cyan-300 underline" href="${config.pullsUrl}" target="_blank" rel="noopener">voir les PR</a>.`;
+        successEl.classList.remove('hidden');
+      }
+    } catch (error) {
+      try {
+        await copyAndOpenGithub(fields);
+      } catch {
+        show(errorEl, error.message || 'Impossible d’envoyer la proposition.');
+      }
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = previous;
+    }
+  });
+</script>

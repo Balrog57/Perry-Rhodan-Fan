@@ -1,0 +1,30 @@
+name: Create translation pull request
+
+# Public form → repository_dispatch → pending PR.
+# Default GITHUB_TOKEN for the repo stays read-only; only this job gets
+# contents/pull-requests write, and the script can only edit one chapter markdown.
+
+on:
+  repository_dispatch:
+    types: [translation-proposal]
+
+permissions: {}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout trusted default branch
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Assemble proposal and open PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ingest = require('./scripts/ingest-translation-proposal.cjs');
+            await ingest({ github, context, core });

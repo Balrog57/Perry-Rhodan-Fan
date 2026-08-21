@@ -14,6 +14,7 @@ export const GET: APIRoute = async () => {
     { loc: `${SITE}${BASE}/tomes`, priority: '0.9' },
     { loc: `${SITE}${BASE}/cycles`, priority: '0.9' },
     { loc: `${SITE}${BASE}/suite`, priority: '0.9' },
+    { loc: `${SITE}${BASE}/traduire`, priority: '0.7' },
     ...cycles.map((c) => ({ loc: `${SITE}${BASE}/cycles/${c.data.cycleNumber}`, priority: '0.8' })),
     ...tomes.map((t) => ({ loc: `${SITE}${BASE}/tomes/${t.id}`, priority: '0.7' })),
     ...chapitres.map((ch) => ({ loc: `${SITE}${BASE}/chapter/chapitres/${ch.id}`, priority: '0.6' })),

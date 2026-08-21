@@ -64,18 +64,28 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 
       {cycleChapitres.length > 0 && (
         <section class="mb-16">
-          <div class="flex items-center justify-between mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <h2 class="text-2xl font-bold text-cyan-400 border-l-4 border-cyan-400 pl-4">
               {cycle.data.type === 'de' ? t.chapitresTitleDE : t.chapitresTitle}
             </h2>
-            <span class="text-sm text-blue-200/70">{t.chapitresCount.replace('{count}', cycleChapitres.length)}</span>
+            <div class="flex items-center gap-3">
+              {cycle.data.type === 'de' && (
+                <div id="chapitre-filters" class="flex gap-1 text-xs">
+                  <button type="button" data-filter="all" class="chapitre-filter px-3 py-1 rounded-full bg-cyan-600/30 text-cyan-100 border border-cyan-400/40">{t.filterAll}</button>
+                  <button type="button" data-filter="wip" class="chapitre-filter px-3 py-1 rounded-full bg-slate-800 text-blue-200 border border-blue-500/20">{t.filterWip}</button>
+                  <button type="button" data-filter="traduit" class="chapitre-filter px-3 py-1 rounded-full bg-slate-800 text-blue-200 border border-blue-500/20">{t.filterDone}</button>
+                </div>
+              )}
+              <span class="text-sm text-blue-200/70">{t.chapitresCount.replace('{count}', cycleChapitres.length)}</span>
+            </div>
           </div>
 
           <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {cycleChapitres.map((volume) => (
               <a
                 href={`/Perry-Rhodan-Fan/chapter/chapitres/${volume.id}`}
-                class="group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
+                data-statut={volume.data.statut || 'wip'}
+                class="chapitre-card group block bg-slate-800/50 rounded-lg border border-blue-500/20 hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
               >
                 <div class="aspect-[2/3] bg-slate-700 overflow-hidden relative">
                   {volume.data.cover ? (
@@ -99,8 +109,10 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
                 <div class="p-3">
                   <div class="flex items-center justify-between mb-1">
                     <span class="text-xs text-blue-400 font-mono">N° {volume.data.chapterNumber}</span>
-                    <span class="px-1.5 py-0.5 bg-purple-600/20 text-purple-300 text-[10px] rounded border border-purple-500/30">
-                      {t.badgeTraduction}
+                    <span class={volume.data.statut === 'traduit'
+                      ? 'px-1.5 py-0.5 bg-emerald-600/20 text-emerald-300 text-[10px] rounded border border-emerald-500/30'
+                      : 'px-1.5 py-0.5 bg-amber-600/20 text-amber-200 text-[10px] rounded border border-amber-500/30'}>
+                      {volume.data.statut === 'traduit' ? t.badgeDone : t.badgeWip}
                     </span>
                   </div>
                   <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
@@ -161,4 +173,30 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
       )}
     </main>
   </div>
+
+  <script>
+    const buttons = Array.from(document.querySelectorAll('.chapitre-filter'));
+    const cards = Array.from(document.querySelectorAll('.chapitre-card'));
+    if (buttons.length && cards.length) {
+      function applyFilter(value) {
+        for (const card of cards) {
+          const show = value === 'all' || card.dataset.statut === value;
+          card.classList.toggle('hidden', !show);
+        }
+        for (const button of buttons) {
+          const active = button.dataset.filter === value;
+          button.classList.toggle('bg-cyan-600/30', active);
+          button.classList.toggle('text-cyan-100', active);
+          button.classList.toggle('border-cyan-400/40', active);
+          button.classList.toggle('bg-slate-800', !active);
+          button.classList.toggle('text-blue-200', !active);
+          button.classList.toggle('border-blue-500/20', !active);
+        }
+      }
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => applyFilter(button.dataset.filter || 'all'));
+      }
+    }
+  </script>
 </Layout>

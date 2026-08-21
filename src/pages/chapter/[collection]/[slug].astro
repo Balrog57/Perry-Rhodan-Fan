@@ -1,5 +1,6 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
+import ProposeTranslation from '../../../components/ProposeTranslation.astro';
 import { getCollection, getEntry, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -23,6 +24,8 @@ const { item, collection } = Astro.props;
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
 const t = (await getEntry('textes', 'chapitre')).data;
+const isChapitre = collection === 'chapitres';
+const isTraduit = item.data.statut === 'traduit';
 
 const allCycles = await getCollection('cycles');
 const itemCycle = allCycles.find(c => c.data.cycleNumber === item.data.cycleNumber);
@@ -44,7 +47,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
 <Layout title={`${item.data.title} - Perry Rhodan Fan`}>
   <div class="min-h-screen" id="reader-page">
     <nav class="theme-nav backdrop-blur-md border-b sticky top-14 z-40">
-      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between gap-2 flex-wrap">
         <a href={`/Perry-Rhodan-Fan/cycles/${item.data.cycleNumber}`} class="theme-link transition-colors text-sm">
           ← Cycle {item.data.cycleNumber}
         </a>
@@ -64,6 +67,15 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
             <button id="font-decrease" class="p-2 theme-link transition-colors" title="Réduire la police">A-</button>
             <button id="font-increase" class="p-2 theme-link transition-colors" title="Agrandir la police">A+</button>
           </div>
+          {isChapitre && (
+            <ProposeTranslation
+              slug={item.id}
+              title={item.data.title}
+              titleFr={item.data.titleFr || ''}
+              body={item.body || ''}
+              chapterNumber={item.data.chapterNumber}
+            />
+          )}
         </div>
       </div>
       <div class="h-1 theme-track">
@@ -129,7 +141,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
               </table>
             </div>
           )}
-          {collection === 'chapitres' && (item.data.auteur || item.data.parution) && (
+          {collection === 'chapitres' && (item.data.auteur || item.data.parution || item.data.statut || item.data.traducteur) && (
             <div class="mt-6 mx-auto max-w-md">
               <table class="w-full text-sm theme-value border-collapse">
                 <tbody class="theme-divide">
@@ -145,8 +157,28 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
                       <td class="py-2 text-right">{item.data.parution}</td>
                     </tr>
                   )}
+                  <tr>
+                    <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">Statut</th>
+                    <td class="py-2 text-right">{isTraduit ? t.statutDone : t.statutWip}</td>
+                  </tr>
+                  {item.data.traducteur && (
+                    <tr>
+                      <th scope="row" class="py-2 pr-6 text-left font-medium theme-label whitespace-nowrap align-top">{t.fieldTraducteur}</th>
+                      <td class="py-2 text-right">{item.data.traducteur}</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
+            </div>
+          )}
+          {isChapitre && (
+            <div class="not-prose mt-6">
+              <button
+                type="button"
+                class="propose-open-btn px-3 py-1.5 text-sm font-semibold rounded-md border border-purple-400/50 text-purple-200 hover:bg-purple-500/20 transition-colors"
+              >
+                Proposer une traduction
+              </button>
             </div>
           )}
         </header>
