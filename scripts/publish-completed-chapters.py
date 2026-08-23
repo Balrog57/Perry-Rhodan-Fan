@@ -40,6 +40,7 @@ REFUSAL = re.compile(
     r"je ne peux pas (?:traduire|effectuer)",
     re.I,
 )
+XML_RESPONSE = re.compile(r"```xml|<(?:translation|response|answer|output)\b", re.I)
 GERMAN_STRONG = re.compile(
     r"\b(hatte|wurde|sagte|fragte|antwortete|musste|mußte|konnte|sollte|"
     r"bleibt|vollendet|geschah|ging|wußte|wusste|befand|erschien|"
@@ -203,6 +204,8 @@ def audit(folder: Path, checks) -> dict:
         errors.append(f"german-segments:{len(german)}")
     if REFUSAL.search(fr_text):
         errors.append("model-refusal")
+    if XML_RESPONSE.search(fr_path.read_text(encoding="utf-8", errors="replace")):
+        errors.append("xml-response")
 
     return {
         "num": num,
