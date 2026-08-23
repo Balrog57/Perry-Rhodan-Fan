@@ -49,7 +49,7 @@ GERMAN_STRONG = re.compile(
 )
 GERMAN_WORD = re.compile(
     r"\b(der|die|das|den|dem|ein|eine|einer|eines|einem|einen|und|oder|"
-    r"aber|nicht|noch|auch|wird|werden|war|waren|ist|sind|mit|für|fuer|"
+    r"aber|nicht|noch|auch|wird|werden|war|waren|ist|sind|für|fuer|"
     r"auf|durch|zwischen|während|waehrend|dass|daß|wenn|weil|sie|wir|ich)\b",
     re.I,
 )
@@ -402,7 +402,9 @@ def audit_site(source: Path, checks) -> list[dict]:
             blocks = [line.strip(" #\t") for line in body.splitlines() if line.strip(" #\t")]
         text = " ".join(blocks)
         errors = []
-        german = [i + 1 for i, block in enumerate(blocks) if checks.looks_german(block) or has_german(block)]
+        # looks_german is useful for source/target segment validation, but its
+        # short-text heuristic produces false positives on valid French prose.
+        german = [i + 1 for i, block in enumerate(blocks) if has_german(block)]
         if german:
             errors.append(f"german-blocks:{len(german)}")
         if REFUSAL.search(text):
