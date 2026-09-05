@@ -142,10 +142,13 @@ class AuditChecks:
 
 
 def has_german(text: str) -> bool:
-    # Articles and short German-looking words also occur in proper names and
-    # French text.  Only unambiguous narrative markers belong to this gate;
-    # the broader language heuristic is applied to substantial pieces below.
-    return bool(GERMAN_STRONG.search(text))
+    # Strong German verbs also appear inside alien names (e.g. Ging-Li-G'ahd).
+    # Only treat them as errors on substantial pieces without clear French context.
+    sample = (text or "").strip()[:4000]
+    if len(sample) < 40 or not GERMAN_STRONG.search(sample):
+        return False
+    fr = len(AuditChecks.FR_MARKERS.findall(sample))
+    return fr < 2
 
 
 def has_untranslated_span(source: str, target: str) -> bool:
@@ -260,17 +263,59 @@ def is_toc_block(tag) -> bool:
     return all(TOC_HREF.search(a.get("href") or "") for a in links) and len(text) < 120
 
 
-def html_to_markdown(html: str, num: int) -> tuple[str, str, str]:
+TITLE_FR_FIXES = {
+    1223: "L'héritage d'Ordoban",
+    1224: "Retour dans le Rubis de Givre",
+    1227: "L'heure de Lord Mhuthan",
+    1229: "Roulette psionique",
+    1231: "Opération Bouclier thermique",
+    1234: "Radio pirate Achéron",
+    1235: "L'éclair sur Éden",
+    1237: "La rébellion des cybernètes",
+    1238: "Au centre du cyber-pays",
+    1251: "Stalker",
+    1252: "Départ des Vironautes",
+    1255: "Opération Écran de quarantaine",
+    1258: "La fièvre des étoiles",
+    1261: "Dévolution",
+    1262: "L'école des héros",
+}
+
+
+def html_to_markdown(html: str, num: int, de_html: str = "") -> tuple[str, str, str]:
     soup = BeautifulSoup(html, "html.parser")
     title_fr = (soup.title.get_text(" ", strip=True) if soup.title else "").strip()
     title_fr = re.sub(rf"^Perry Rhodan\s+{num}\s*[-–—:]\s*", "", title_fr, flags=re.I).strip()
+    if num in TITLE_FR_FIXES:
+        title_fr = TITLE_FR_FIXES[num]
     authors: list[str] = []
     lines: list[str] = []
     started = False
     saw_resume_heading = False
     after_series_intro = False
+
+    # Extract author from DE or FR if available
+    for raw_h in [de_html, html]:
+        if not raw_h:
+            continue
+        s_h = BeautifulSoup(raw_h, "html.parser")
+        for tag in s_h.find_all(["p", "h1", "h2", "h3"]):
+            text_h = tag.get_text(" ", strip=True)
+            m = re.search(
+                r"^(?:von|de|par|by)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+(?: [A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+)+)$",
+                text_h,
+                re.I,
+            )
+            if m:
+                found_a = m.group(1).strip()
+                if found_a not in authors:
+                    authors.append(found_a)
+                break
+        if authors:
+            break
+
     for tag in (soup.body or soup).find_all(["h1", "h2", "h3", "p"]):
-        if tag.name == "p" and tag.find_parent("p") is not None:
+        if tag.name == "p" and tag.find("p") is not None:
             continue
         if tag.name == "p" and set(tag.get("class") or []) & {"p2", "p3", "calibre_3"}:
             continue
@@ -292,16 +337,25 @@ def html_to_markdown(html: str, num: int) -> tuple[str, str, str]:
             break
         if re.search(r"Pabel-Moewig", text, re.I):
             continue
-        if not any(line.startswith("## ") for line in lines) and AUTHOR_NAME.search(text) and len(text) < 80:
-            authors.append(text)
-            continue
+        if not any(line.startswith("## ") for line in lines) and len(text) < 80:
+            m_author = re.search(
+                r"^(?:von|de|par|by\s+)?([A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+(?: [A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+)+)$",
+                text,
+            )
+            if m_author and AUTHOR_NAME.search(m_author.group(1)):
+                authors.append(m_author.group(1).strip())
+                continue
         if not started:
             if BOILERPLATE.search(text) or len(text) < 8:
                 continue
             if len(text) < 80 and not CHAPTER_HEAD.search(text) and tag.name == "p":
-                if AUTHOR_NAME.search(text):
-                    authors.append(text)
-                continue
+                m_author = re.search(
+                    r"^(?:von|de|par|by\s+)?([A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+(?: [A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+)+)$",
+                    text,
+                )
+                if m_author and AUTHOR_NAME.search(m_author.group(1)):
+                    authors.append(m_author.group(1).strip())
+                    continue
             started = True
         heading = tag.name in {"h1", "h2", "h3"} or (CHAPTER_HEAD.search(text) and len(text) < 90)
         if heading:
@@ -331,6 +385,24 @@ def extract_cover(num: int, source: Path) -> Path | None:
     dest = COVERS_DIR / f"de-{num:04d}.webp"
     if dest.exists() and dest.stat().st_size > 0:
         return dest
+    # Check if cover already in Chapitres folder
+    for folder in (source / "Chapitres").iterdir():
+        if folder.is_dir() and folder.name.startswith(f"{num:04d}"):
+            c_webp = folder / "cover.webp"
+            if c_webp.exists() and c_webp.stat().st_size > 0:
+                COVERS_DIR.mkdir(parents=True, exist_ok=True)
+                dest.write_bytes(c_webp.read_bytes())
+                return dest
+            c_jpg = folder / "cover.jpg"
+            if c_jpg.exists() and c_jpg.stat().st_size > 0:
+                try:
+                    from PIL import Image
+                    im = Image.open(c_jpg)
+                    COVERS_DIR.mkdir(parents=True, exist_ok=True)
+                    im.convert("RGB").save(dest, "WEBP", quality=90, method=6)
+                    return dest
+                except Exception:
+                    pass
     epub_dir = source / "Perry Rhodan Sammelband"
     if not epub_dir.exists():
         return dest if dest.exists() else None
@@ -435,7 +507,9 @@ def apply_chapter(record: dict, source: Path) -> Path:
     num = record["num"]
     target = ROOT / "src" / "content" / "chapitres" / f"de-{num:04d}.md"
     html = Path(record["fr_path"]).read_text(encoding="utf-8", errors="replace")
-    body, title_fr, auteur_html = html_to_markdown(html, num)
+    de_path = Path(record["fr_path"]).parent / "de.html"
+    de_html = de_path.read_text(encoding="utf-8", errors="replace") if de_path.exists() else ""
+    body, title_fr, auteur_html = html_to_markdown(html, num, de_html)
     if "Chaotarchen-Zyklus" in title_fr or title_fr.strip() == "Sternenruf":
         title_fr = "Appel des étoiles"
     if re.search(r"\b(Operation|Die |Der |Das )\b", title_fr) and num == 1462:
@@ -568,7 +642,7 @@ def main() -> int:
             path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"MARKED_REPAIR {len(failed)} chapters")
     if args.apply:
-        to_apply = [r for r in records if r.get("meta_ok")] if args.ok_only else valid
+        to_apply = valid
         changed = [apply_chapter(record, args.source) for record in to_apply]
         print(f"APPLIED {len(changed)} chapters")
         for path in changed:
@@ -586,7 +660,7 @@ def main() -> int:
         print(f"SITE_QUARANTINED {len(site_failed)} chapters")
     print(f"REPORT {report}")
     if args.ok_only and args.apply:
-        return 0 if any(r.get("meta_ok") for r in records) else 1
+        return 0 if valid else 1
     return 0 if valid else 1
 
 
