@@ -13,6 +13,7 @@ cta: "Découvrir les cycles"
 contributeTitle: "Proposer une traduction"
 contributeText: "Chaque fascicule allemand peut recevoir une traduction française. Choisissez un chapitre « à traduire » ou soumettez une version déjà traduite : une pull request sera ouverte automatiquement, en attente de relecture."
 contributeCta: "Voir les fascicules à traduire"
+disclaimer: "Traductions fan, non officielles — site indépendant, sans affiliation avec Perry Rhodan Verlag ni les éditeurs officiels."
 ---
 
 Textes de la page « La traduction ».

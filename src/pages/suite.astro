@@ -8,24 +8,48 @@ const base = import.meta.env.BASE_URL;
 const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 const t = (await getEntry('textes', 'traduction')).data;
 
+const inScope = (n) => (n >= 600 && n <= 649) || (n >= 1200 && n <= 3100);
+const scopedTotal = (start, end) => {
+  let total = 0;
+  for (const [a, b] of [[600, 649], [1200, 3100]]) {
+    const s = Math.max(start, a);
+    const e = Math.min(end, b);
+    if (s <= e) total += e - s + 1;
+  }
+  return total;
+};
+
 const deCycles = cycles
-  .filter((c) => c.data.type === 'de')
+  .filter((c) => c.data.type === 'de' && scopedTotal(c.data.bookStart, c.data.bookEnd) > 0)
   .sort((a, b) => a.data.cycleNumber - b.data.cycleNumber);
 
 const progress = deCycles.map((c) => {
-  const items = chapitres.filter((ch) => ch.data.cycleNumber === c.data.cycleNumber);
-  const total = c.data.bookEnd - c.data.bookStart + 1;
+  const items = chapitres.filter(
+    (ch) => ch.data.cycleNumber === c.data.cycleNumber && inScope(ch.data.chapterNumber),
+  );
+  const total = scopedTotal(c.data.bookStart, c.data.bookEnd);
   const done = items.filter((ch) => ch.data.statut === 'traduit').length;
+  const clippedStart = c.data.bookStart >= 1200
+    ? Math.max(c.data.bookStart, 1200)
+    : Math.max(c.data.bookStart, 600);
+  const clippedEnd = Math.min(c.data.bookEnd, 3100);
   return {
     cycle: c,
     done,
     total,
     pct: total > 0 ? Math.round((done / total) * 100) : 0,
+    rangeStart: clippedStart,
+    rangeEnd: clippedEnd,
   };
 });
 
-const totalDone = chapitres.filter((ch) => ch.data.statut === 'traduit').length;
-const totalAvailable = deCycles.reduce((sum, c) => sum + (c.data.bookEnd - c.data.bookStart + 1), 0);
+const totalDone = chapitres.filter(
+  (ch) => ch.data.statut === 'traduit' && inScope(ch.data.chapterNumber),
+).length;
+const totalAvailable = deCycles.reduce(
+  (sum, c) => sum + scopedTotal(c.data.bookStart, c.data.bookEnd),
+  0,
+);
 const overallPct = totalAvailable > 0 ? Math.round((totalDone / totalAvailable) * 100) : 0;
 ---
 
@@ -42,6 +66,9 @@ const overallPct = totalAvailable > 0 ? Math.round((totalDone / totalAvailable) 
         </h1>
         <p class="text-lg text-blue-200 max-w-3xl mx-auto">
           {t.intro}
+        </p>
+        <p class="text-xs text-blue-200/50 max-w-2xl mx-auto mt-4 leading-relaxed">
+          {t.disclaimer}
         </p>
       </div>
 
@@ -79,7 +106,7 @@ const overallPct = totalAvailable > 0 ? Math.round((totalDone / totalAvailable) 
                   <span class="text-2xl font-bold text-purple-400/60">{String(p.cycle.data.cycleNumber).padStart(2, '0')}</span>
                   <span class="text-lg font-bold text-white">{p.cycle.data.title}</span>
                 </div>
-                <p class="text-xs text-blue-200/70 mt-1">{t.fascLabel.replace('{start}', p.cycle.data.bookStart).replace('{end}', p.cycle.data.bookEnd)}</p>
+                <p class="text-xs text-blue-200/70 mt-1">{t.fascLabel.replace('{start}', p.rangeStart).replace('{end}', p.rangeEnd)}</p>
               </div>
               <span class="text-blue-200 font-mono text-sm shrink-0">{p.done}/{p.total} · {p.pct}%</span>
             </div>

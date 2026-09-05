@@ -176,6 +176,17 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
         <div class="theme-body leading-relaxed reader-text">
           <Content />
         </div>
+
+        {isChapitre && (
+          <p class="not-prose text-xs theme-muted text-center mt-10 pt-6 border-t theme-border-t leading-relaxed">
+            {t.fanNotice}
+          </p>
+        )}
+        {collection === 'tomes' && (
+          <p class="not-prose text-xs theme-muted text-center mt-10 pt-6 border-t theme-border-t leading-relaxed">
+            {t.synopsisNotice}
+          </p>
+        )}
       </article>
 
       <div class="mt-16 flex items-center justify-between theme-border-t pt-8">

@@ -38,7 +38,8 @@ $cycles = @(
   @{ n = 39; start = 2800; end = 2874 },
   @{ n = 40; start = 2875; end = 2899 },
   @{ n = 41; start = 2900; end = 2999 },
-  @{ n = 42; start = 3000; end = 3051 }
+  @{ n = 42; start = 3000; end = 3099 },
+  @{ n = 43; start = 3100; end = 3100 }
 )
 
 function Get-Cycle([int]$issue) {
@@ -52,7 +53,7 @@ function Get-Cycle([int]$issue) {
 # PR 2000 = Friday 1999-12-31 ; PR 2800 = Friday 2015-04-17 ; PR 2900 = Friday 2017-03-17
 $anchorB1 = [datetime]"1999-12-31"   # for 2000-2799
 $anchorB2 = [datetime]"2015-04-17"   # for 2800-2899
-$anchorC  = [datetime]"2017-03-17"   # for 2900-3051
+$anchorC  = [datetime]"2017-03-17"   # for 2900-3099
 
 function Get-DateB([int]$issue) {
   if ($issue -ge 2800) { return $anchorB2.AddDays(($issue - 2800) * 7).ToString('yyyy-MM-dd') }

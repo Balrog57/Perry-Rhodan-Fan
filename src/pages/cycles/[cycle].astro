@@ -19,7 +19,12 @@ const cycleTomes = tomes
   .filter((t2) => t2.data.cycleNumber === cycle.data.cycleNumber)
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 const cycleChapitres = chapitres
-  .filter((c) => c.data.cycleNumber === cycle.data.cycleNumber)
+  .filter((c) => {
+    if (c.data.cycleNumber !== cycle.data.cycleNumber) return false;
+    if (cycle.data.type !== 'de') return true;
+    const n = c.data.chapterNumber;
+    return (n >= 600 && n <= 649) || (n >= 1200 && n <= 3100);
+  })
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 
 const base = import.meta.env.BASE_URL;

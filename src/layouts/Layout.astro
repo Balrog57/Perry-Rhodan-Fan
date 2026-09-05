@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
@@ -11,7 +12,7 @@ const { title, description = 'Traduction fan de Perry Rhodan', image = '/images/
 const base = import.meta.env.BASE_URL;
 const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 const siteUrl = 'https://balrog57.github.io/Perry-Rhodan-Fan';
-const fullDescription = `${description} — 379 tomes de l'édition française (1966-2020) et la suite inédite traduite en français, pour le plaisir des lecteurs francophones.`;
+const fullDescription = `${description} — Site fan, traduction non officielle, sans affiliation avec les éditeurs. 379 tomes de l'édition française (1966-2020) et la suite inédite traduite en français.`;
 ---
 
 <!doctype html>
@@ -49,5 +50,7 @@ const fullDescription = `${description} — 379 tomes de l'édition française (
     </nav>
 
     <slot />
+
+    <SiteFooter />
   </body>
 </html>

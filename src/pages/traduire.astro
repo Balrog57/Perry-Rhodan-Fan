@@ -3,6 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
 
 const chapitres = (await getCollection('chapitres'))
+  .filter((item) => {
+    const n = item.data.chapterNumber;
+    return (n >= 600 && n <= 649) || (n >= 1200 && n <= 3100);
+  })
   .slice()
   .sort((a, b) => a.data.chapterNumber - b.data.chapterNumber);
 const t = (await getEntry('textes', 'traduire')).data;

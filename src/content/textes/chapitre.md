@@ -17,6 +17,8 @@ fieldTraducteur: "Traducteur"
 proposeCta: "Proposer une traduction"
 proposeOther: "Proposer une autre traduction"
 wipBanner: "Ce fascicule allemand n’a pas encore de traduction française relue. Vous pouvez en proposer une : une pull request sera créée automatiquement, en attente de validation."
+fanNotice: "Traduction fan non officielle — projet indépendant, sans affiliation avec Perry Rhodan Verlag ni les éditeurs officiels. © Perry Rhodan Verlag GmbH & Co. KG."
+synopsisNotice: "Synopsis et couverture de l’édition française officielle — droits réservés à leurs ayants droit. Ce site n’est pas affilié aux éditeurs."
 ---
 
 Textes de la page de lecture (chapitre / tome).

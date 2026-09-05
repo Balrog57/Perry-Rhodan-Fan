@@ -1,4 +1,4 @@
-# Extract German chapters 3100-3399 (cycles 43-46) from cycles pages on rhodan.stellarque.com
+# Extract German chapters 3100 only (cycle 43 start). 3101+ are hors perimetre 1200-3100.
 # No covers exist for this range (no EPUBs) - cover field omitted.
 $scriptRoot = if ($MyInvocation.MyCommand.Path) { Split-Path -Parent $MyInvocation.MyCommand.Path } else { (Get-Location).Path }
 $siteRoot = [System.IO.Path]::GetFullPath((Join-Path $scriptRoot '..'))
@@ -6,10 +6,7 @@ $chapitresDir = Join-Path $siteRoot 'src\content\chapitres'
 New-Item -ItemType Directory -Force -Path $chapitresDir | Out-Null
 
 $cycles = @(
-  @{ n = 43; start = 3100; end = 3199 },
-  @{ n = 44; start = 3200; end = 3299 },
-  @{ n = 45; start = 3300; end = 3349 },
-  @{ n = 46; start = 3350; end = 3399 }
+  @{ n = 43; start = 3100; end = 3100 }
 )
 function Get-Cycle([int]$issue) {
   foreach ($c in $cycles) { if ($issue -ge $c.start -and $issue -le $c.end) { return $c.n } }
@@ -84,4 +81,4 @@ foreach ($it in ($all | Sort-Object Issue -Unique)) {
   [System.IO.File]::WriteAllText((Join-Path $chapitresDir "$slug.md"), $md, (New-Object System.Text.UTF8Encoding($false)))
   $created++
 }
-Write-Output "DONE. Created $created chapters 3100-3399."
+Write-Output "DONE. Created $created chapters 3100."
