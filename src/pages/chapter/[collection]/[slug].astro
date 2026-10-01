@@ -7,20 +7,19 @@ export async function getStaticPaths() {
   const tomes = await getCollection('tomes');
   const chapitres = await getCollection('chapitres');
 
-  const paths = [
+  return [
     ...tomes.map((item) => ({
       params: { collection: 'tomes', slug: item.id },
-      props: { item, collection: 'tomes' },
     })),
     ...chapitres.map((item) => ({
       params: { collection: 'chapitres', slug: item.id },
-      props: { item, collection: 'chapitres' },
     })),
   ];
-  return paths;
 }
 
-const { item, collection } = Astro.props;
+const { collection, slug } = Astro.params;
+const item = await getEntry(collection, slug);
+if (!item) throw new Error(`Entrée introuvable : ${collection}/${slug}`);
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
 const t = (await getEntry('textes', 'chapitre')).data;

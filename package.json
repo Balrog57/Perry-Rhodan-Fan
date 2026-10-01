@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node --max-old-space-size=8192 ./node_modules/astro/bin/astro.mjs build",
     "preview": "astro preview",
     "astro": "astro"
   },

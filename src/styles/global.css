@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source not "../content/chapitres";
 
 @theme {
   --font-sans: 'Inter', system-ui, sans-serif;
