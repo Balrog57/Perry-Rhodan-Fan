@@ -1,0 +1,14 @@
+﻿chapter,verdict,complete,ratio,bleu,mqm,critical,major,minor,notes
+1408,PASS,753/753,1.018,62.0,92,0,0,9,H1;Crude;Nim;goûter;petit feu;Schreckschraube;Pinwheel;Mère de Tout;Vuin;Suggestor;Démoscopie
+1404,PASS,851/851,1.057,64.73,96,0,0,4,11 DE→FR;Begriff;A-I;station;syntronique;NGZ;CORDÖBA;respirateur H2
+1403,PASS,782/782,1.011,60.39,96,0,0,4,Hommes volants;Bugaklis;Ilt/castor;âge#139;Verstecken#300;négation#654;otage#715
+1410,PASS,692/692,1.021,63.49,96,0,0,4,Le Droïde;DE restants;Groupe Local;gurrad;Phénix-1;Hanse Cosmique
+1411,PASS,751/751,1.023,68.18,95,0,0,7,Monde de glace Issam-Yu;DE brutes;Milchstraße;hyperspace;balancelle;Springer
+1417,PASS,909/909,1.0291,62.74,95,0,0,5,Vol vers l'éternité;Piliers;heures-lumière;hyperespace;Haluter;Orterschutz
+1412,PASS,888/888,0.994,62.5,95,0,0,5,Le Pirate de Magellan; Ahab; Gurrads; cube mémoire; Stalker; Voie lactée
+1413,PASS,864/864,1.008,60.87,92,0,0,8,Enclave Chronopuls-Wall; mur du Chronopuls; Maxim-Orter; Kavin Cage; LACRIMARUM
+1414,PASS,891/891,1.051,63.97,96,0,0,4,Le dernier départ; Chronopuls-Wall; embarcations; syntroniciens; HU
+1415,PASS,807/807,1.041,63.94,96,0,0,4,La trace du prophète; Ophalien; Maître-Chanteur; SERUN; Shanganten; Bekassu
+1416,PASS,626/626,1.033,63.5,96,0,0,4,Le commandement des dieux; bécassine->Bekassu; Kassuban; Eiter; ESTARTU; Bazars
+1418,PASS,650/650,1.014,63.34,96,0,0,4,La Grotte du Géant; Métagrav; chaloupe; Ordonnateurs; Haluter; castor; empire ESTARTU
+1419,PASS,740/740,1.033,65.69,96,0,0,4,La mort d un Cyno; Marcheurs du Réseau; cerveau-plan; centrale principale

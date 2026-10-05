@@ -37,10 +37,47 @@ REFUSAL = re.compile(
     r"texte (?:fourni|que vous m'avez fourni) est déjà en français|"
     r"veuillez (?:me )?(?:fournir|transmettre) le texte|"
     r"il n[’']y a (?:donc )?rien à traduire|"
-    r"je ne peux pas (?:traduire|effectuer)",
+    r"je ne peux pas (?:traduire|effectuer)|"
+    r"en tant qu[’'](?:ia|intelligence artificielle|modèle)",
     re.I,
 )
-XML_RESPONSE = re.compile(r"```xml|<(?:translation|response|answer|output)\b", re.I)
+XML_RESPONSE = re.compile(r"```xml|<\/?(?:translation|response|answer|output)\b", re.I)
+
+
+def clean_chatter(text: str) -> str:
+    # 1. Strip conversational prefixes
+    text = re.sub(
+        r"(?:^|\n|---\s*)(?:Je m[’']?excuse[^\n.]*\.\s*)?(?:Voici la traduction|Bien s[uû]r, voici la traduction|\*\*Correction appliqu[eé]e\*\*\s*:\s*voici la traduction|Correction\s*:\s*voici la traduction)[^\n:]*:\s*(?:---\s*)?",
+        "",
+        text,
+        flags=re.I,
+    )
+    # 2. Strip segment markers leftover in paragraphs
+    text = re.sub(r"<<<[0-9n]+>>>\s*", "", text)
+    text = re.sub(r"<<[0-9n]+>>\s*", "", text)
+    # 3. Strip trailing notes, correction parentheticals or notes
+    text = re.sub(
+        r"\s*---\s*\*\((?:Chaque segment|Note\s*:|Comme demand[eé])[^)]*\)\*",
+        "",
+        text,
+        flags=re.I,
+    )
+    text = re.sub(
+        r"\s*\*\((?:Correction|Note\s*:)[^)]*\)\*",
+        "",
+        text,
+        flags=re.I,
+    )
+    text = re.sub(
+        r"\s*\(Correction\s*:[^)]*\)",
+        "",
+        text,
+        flags=re.I,
+    )
+    text = re.sub(r"\s*\*\*CORRECTION\*\*\s*:[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"^\s*---\s*", "", text)
+    text = re.sub(r"\s*---\s*$", "", text)
+    return text.strip()
 GERMAN_STRONG = re.compile(
     r"\b(hatte|wurde|sagte|fragte|antwortete|musste|mußte|konnte|sollte|"
     r"bleibt|vollendet|geschah|ging|wußte|wusste|befand|erschien|"
@@ -359,7 +396,9 @@ def html_to_markdown(html: str, num: int, de_html: str = "") -> tuple[str, str, 
             started = True
         heading = tag.name in {"h1", "h2", "h3"} or (CHAPTER_HEAD.search(text) and len(text) < 90)
         if heading:
-            clean = re.sub(rf"^Perry Rhodan\s+{num}\s*[-–—:]\s*", "", text, flags=re.I).strip()
+            clean = clean_chatter(text)
+            clean = re.sub(rf"^Perry Rhodan\s+{num}\s*[-–—:]\s*", "", clean, flags=re.I).strip()
+            clean = clean_chatter(clean)
             if not clean or BOILERPLATE.search(clean):
                 continue
             lines.append("")
@@ -372,7 +411,10 @@ def html_to_markdown(html: str, num: int, de_html: str = "") -> tuple[str, str, 
             lines.append("## Résumé des épisodes précédents")
             lines.append("")
             saw_resume_heading = True
-        lines.append(text)
+        clean_t = clean_chatter(text)
+        if not clean_t:
+            continue
+        lines.append(clean_t)
         lines.append("")
     body = re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
     auteur = " et ".join(dict.fromkeys(authors))
