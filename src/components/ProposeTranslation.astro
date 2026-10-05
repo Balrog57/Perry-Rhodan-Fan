@@ -9,7 +9,7 @@ interface Props {
 
 const { slug, title, titleFr = '', body, chapterNumber } = Astro.props;
 const repo = import.meta.env.PUBLIC_GH_REPO || 'Balrog57/Perry-Rhodan-Fan';
-const initialBody = (body || '').trim().replace(/^WIP$/i, '');
+const hasBody = Boolean((body || '').trim().replace(/^WIP$/i, ''));
 const config = {
   repo,
   token: import.meta.env.PUBLIC_GH_DISPATCH_TOKEN || '',
@@ -17,7 +17,7 @@ const config = {
   title,
   titleFr,
   chapterNumber,
-  initialBody,
+  hasBody,
   pullsUrl: `https://github.com/${repo}/pulls?q=is%3Apr+is%3Aopen+label%3Atraduction`,
 };
 ---
@@ -89,7 +89,7 @@ const config = {
           rows="16"
           placeholder="Écrivez ou collez ici la traduction française complète…"
           class="w-full min-h-[50vh] px-3 py-2 bg-slate-800 text-blue-50 rounded-lg border border-blue-500/20 focus:border-cyan-400/60 focus:outline-none font-mono text-sm leading-relaxed"
-        >{initialBody}</textarea>
+        ></textarea>
       </label>
 
       <input type="text" name="website" id="propose-website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
@@ -263,7 +263,7 @@ const config = {
       contributor: String(data.get('contributor') || '').trim(),
       titleFr: String(data.get('titleFr') || '').trim(),
       body: String(data.get('body') || '').trim(),
-      mode: config.initialBody ? 'deja-traduit' : 'traduire',
+      mode: config.hasBody ? 'deja-traduit' : 'traduire',
     };
 
     if (fields.body.length < 200) {
