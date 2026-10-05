@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import StarfieldBackground from '../components/StarfieldBackground.astro';
 import { getEntry, getCollection } from 'astro:content';
+import { getChapitres } from '../lib/chapitres';
 
 const accueil = await getEntry('accueil', 'accueil');
 const a = accueil.data;
@@ -11,7 +12,7 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
 
 const tomes = await getCollection('tomes');
 const cycles = await getCollection('cycles');
-const chapitres = await getCollection('chapitres');
+const chapitres = await getChapitres();
 
 const sortedTomes = tomes.sort((x, y) => x.data.chapterNumber - y.data.chapterNumber);
 const sortedCycles = cycles.sort((x, y) => x.data.cycleNumber - y.data.cycleNumber);

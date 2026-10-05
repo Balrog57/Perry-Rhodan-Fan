@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { getChapitres } from '../lib/chapitres';
 
 const SITE = 'https://balrog57.github.io';
 const BASE = '/Perry-Rhodan-Fan';
@@ -7,7 +8,7 @@ const BASE = '/Perry-Rhodan-Fan';
 export const GET: APIRoute = async () => {
   const tomes = await getCollection('tomes');
   const cycles = await getCollection('cycles');
-  const chapitres = await getCollection('chapitres');
+  const chapitres = await getChapitres();
 
   const urls = [
     { loc: `${SITE}${BASE}/`, priority: '1.0' },

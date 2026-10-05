@@ -2,10 +2,11 @@
 import Layout from '../../../layouts/Layout.astro';
 import ProposeTranslation from '../../../components/ProposeTranslation.astro';
 import { getCollection, getEntry, render } from 'astro:content';
+import { getChapitres, getChapitre } from '../../../lib/chapitres';
 
 export async function getStaticPaths() {
   const tomes = await getCollection('tomes');
-  const chapitres = await getCollection('chapitres');
+  const chapitres = await getChapitres();
 
   return [
     ...tomes.map((item) => ({
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
 }
 
 const { collection, slug } = Astro.params;
-const item = await getEntry(collection, slug);
+const item = collection === 'chapitres' ? await getChapitre(slug) : await getEntry(collection, slug);
 if (!item) throw new Error(`Entrée introuvable : ${collection}/${slug}`);
 const { Content } = await render(item);
 const base = import.meta.env.BASE_URL;
@@ -32,7 +33,7 @@ const itemCycleName = itemCycle ? itemCycle.data.title : null;
 
 const sameCollection = collection === 'tomes'
   ? await getCollection('tomes')
-  : await getCollection('chapitres');
+  : await getChapitres();
 
 const cycleItems = sameCollection
   .filter(ch => ch.data.cycleNumber === item.data.cycleNumber)

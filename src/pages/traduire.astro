@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { getChapitres } from '../lib/chapitres';
 
-const chapitres = (await getCollection('chapitres'))
+const chapitres = (await getChapitres())
   .filter((item) => {
     const n = item.data.chapterNumber;
     return (n >= 600 && n <= 649) || (n >= 1200 && n <= 3100);

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { getChapitres } from '../../lib/chapitres';
 
 export async function getStaticPaths() {
   const cycles = await getCollection('cycles');
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 
 const { cycle } = Astro.props;
 const tomes = await getCollection('tomes');
-const chapitres = await getCollection('chapitres');
+const chapitres = await getChapitres();
 const t = (await getEntry('textes', 'cycle')).data;
 
 const cycleTomes = tomes

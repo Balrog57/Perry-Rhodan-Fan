@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { getChapitres } from '../lib/chapitres';
 
-const chapitres = await getCollection('chapitres');
+const chapitres = await getChapitres();
 const cycles = await getCollection('cycles');
 const base = import.meta.env.BASE_URL;
 const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);

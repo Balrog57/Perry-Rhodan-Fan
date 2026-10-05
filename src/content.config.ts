@@ -70,22 +70,50 @@ const tomes = defineCollection({
   }),
 });
 
-const chapitres = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/chapitres' }),
-  schema: z.object({
-    title: z.string(),
-    titleFr: z.string().optional(),
-    cycleNumber: z.number(),
-    chapterNumber: z.number(),
-    type: z.enum(['synopsis', 'translation']).default('translation'),
-    cover: z.string().optional(),
-    synopsis: z.string().optional(),
-    originalTitle: z.string().optional(),
-    auteur: z.string().optional(),
-    parution: z.string().optional(),
-    statut: z.enum(['wip', 'traduit']).default('wip'),
-    traducteur: z.string().optional(),
-  }),
+const chapitreSchema = z.object({
+  title: z.string(),
+  titleFr: z.string().optional(),
+  cycleNumber: z.number(),
+  chapterNumber: z.number(),
+  type: z.enum(['synopsis', 'translation']).default('translation'),
+  cover: z.string().optional(),
+  synopsis: z.string().optional(),
+  originalTitle: z.string().optional(),
+  auteur: z.string().optional(),
+  parution: z.string().optional(),
+  statut: z.enum(['wip', 'traduit']).default('wip'),
+  traducteur: z.string().optional(),
 });
 
-export const collections = { cycles, accueil, tomes, chapitres, textes };
+// Split by leading digit: a single collection exceeds V8's max string length
+// when Astro serializes the content data store. See src/lib/chapitres.ts.
+const chapitres0 = defineCollection({
+  loader: glob({ pattern: 'de-0*.md', base: './src/content/chapitres' }),
+  schema: chapitreSchema,
+});
+
+const chapitres1 = defineCollection({
+  loader: glob({ pattern: 'de-1*.md', base: './src/content/chapitres' }),
+  schema: chapitreSchema,
+});
+
+const chapitres2 = defineCollection({
+  loader: glob({ pattern: 'de-2*.md', base: './src/content/chapitres' }),
+  schema: chapitreSchema,
+});
+
+const chapitres3 = defineCollection({
+  loader: glob({ pattern: 'de-3*.md', base: './src/content/chapitres' }),
+  schema: chapitreSchema,
+});
+
+export const collections = {
+  cycles,
+  accueil,
+  tomes,
+  chapitres0,
+  chapitres1,
+  chapitres2,
+  chapitres3,
+  textes,
+};
