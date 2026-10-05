@@ -18,12 +18,12 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout trusted default branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Assemble proposal and open PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const ingest = require('./scripts/ingest-translation-proposal.cjs');
