@@ -52,9 +52,10 @@ def clean_chatter(text: str) -> str:
         text,
         flags=re.I,
     )
+    text = re.sub(r"(?:^|\n)Voici la traduction[^\n:]*:\s*(?:---\s*)?", "", text, flags=re.I)
     # 2. Strip segment markers leftover in paragraphs
-    text = re.sub(r"<<<[0-9n]+>>>\s*", "", text)
-    text = re.sub(r"<<[0-9n]+>>\s*", "", text)
+    text = re.sub(r"<<<[0-9na-z]+>>>\s*", "", text, flags=re.I)
+    text = re.sub(r"<<[0-9na-z]+>>\s*", "", text, flags=re.I)
     # 3. Strip trailing notes, correction parentheticals or notes
     text = re.sub(
         r"\s*---\s*\*\((?:Chaque segment|Note\s*:|Comme demand[eé])[^)]*\)\*",
@@ -316,6 +317,97 @@ TITLE_FR_FIXES = {
     1258: "La fièvre des étoiles",
     1261: "Dévolution",
     1262: "L'école des héros",
+    2675: "L'Éclat du silence",
+    2676: "Le Sanctuaire de Chalkada",
+    2677: "La Décision de Rhodan",
+    2678: "Le Carillon des Oraccameo",
+    2679: "Le Maître des visages",
+    2680: "Le Départ des Inharmoniques",
+    2681: "Un monde de haine",
+    2682: "Bataille à l'Anomalie",
+    2683: "Galaxie dans le chaos",
+    2684: "Un gage pour les Spenta",
+    2685: "Le Choc ARCHÉTIM",
+    2687: "Tout sauvé à jamais",
+    2689: "Le Labyrinthe de cristal",
+    2690: "Le Cinquième Acte",
+    2691: "L'Homme au Howanetz",
+    2693: "Mutinerie à bord de la BASIS",
+    2694: "Le Labyrinthe de la mort",
+    2695: "Le Cerveau des morts",
+    2696: "Delorian",
+    2697: "La Combinaison des Univers",
+    2698: "La Nécrophore",
+    2699: "Le Neuroversum",
+    2700: "La Lune technologique",
+    2701: "Sous la croûte technologique",
+    2702: "Le Fantôme positronique",
+    2703: "Mort dans l'espace",
+    2704: "Le Retour de la JULES VERNE",
+    2705: "La Lignée des Indignes",
+    2706: "Le Tombeau des étoiles",
+    2707: "Les Rêveurs d'airain",
+    2708: "Quatre contre ITHAFOR",
+    2709: "Le Chasseur parfait",
+    2710: "La Chasse aux Halutiens",
+    2712: "Les Assassins de Luna City",
+    2713: "Dans la mer de nuages",
+    2714: "L'Ultimatum des Onryons",
+    2715: "Mission dans la cour polyport",
+    2716: "Le Désastre polyport",
+    2717: "Vothantar Zhy",
+    2718: "Passage vers Arkon",
+    2719: "Commando d'abordage GOS'TUSSAN",
+    2720: "Dans l'étoile d'Apsuma",
+    2721: "Le Para-voleur",
+    2722: "Altin Magara",
+    2723: "Plus que 62 heures",
+    2724: "Témoin du futur",
+    2725: "Le Prix de la justice",
+    2726: "Danse macabre",
+    2727: "Au gouffre gravitationnel",
+    2728: "Les Architectes gravitationnels",
+    2729: "Vers une nouvelle ère",
+    2730: "L'Équipe Vénus",
+    2731: "Mondes-prisons",
+    2732: "Le Hetork Tesser",
+    2733: "L'Écho de l'apocalypse",
+    2734: "La Forêt et la Jeune Fille",
+    2736: "Le Hetran vieillissant",
+    2737: "L'Instruction du Vectorion",
+    2738: "Le Domaine du peuple du feu",
+    2739: "Les Appelants des étoiles",
+    2740: "La Prise du Galaktikum",
+    2741: "La Stèle ordique",
+    2742: "Duel psionique",
+    2743: "Le Palais noir",
+    2744: "Aux racines d'Arkon",
+    2745: "Nom de code ZbV",
+    2746: "Départ du REGINALD BULL",
+    2747: "Nouvelle-Atlantis",
+    2748: "L'Éclat du ciel",
+    2749: "La Ville d'Allerorten",
+    2750: "Le Départ",
+    2751: "Gucky sur AIKKAUD",
+    2752: "Le Visage du rebelle",
+    2753: "Terminus Cestervelder",
+    2754: "Le Monde détruit",
+    2755: "Le Schuldmeister",
+    2756: "Le Vaisseau de la Juge",
+    2757: "L'Enfant à problèmes",
+    2758: "Le Tamaron",
+    2759: "Les Jeux d'airain",
+    2760: "Paranoïa posbi",
+    2761: "Les Héritiers de Lémuria",
+    2762: "La Statue du maître",
+    2763: "Clair de lune sur Naat",
+    2764: "Rendez-vous à Larhatoon",
+    2765: "L'Œuvre d'art génétique",
+    2766: "Un Rhodan de trop",
+    2767: "Les Anges de la Schmiege",
+    2768: "La Planète du malheur",
+    2769: "Le Commando Sang-de-Dragon",
+    2770: "Les Para-paladins",
 }
 
 
@@ -323,6 +415,7 @@ def html_to_markdown(html: str, num: int, de_html: str = "") -> tuple[str, str, 
     soup = BeautifulSoup(html, "html.parser")
     title_fr = (soup.title.get_text(" ", strip=True) if soup.title else "").strip()
     title_fr = re.sub(rf"^Perry Rhodan\s+{num}\s*[-–—:]\s*", "", title_fr, flags=re.I).strip()
+    title_fr = re.sub(r"\s+(?:by|von|par|de)\s+[A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+(?: [A-ZÀ-Ÿ][A-Za-zÀ-ÿÄÖÜäöüß.'\-]+)+$", "", title_fr, flags=re.I).strip()
     if num in TITLE_FR_FIXES:
         title_fr = TITLE_FR_FIXES[num]
     authors: list[str] = []
@@ -652,12 +745,19 @@ def main() -> int:
     parser.add_argument("--ok-only", action="store_true")
     parser.add_argument("--mark-repair", action="store_true")
     parser.add_argument("--quarantine-site", action="store_true")
+    parser.add_argument("--range", type=int, nargs=2, metavar=("START", "END"), help="Only process chapters in range [START, END]")
+    parser.add_argument("--chapters", type=int, nargs="+", help="Only process specific chapter numbers")
     args = parser.parse_args()
     checks = AuditChecks()
     folders = sorted(
-        (p for p in (args.source / "Chapitres").iterdir() if (p / "fr.html").exists()),
+        (p for p in (args.source / "Chapitres").iterdir() if p.name[:4].isdigit() and (p / "fr.html").exists()),
         key=lambda p: int(p.name[:4]),
     )
+    if args.range:
+        folders = [p for p in folders if args.range[0] <= int(p.name[:4]) <= args.range[1]]
+    if args.chapters:
+        target_set = set(args.chapters)
+        folders = [p for p in folders if int(p.name[:4]) in target_set]
     if args.ok_only:
         ready = []
         for folder in folders:
