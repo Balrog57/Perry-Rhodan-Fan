@@ -408,6 +408,22 @@ TITLE_FR_FIXES = {
     2768: "La Planète du malheur",
     2769: "Le Commando Sang-de-Dragon",
     2770: "Les Para-paladins",
+    2771: "Les Pèlerins de la justice",
+    2772: "La Garde du domaine",
+    2773: "Le Juge cristallin",
+    2774: "Le Cosmoglobe",
+    2775: "La Cité des Kéloskers",
+    2776: "Facteur perturbateur Gholdorodyn",
+    2777: "Fuite d'Allerorten",
+    2778: "La Voie vers Wanderer",
+    2779: "Le Jeu d'ombres de l'éternité",
+    2780: "La Voie d'Halut",
+    2781: "SHIVAS FAUST",
+    2782: "Duel sur Everblack",
+    2783: "Le Sauveur des Lares",
+    2784: "Cible : CHEMMA DHURGA",
+    2785: "Le Chevalier et la Juge",
+    2787: "Le Labyrinthe des dieux morts",
 }
 
 
