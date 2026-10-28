@@ -38,7 +38,7 @@ REFUSAL = re.compile(
     r"veuillez (?:me )?(?:fournir|transmettre) le texte|"
     r"il n[’']y a (?:donc )?rien à traduire|"
     r"je ne peux pas (?:traduire|effectuer)|"
-    r"en tant qu[’'](?:ia|intelligence artificielle|modèle)",
+    r"en tant qu[’'](?:ia|intelligence artificielle|modèle)[^.\n]{0,40}\bje\b",
     re.I,
 )
 XML_RESPONSE = re.compile(r"```xml|<\/?(?:translation|response|answer|output)\b", re.I)
@@ -603,10 +603,16 @@ def html_to_markdown(html: str, num: int, de_html: str = "") -> tuple[str, str, 
         if authors:
             break
 
+    skip_cls = {"p2", "p3", "calibre_3"}
+    all_p = (soup.body or soup).find_all("p")
+    skipped_len = sum(len(t.get_text()) for t in all_p if set(t.get("class") or []) & skip_cls)
+    # Ces classes sont du bruit d'epub, sauf si elles portent l'essentiel du recit (ex. 2485).
+    if skipped_len > 0.4 * max(1, sum(len(t.get_text()) for t in all_p)):
+        skip_cls = set()
     for tag in (soup.body or soup).find_all(["h1", "h2", "h3", "p"]):
         if tag.name == "p" and tag.find("p") is not None:
             continue
-        if tag.name == "p" and set(tag.get("class") or []) & {"p2", "p3", "calibre_3"}:
+        if tag.name == "p" and set(tag.get("class") or []) & skip_cls:
             continue
         text = re.sub(r"\s+", " ", tag.get_text(" ", strip=True)).strip()
         if not text or text in {"*", "·"}:
