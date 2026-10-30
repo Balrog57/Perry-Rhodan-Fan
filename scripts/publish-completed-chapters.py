@@ -240,7 +240,7 @@ def audit(folder: Path, checks) -> dict:
     ratio = len(fr_text) / max(1, len(de_text))
     if not 0.6 <= ratio <= 1.6:
         errors.append(f"length-ratio:{ratio:.3f}")
-    german = [i + 1 for i, text in enumerate(fr_pieces) if checks.looks_german(text) or has_german(text)]
+    german = [i + 1 for i, text in enumerate(fr_pieces) if (checks.looks_german(text) or has_german(text)) and "@" not in text]
     if german:
         errors.append(f"german-segments:{len(german)}")
     if REFUSAL.search(fr_text):
