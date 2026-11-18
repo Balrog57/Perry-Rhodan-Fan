@@ -103,10 +103,14 @@ const t = (await getEntry('textes', 'tomes')).data;
             <div class="p-3">
               <div class="text-xs text-purple-400 font-mono">{t.badgeN} {tome.data.chapterNumber}</div>
               <h3 class="text-sm font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2">
-                {tome.data.title}
+                {tome.data.titleFr
+                  ? tome.data.titleFr.replace(/^Perry(?:\s+Rhodan)?\s+\d+\s*-\s*/i, '')
+                  : tome.data.title}
               </h3>
               {tome.data.titleFr && (
-                <p class="text-[10px] text-blue-300/50 italic mt-1 line-clamp-2">{tome.data.titleFr}</p>
+                <p class="text-[10px] text-blue-300/50 italic mt-1 line-clamp-2">
+                  Perry Rhodan {tome.data.chapterNumber} - {tome.data.title}
+                </p>
               )}
               <p class="text-[10px] text-blue-300/50 mt-1">{tome.data.parution}</p>
             </div>

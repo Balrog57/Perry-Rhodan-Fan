@@ -122,10 +122,14 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
                     </span>
                   </div>
                   <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
-                    {volume.data.title}
+                    {volume.data.titleFr
+                      ? volume.data.titleFr.replace(/^Perry(?:\s+Rhodan)?\s+\d+\s*-\s*/i, '')
+                      : volume.data.title}
                   </h3>
                   {volume.data.titleFr && (
-                    <p class="text-[10px] text-blue-300/50 italic mt-1 line-clamp-2">{volume.data.titleFr}</p>
+                    <p class="text-[10px] text-blue-300/50 italic mt-1 line-clamp-2">
+                      Perry Rhodan {volume.data.chapterNumber} - {volume.data.title}
+                    </p>
                   )}
                 </div>
               </a>

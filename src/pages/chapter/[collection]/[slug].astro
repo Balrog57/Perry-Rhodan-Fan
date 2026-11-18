@@ -102,9 +102,13 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
               {t.fieldCycle.replace('{num}', item.data.cycleNumber).replace('{name}', itemCycleName)}
             </p>
           )}
-          <h1 class="text-3xl md:text-4xl font-bold theme-title mb-2">{item.data.title}</h1>
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
+            {item.data.titleFr
+              ? item.data.titleFr.replace(/^Perry(?:\s+Rhodan)?\s+\d+\s*-\s*/i, '')
+              : item.data.title}
+          </h1>
           {item.data.titleFr && (
-            <p class="theme-muted italic">{item.data.titleFr}</p>
+            <p class="theme-muted italic">Perry Rhodan {item.data.chapterNumber} - {item.data.title}</p>
           )}
           {!item.data.titleFr && item.data.originalTitle && (
             <p class="theme-muted italic">{item.data.originalTitle}</p>
