@@ -123,7 +123,7 @@ const path = (p) => base.replace(/\/$/, '') + (p.startsWith('/') ? p : '/' + p);
                   </div>
                   <h3 class="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors line-clamp-2">
                     {volume.data.titleFr
-                      ? volume.data.titleFr.replace(/^Perry(?:\s+Rhodan)?\s+\d+\s*-\s*/i, '')
+                      ? volume.data.titleFr.replace(/^(?:Perry(?:\s+Rhodan)?\s+)?\d+\s*-\s*/i, '')
                       : volume.data.title}
                   </h3>
                   {volume.data.titleFr && (

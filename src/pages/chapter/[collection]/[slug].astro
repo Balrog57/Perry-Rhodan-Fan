@@ -104,7 +104,7 @@ const nextItem = currentIndex < cycleItems.length - 1 ? cycleItems[currentIndex 
           )}
           <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">
             {item.data.titleFr
-              ? item.data.titleFr.replace(/^Perry(?:\s+Rhodan)?\s+\d+\s*-\s*/i, '')
+              ? item.data.titleFr.replace(/^(?:Perry(?:\s+Rhodan)?\s+)?\d+\s*-\s*/i, '')
               : item.data.title}
           </h1>
           {item.data.titleFr && (
