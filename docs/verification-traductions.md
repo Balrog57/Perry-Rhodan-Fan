@@ -289,7 +289,35 @@ Une erreur d’accord dans le résumé du 1200 a aussi été corrigée. Le filtr
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Lot 1205–1209 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots précédents. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros. Chaque titre de résumé constitue un bloc français supplémentaire.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1205 | 910 | 888 | 880 | 2 |
+| 1206 | 1072 | 1055 | 1054 | 18 |
+| 1207 | 824 | 820 | 819 | 5 |
+| 1208 | 731 | 711 | 710 | 21 |
+| 1209 | 374 | 372 | 371 | 3 |
+
+Dans les 1201, 1206 et 1208, 67 occurrences de formes allemandes ou hybrides de `Kosmokrat` dans le corps français ont été traduites par « Cosmocrate », « Cosmocrates » ou « cosmocratique », après contrôle du contexte et des accords ; les métadonnées originales ont été préservées.
+
+Dans le 1205, l’examen du contexte a mis en évidence deux blocs allemands absents, rétablis en français ; plusieurs blocs présents mais déplacés ont été remis dans l’ordre, une répétition a été supprimée et des erreurs ponctuelles corrigées. Les autres éléments non appariés examinés étaient présents dans des blocs français regroupés. Un essai local de LanguageTool 6.9-SNAPSHOT sur le 1205 après les premières corrections (empreinte du corps `b85d3089e9add11df45cae9c2b154867b99a754057ffea6c627855fc69ecd790`) a signalé 1 173 éléments, dont 1 014 vérifications orthographiques souvent liées aux noms propres. Le tri ciblé a permis de corriger des accords, des formulations et trois occurrences de mots allemands isolés ; les autres signalements restent à examiner. Résultat provisoire : `pr-languagetool-20261127/1205.json` dans le dossier temporaire local. Les corrections ne constituent pas une relecture complète. Le filtre linguistique décrit ci-dessus ne signale aucun bloc long de ces cinq numéros ; il ne permet pas d’exclure les fragments courts ou mêlés au français.
+
+Les résultats et le script provisoires sont `pr-align-1205-1209` et `pr_align_1205_1209.py` dans le dossier temporaire local. Les textes français analysés correspondent au commit `f725af7c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1205 : `03b4c345aa8d9ed64eee86c61b9b8c68532060352cb8e6597d5eadf1c1bd028a` (`OEBPS/Text/index_split_131.xhtml`)
+- 1206 : `a805b6900d14dfeb5980591fb6473bac168a3cb09d3bcae8775933604813e17d` (`OEBPS/Text/index_split_155.xhtml`)
+- 1207 : `565483df33ca5053742e040a52a787dc9efb05f0a09da69c0cdb76698d30e98a` (`OEBPS/Text/index_split_176.xhtml`)
+- 1208 : `0d615f3bc458ec591edef1fed660f3930cfba21676256b42c054a9fcdf5ea42b` (`OEBPS/Text/index_split_198.xhtml`)
+- 1209 : `7d96c9494bf7777f7121a52a7fc9ff9cdb7bb1fc998b1caf6abb4319c5e5ecf4` (`OEBPS/Text/index_split_002.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Anomalies encore à traiter
+
+- Une recherche de la racine allemande `Kosmokrat` a trouvé 615 fichiers de chapitres au 27 novembre 2026, métadonnées incluses. Les occurrences en contexte doivent être distinguées des titres originaux et corrigées par lots ; le simple détecteur de langue par paragraphe ne les repère pas de manière fiable.
 
 - La recherche initiale des termes « correction » ou « réponse précédente » signalait 51 numéros, avec des faux positifs dans les dialogues. Les formulations ciblées ci-dessus ont été traitées ; poursuivre la recherche d’autres consignes et examiner les occurrences dans leur contexte original.
 - Les recherches de débuts de ligne allemands révèlent d’autres titres, phrases et fragments encore présents. Les noms propres, titres d’œuvres et termes fictifs exigent un tri contextuel.
