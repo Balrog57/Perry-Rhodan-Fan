@@ -233,11 +233,39 @@ Les résultats provisoires et le script sont dans le dossier temporaire local `p
 
 Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces quatre romans restent à vérifier.
 
+## Lot 645–649 : alignement pilote
+
+Même méthode et mêmes limites que pour les lots précédents. Les séparateurs ont été replacés après contrôle de leurs paragraphes voisins.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 645 | 813 | 785 | 781 | 21 |
+| 646 | 1421 | 1384 | 1380 | 9 |
+| 647 | 1210 | 1181 | 1169 | 11 |
+| 648 | 1316 | 1300 | 1298 | 17 |
+| 649 | 1131 | 1097 | 1096 | 35 |
+
+Dans le 645, trois blocs français dupliqués à un emplacement erroné ont été retirés après identification de leur occurrence correcte. Dans le 646, trois courtes répliques ou indications absentes ont été rétablies, une réplique déplacée remise à sa place et deux blocs répétés supprimés. Dans le 647, dix doublons ou reformulations répétés ont été supprimés après comparaison des occurrences et de leur contexte ; une réplique distincte et un paragraphe français supplémentaire dans le 648 ont été conservés, car ils sont présents dans l’original.
+
+Les résultats provisoires et le script sont dans le dossier temporaire local `pr-align-640-649` et `pr_align_640_649.py`. Les textes français analysés correspondent au commit `fcf14cc8`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 645 : `61863e60e90a1d5743493b36240a91e686a88e33c22c2f6d5655a5af6b3b2648` (`OEBPS/Text/index_split_078.xhtml`)
+- 646 : `b0c2b5b670c56e032531ae417445dfe1afadc2845b2d6fb771040abbcbdbf4da` (`OEBPS/Text/index_split_080.xhtml`)
+- 647 : `8cc571f0b086a4ec51dc5da223620522ab14be661a65028058aeede87467e4ba` (`OEBPS/Text/index_split_082.xhtml`)
+- 648 : `0b190944dcfaa0439b0b77e730d8f53edfb89da10b94193e57f65f595ccfe2c0` (`OEBPS/Text/index_split_084.xhtml`)
+- 649 : `3473d0dfa8dc847ef1e10adc1e6653d31d68a1c289a8381f7f9029890ec74cb1` (`OEBPS/Text/index_split_088.xhtml`)
+
+Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Numéro 644 : contrôle structurel ciblé
 
 L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
 
 Certains paragraphes allemands sont coupés ou regroupés différemment du français et faussent l’alignement automatique. Le contrôle structurel n’établit pas la complétude ni la qualité globale. En particulier, un court dialogue français près de la section 8 ne se retrouve pas à la même place dans l’original consulté et reste à examiner.
+
+## Recherche linguistique ciblée, 600–649
+
+Un passage local de `langdetect` 1.0.9, avec graine 0, sur les blocs d’au moins 65 caractères a retenu les blocs classés allemands avec une probabilité supérieure à 0,97. Les quatre blocs signalés (600, 601, 633 et 638) sont des passages français en majuscules, donc des faux positifs. Ce filtre ne garantit pas l’absence d’allemand dans les fragments courts ou mêlés au français ; les textes doivent encore être relus. Résultat et script provisoires : `pr-langdetect-600-649.json` et `pr_langdetect_600_649.py` dans le dossier temporaire local.
 
 ## Anomalies encore à traiter
 
