@@ -47,6 +47,28 @@ Les résultats bruts provisoires se trouvent dans le dossier temporaire local `p
 
 Un contrôle distinct des paragraphes composés uniquement d’un numéro suivi d’un point a comparé les 50 numéros de 600 à 649. Les listes concordent sauf pour le 644 : l’extraction allemande reconnaît les repères 1 puis 3 à 11, alors que le français ne reconnaissait que 1 avant correction. Le contrôle ciblé et ses limites sont précisés ci-dessous ; ce seul comptage ne prouve ni la présence ni l’absence de contenu narratif.
 
+## Lot 605–609 : alignement pilote
+
+La même méthode locale et les mêmes limites s’appliquent. Les 90 séparateurs de scène allemands non appariés ont été replacés après contrôle des blocs voisins.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis | Autres écarts constatés |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 605 | 1 177 | 1 155 | 1 154 | 23 | Titre français du résumé supplémentaire |
+| 606 | 921 | 899 | 897 | 24 | Titre du résumé ; une réplique doublée, supprimée après comparaison |
+| 607 | 1 441 | 1 423 | 1 422 | 18 | Titre allemand non apparié ; titre français réintroduit dans le corps |
+| 608 | 1 297 | 1 279 | 1 278 | 19 | Titre français du résumé supplémentaire |
+| 609 | 1 213 | 1 208 | 1 207 | 6 | Titre français du résumé supplémentaire |
+
+Le titre allemand cité dans le résumé du 607 a aussi été traduit. Les résultats bruts provisoires et le script sont dans le dossier temporaire local `pr-align-605-609` et `pr_align_605_609.py`. Les fichiers français analysés correspondent au commit `a13a8644`, avant corrections. Les entrées allemandes `OEBPS/Text/index_split_092.xhtml`, `094`, `096`, `098` et `001` ont respectivement les empreintes SHA-256 suivantes :
+
+- 605 : `555272f4cf22165b7f99c4896f0b42f642a148c071e18ad129a5fc7447bda6c6`
+- 606 : `07e939ad80213404f7d6d8b59dd8e47fb8d47dc64c38c4d268c69f53fdf88d92`
+- 607 : `ee300c5b5c78ac4ef5a8d4754f1729f7172771c3fe84165dc93ccb1f1d01d13e`
+- 608 : `8499797aeb634f0383ad33942bb5ab1d7a6115bb3141bc72daee8a249500b02b`
+- 609 : `13563eba2049deeed6dcc6bb212834062e7fe64fae07a1319f5f1c6040085167`
+
+Ces statistiques ne prouvent pas que les paragraphes appariés soient complets ni que le français soit exempt d’erreurs ; les cinq romans restent à vérifier.
+
 ## Numéro 644 : contrôle structurel ciblé
 
 L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
