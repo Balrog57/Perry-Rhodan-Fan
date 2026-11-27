@@ -339,6 +339,34 @@ Les résultats provisoires et le script sont `pr-align-1210-1214` et `pr_align_1
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Numéro 1202 : début de relecture détaillée
+
+Les 45 premiers paragraphes extraits de l’original allemand (indices 0 à 44 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Seize corrections ponctuelles ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante et des formulations difficiles à lire. La liste provisoire des remplacements est `pr-review-1202-0-44.json` dans le dossier temporaire local.
+
+Les paragraphes allemands 45 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
+
+## Lot 1215–1219 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots précédents. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros ; les titres de résumés sont des blocs français supplémentaires. Le titre allemand isolé du 1218 figure dans les métadonnées françaises.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1215 | 892 | 877 | 876 | 16 |
+| 1216 | 888 | 873 | 872 | 16 |
+| 1217 | 894 | 879 | 878 | 16 |
+| 1218 | 1126 | 1119 | 1118 | 7 |
+| 1219 | 1113 | 1103 | 1102 | 11 |
+
+Les 37 occurrences de formes allemandes ou hybrides de `Kosmokrat` dans les corps français des 1215 et 1216 ont été traduites après examen du contexte ; les métadonnées originales sont inchangées. Les résultats provisoires et le script sont `pr-align-1215-1219` et `pr_align_1215_1219.py` dans le dossier temporaire local. Les textes français analysés correspondent au commit `8713fc3c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1215 : `fc6f487a17550849dfe35015793fb005ae102fe2103ffd55a101c141acff45ea` (`OEBPS/Text/index_split_015.xhtml`)
+- 1216 : `bfaf1fbdc3e4eba051695508f2dadbbe060f43ce80e081e22fd4b0268f223b34` (`OEBPS/Text/index_split_016.xhtml`)
+- 1217 : `c52a01318994c807f2c8d9eb4a5933c35a5d5d2b01694a5e9b3846904b7a9c62` (`OEBPS/Text/index_split_018.xhtml`)
+- 1218 : `8572b11acc4dfbdf43032347d42fee6412b676a3f5ca4dd52532817ca062907a` (`OEBPS/Text/index_split_020.xhtml`)
+- 1219 : `b4af48463d5854ca453a810c5ef6693f1ed0d7b4497075ad19627e1a09b1672d` (`OEBPS/Text/index_split_024.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Anomalies encore à traiter
 
 - Une recherche de la racine allemande `Kosmokrat` a trouvé 615 fichiers de chapitres et une recherche du mot `Oxtorner` en a trouvé 250 au 27 novembre 2026, métadonnées incluses. Les occurrences en contexte doivent être distinguées des titres originaux et corrigées par lots ; le simple détecteur de langue par paragraphe ne les repère pas de manière fiable.
