@@ -341,9 +341,9 @@ Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qua
 
 ## Numéro 1202 : début de relecture détaillée
 
-Les 225 premiers paragraphes extraits de l’original allemand (indices 0 à 224 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Cent dix corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante, des dialogues déformés et des formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-215-224.json` dans le dossier temporaire local.
+Les 285 premiers paragraphes extraits de l’original allemand (indices 0 à 284 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Cent quarante-six corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante, des dialogues déformés et des formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-275-284.json` dans le dossier temporaire local.
 
-Les paragraphes allemands 225 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
+Les paragraphes allemands 285 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
 
 ## Lot 1215–1219 : alignement pilote
 
