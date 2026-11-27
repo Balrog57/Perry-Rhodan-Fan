@@ -115,6 +115,28 @@ Les résultats provisoires et le script sont dans le dossier temporaire local `p
 
 Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Lot 620–624 : alignement pilote
+
+Même méthode et mêmes limites que ci-dessus. Les séparateurs non appariés ont été replacés après contrôle des blocs voisins. Pour chaque numéro, le seul bloc français non apparié était le titre du résumé.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 620 | 1051 | 1035 | 1034 | 17 |
+| 621 | 1149 | 1139 | 1138 | 11 |
+| 622 | 1112 | 1101 | 1100 | 12 |
+| 623 | 1290 | 1282 | 1281 | 9 |
+| 624 | 1076 | 1065 | 1064 | 12 |
+
+Les résultats provisoires et le script sont dans le dossier temporaire local `pr-align-620-624` et `pr_align_620_624.py`. Les textes français analysés correspondent au commit `9f12802f`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 620 : `f6bb56fd48cbd7fd3beac5aae8b3f16db63498d5cb1fe86e53f73fc51f0fa237` (`OEBPS/Text/index_split_024.xhtml`)
+- 621 : `86c090345ff875157a0ba1a6e9d4dc37ccce2206ccbe8c1ef30cbbcbea91197e` (`OEBPS/Text/index_split_026.xhtml`)
+- 622 : `593674c8ec87784493088be7e676978fb1476cdb33f6443d5be0b1a561dc3a5a` (`OEBPS/Text/index_split_028.xhtml`)
+- 623 : `93bc42fb14c6e14ae717679fb5353c4523255e0aa5a697139c73cc525949a568` (`OEBPS/Text/index_split_030.xhtml`)
+- 624 : `0894f7ae3321a515ce2a31dac1db5850050665be72ca21982ad755f45217d470` (`OEBPS/Text/index_split_032.xhtml`)
+
+Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Numéro 644 : contrôle structurel ciblé
 
 L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
