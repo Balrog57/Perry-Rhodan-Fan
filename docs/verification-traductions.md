@@ -267,6 +267,28 @@ Certains paragraphes allemands sont coupés ou regroupés différemment du fran�
 
 Un passage local de `langdetect` 1.0.9, avec graine 0, sur les blocs d’au moins 65 caractères a retenu les blocs classés allemands avec une probabilité supérieure à 0,97. Les quatre blocs signalés (600, 601, 633 et 638) sont des passages français en majuscules, donc des faux positifs. Ce filtre ne garantit pas l’absence d’allemand dans les fragments courts ou mêlés au français ; les textes doivent encore être relus. Résultat et script provisoires : `pr-langdetect-600-649.json` et `pr_langdetect_600_649.py` dans le dossier temporaire local.
 
+## Lot 1200–1204 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots 600–649. Les titres des résumés sont des blocs français supplémentaires. Le titre `Ordoban` du 1200 figure dans les métadonnées françaises ; les autres blocs allemands non appariés sont les séparateurs ci-dessous. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1200 | 609 | 587 | 586 | 22 |
+| 1201 | 857 | 846 | 845 | 12 |
+| 1202 | 453 | 454 | 453 | 0 |
+| 1203 | 1009 | 998 | 997 | 12 |
+| 1204 | 862 | 854 | 853 | 9 |
+
+Une erreur d’accord dans le résumé du 1200 a aussi été corrigée. Le filtre linguistique décrit ci-dessus, appliqué aux mêmes conditions à ces cinq numéros, ne signale aucun bloc ; il ne permet pas d’exclure les fragments courts ou mêlés au français. Les résultats provisoires et le script sont dans le dossier temporaire local `pr-align-1200-1204` et `pr_align_1200_1204.py`. Les textes français analysés correspondent au commit `f725af7c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1200 : `8fd358a6bacd46c2c1d8e3b3216a72ea0b66fc22c1b09ea2910b18c18fe00794` (`OEBPS/Text/index_split_022.xhtml`)
+- 1201 : `56aa0dff564070881026c3c63e732714ba417cbefe87a199f518bab2c29e6a83` (`OEBPS/Text/index_split_044.xhtml`)
+- 1202 : `5e693cdc4c866966846e26bf5286feda80fd71fcb87e71b0e87aeba1cd9d23bd` (`OEBPS/Text/index_split_066.xhtml`)
+- 1203 : `aed9168b7d9a56d4ba70725325189cd3fac491eef7372e32e4e8760b91c8fb7b` (`OEBPS/Text/index_split_088.xhtml`)
+- 1204 : `b837f4df81edd56a84e084b6127cf27d7a6ef2370ce71915c7072c3cebda5f55` (`OEBPS/Text/index_split_110.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Anomalies encore à traiter
 
 - La recherche initiale des termes « correction » ou « réponse précédente » signalait 51 numéros, avec des faux positifs dans les dialogues. Les formulations ciblées ci-dessus ont été traitées ; poursuivre la recherche d’autres consignes et examiner les occurrences dans leur contexte original.
