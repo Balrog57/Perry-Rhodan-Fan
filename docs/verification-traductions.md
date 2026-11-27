@@ -33,11 +33,25 @@ Chaque numéro a été relié à son texte dans le recueil allemand par l’ordr
 | 603 | 1 103 | 1 092 | 1 091 | 12 | Titre du résumé |
 | 604 | 1 025 | 1 009 | 1 008 | 17 | Titre du résumé |
 
+Les entrées allemandes sont les fichiers `OEBPS/Text/index_split_020.xhtml`, `042`, `064`, `086` et `090` respectivement. Le modèle local est LaBSE, instantané `836121a0533e5664b21c7aacc5d22951f2b8b25b`. Les blocs français analysés correspondent au commit `6a3b4681`, avant les corrections de ce lot. Empreintes SHA-256 des entrées allemandes brutes, dans le même ordre :
+
+- 600 : `f46bb67aee7831a0eccdb06cc5ae1825a5402860a80b43b235b5110683c1c632`
+- 601 : `c6b5df8b46b4118b978caf3178fdf903a6d1c5029023d8dcdb7cbe25bc0caa19`
+- 602 : `fb0b57348e32ea652029d390aaf006d676070d98c2148fb58e607e045c049456`
+- 603 : `fa97544f0d189428583cfaef213e17b4979b72fedc5c80938a5b816fc3aab84a`
+- 604 : `fd82e44d7761cea08b2439e2ab59fb6bcda23a467ac60db361d56f15ad736ac8`
+
 Un alignement, même à score élevé, ne prouve pas qu’une phrase à l’intérieur d’un paragraphe soit complète ou exacte. Ces cinq romans restent donc à vérifier, notamment pour la qualité du français et les omissions partielles. Dans le 600, quelques erreurs de français ont également été corrigées au début du texte.
 
 Les résultats bruts provisoires se trouvent dans le dossier temporaire local `pr600-alignement.json` et `pr-align-601-604` ; les scripts du pilote sont `pr600_alignement.py` et `pr_align_601_604.py` dans ce même dossier. Ils ne sont pas des attestations de validation.
 
-Un contrôle distinct des paragraphes composés uniquement d’un numéro suivi d’un point a comparé les 50 numéros de 600 à 649. Les listes concordent sauf pour le 644 : l’extraction allemande reconnaît les repères 1 puis 3 à 11, alors que le français ne reconnaît que 1. Il faut examiner ce roman pour distinguer les particularités de formatage des repères manquants ; ce contrôle ne prouve ni la présence ni l’absence de contenu narratif.
+Un contrôle distinct des paragraphes composés uniquement d’un numéro suivi d’un point a comparé les 50 numéros de 600 à 649. Les listes concordent sauf pour le 644 : l’extraction allemande reconnaît les repères 1 puis 3 à 11, alors que le français ne reconnaissait que 1 avant correction. Le contrôle ciblé et ses limites sont précisés ci-dessous ; ce seul comptage ne prouve ni la présence ni l’absence de contenu narratif.
+
+## Numéro 644 : contrôle structurel ciblé
+
+L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
+
+Certains paragraphes allemands sont coupés ou regroupés différemment du français et faussent l’alignement automatique. Le contrôle structurel n’établit pas la complétude ni la qualité globale. En particulier, un court dialogue français près de la section 8 ne se retrouve pas à la même place dans l’original consulté et reste à examiner.
 
 ## Anomalies encore à traiter
 
