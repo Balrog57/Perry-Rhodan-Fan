@@ -341,9 +341,9 @@ Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qua
 
 ## Numéro 1202 : début de relecture détaillée
 
-Les 45 premiers paragraphes extraits de l’original allemand (indices 0 à 44 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Seize corrections ponctuelles ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante et des formulations difficiles à lire. La liste provisoire des remplacements est `pr-review-1202-0-44.json` dans le dossier temporaire local.
+Les 135 premiers paragraphes extraits de l’original allemand (indices 0 à 134 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Cinquante-neuf corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante, des dialogues déformés et des formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-125-134.json` dans le dossier temporaire local.
 
-Les paragraphes allemands 45 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
+Les paragraphes allemands 135 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
 
 ## Lot 1215–1219 : alignement pilote
 
@@ -364,6 +364,28 @@ Les 37 occurrences de formes allemandes ou hybrides de `Kosmokrat` dans les corp
 - 1217 : `c52a01318994c807f2c8d9eb4a5933c35a5d5d2b01694a5e9b3846904b7a9c62` (`OEBPS/Text/index_split_018.xhtml`)
 - 1218 : `8572b11acc4dfbdf43032347d42fee6412b676a3f5ca4dd52532817ca062907a` (`OEBPS/Text/index_split_020.xhtml`)
 - 1219 : `b4af48463d5854ca453a810c5ef6693f1ed0d7b4497075ad19627e1a09b1672d` (`OEBPS/Text/index_split_024.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
+## Lot 1220–1224 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots précédents. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros ; les titres de résumés sont des blocs français supplémentaires. Le titre allemand isolé du 1222 figure dans ses métadonnées.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1220 | 863 | 849 | 848 | 15 |
+| 1221 | 847 | 833 | 832 | 15 |
+| 1222 | 831 | 818 | 817 | 13 |
+| 1223 | 926 | 916 | 915 | 11 |
+| 1224 | 918 | 919 | 918 | 0 |
+
+Les 42 occurrences de formes allemandes ou hybrides de `Kosmokrat` dans les corps français ont été traduites après examen du contexte ; les métadonnées originales sont inchangées. Les résultats provisoires et le script sont `pr-align-1220-1224` et `pr_align_1220_1224.py` dans le dossier temporaire local. Les textes français analysés correspondent au commit `8713fc3c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1220 : `ebb4bf6f7dc53758605b8c77e8e8a7777c185f88a777894e1943c9d5ab4507f0` (`OEBPS/Text/index_split_026.xhtml`)
+- 1221 : `0377c2a8d7ab34e39697e6fbafd19fa2d71edef12138d2e9871479e70c9b7f5d` (`OEBPS/Text/index_split_028.xhtml`)
+- 1222 : `95f20a3acc14c52031546b3c216705c6a29f6a3461094ae85e44acc626da52f5` (`OEBPS/Text/index_split_030.xhtml`)
+- 1223 : `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1` (`OEBPS/Text/index_split_032.xhtml`)
+- 1224 : `9fe020232604f0fad8978b18d49585380e26cb7ded0bc62c7374f9cdd2587564` (`OEBPS/Text/index_split_034.xhtml`)
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
