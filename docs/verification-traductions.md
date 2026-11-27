@@ -339,6 +339,12 @@ Les résultats provisoires et le script sont `pr-align-1210-1214` et `pr_align_1
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Numéro 1200 : début de relecture détaillée
+
+Le corps XHTML allemand contient 671 éléments `p`, dont 609 non vides, et aucun texte non blanc hors de ces paragraphes. Les 60 premiers paragraphes extraits (indices 0 à 59, titres, crédits et un séparateur compris) ont été lus avec les blocs français correspondants pour repérer omissions et défauts de français. Vingt corrections ciblées ont été apportées ; les listes provisoires sont `pr-review-1200-0-9.json` à `pr-review-1200-50-59.json` dans le dossier temporaire local.
+
+Les paragraphes 60 à 608 et le contrôle linguistique complet restent à examiner. Le paragraphe 40 allemand nomme le ministre `Sorkalah`, tandis que le contexte et 31 autres occurrences françaises donnent `Sorkalan` ; la graphie a été harmonisée en français et cette divergence de source reste signalée. Le terme technique fictif « tarkcier » est conservé provisoirement pour la future vérification de fidélité. Cette lecture partielle ne valide pas le roman.
+
 ## Numéro 1202 : début de relecture détaillée
 
 Le corps XHTML allemand contient 470 éléments `p`, dont 453 non vides, et aucun texte non blanc hors de ces paragraphes. Les 453 paragraphes extraits (indices 0 à 452, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Trois cent six corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, précisions manquantes, dialogues déformés et formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-445-452.json` dans le dossier temporaire local.
