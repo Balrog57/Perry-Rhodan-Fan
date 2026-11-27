@@ -464,7 +464,7 @@ Le corps original `OEBPS/Text/index_split_002.xhtml` (SHA-256 `7d96c9494bf7777f7
 
 ## Numéro 1210 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_004.xhtml` (SHA-256 `5c415f94061c621093622e270b87d06cd0e7b50ded6d2899157a5b6b44c6e2d7`) contient 881 éléments `p`, dont 837 non vides, sans texte non blanc hors de ces paragraphes. Les indices 0 à 549 ont été comparés aux blocs français ; les éléments non appariés sont des séparateurs. Cette portion a reçu 252 corrections ciblées et 15 harmonisations des noms de bases préparées dans les fichiers temporaires `pr-review-1210-*.json`, notamment un fragment de consigne en anglais, un paragraphe en italien, des actions déformées ou omises et des noms mal traduits. La suite de la lecture, le contrôle linguistique et la vérification du rendu restent à faire ; ce numéro ne constitue pas encore un lot terminé.
+Le corps original `OEBPS/Text/index_split_004.xhtml` (SHA-256 `5c415f94061c621093622e270b87d06cd0e7b50ded6d2899157a5b6b44c6e2d7`) contient 881 éléments `p`, dont 837 non vides, sans texte non blanc hors de ces paragraphes. Les indices 0 à 759 ont été comparés aux blocs français ; les éléments non appariés sont des séparateurs. Cette portion a reçu 334 corrections ciblées et 15 harmonisations des noms de bases préparées dans les fichiers temporaires `pr-review-1210-*.json`, notamment un fragment de consigne en anglais, un paragraphe en italien, des actions déformées ou omises et des noms mal traduits. La suite de la lecture, le contrôle linguistique et la vérification du rendu restent à faire ; ce numéro ne constitue pas encore un lot terminé.
 
 ## Harmonisation des noms de bases du Décalogue
 
