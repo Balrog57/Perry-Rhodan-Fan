@@ -488,4 +488,6 @@ Le corps original `OEBPS/Text/index_split_013.xhtml` (SHA-256 `20a57ef0bfedb9ede
 
 ## Numéro 1215 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_015.xhtml` (SHA-256 `fc6f487a17550849dfe35015793fb005ae102fe2103ffd55a101c141acff45ea`) contient 948 éléments `p`, dont 892 non vides. Les indices 0 à 543 ont été examinés en comparaison avec le français ; 415 corrections ciblées ont été appliquées après rapprochement avec le fichier actuel. La lecture des indices suivants, le contrôle linguistique, la recherche de résidus et la vérification du rendu restent à faire : ce numéro ne constitue pas un lot achevé.
+Le corps original `OEBPS/Text/index_split_015.xhtml` (SHA-256 `fc6f487a17550849dfe35015793fb005ae102fe2103ffd55a101c141acff45ea`) contient 948 éléments `p`, dont 892 non vides. Les indices 0 à 774 ont été examinés en comparaison avec le français ; 584 corrections ciblées ont été appliquées après rapprochement avec le fichier actuel. La lecture des indices suivants, le contrôle linguistique, la recherche de résidus et la vérification du rendu restent à faire : ce numéro ne constitue pas un lot achevé.
+
+La source nomme le même arbitre Hulnan 2371 à l’indice 765 puis Hulnan 2317 à l’indice 771 : incohérence conservée pour examen. À l’indice 298, « weniger skrupellos » semble contradictoire avec le contexte ; « moins scrupuleux » est conservé. À l’indice 573, la source écrit « imitiert » pour la troisième question ultime ; cette formulation est conservée pour vérification ultérieure.
