@@ -47,6 +47,14 @@ Les résultats bruts provisoires se trouvent dans le dossier temporaire local `p
 
 Un contrôle distinct des paragraphes composés uniquement d’un numéro suivi d’un point a comparé les 50 numéros de 600 à 649. Les listes concordent sauf pour le 644 : l’extraction allemande reconnaît les repères 1 puis 3 à 11, alors que le français ne reconnaissait que 1 avant correction. Le contrôle ciblé et ses limites sont précisés ci-dessous ; ce seul comptage ne prouve ni la présence ni l’absence de contenu narratif.
 
+## Numéro 600 : premier contrôle du français
+
+Un essai local de [LanguageTool](https://dev.languagetool.org/http-server), version 6.9-SNAPSHOT du 26 novembre 2026, a analysé le corps du texte en 23 blocs. L’archive utilisée porte le SHA-256 `5a183982e5b49abcabb5df301a6cfc2b9dea523b246564614ca33adc4a9f2e70` ; l’empreinte du corps avant les corrections ci-dessous est `89ab69c9261a04605aea7b04bac06887f716121d1508d803f1bc1edb7d33e405`. Le serveur était local et a été arrêté après utilisation.
+
+L’outil a signalé 1 113 éléments, dont 906 vérifications orthographiques majoritairement liées à des noms et termes de l’univers. Après lecture ciblée, deux élisions, un accord, un résidu allemand et une formulation ont été corrigés. Les signalements restants, y compris les éventuelles erreurs que l’outil ne détecte pas, demandent encore un examen. Le résultat brut provisoire se trouve dans le dossier temporaire local `pr-languagetool-20261127/600.json` ; il ne constitue pas une validation du roman.
+
+Le même outil a aussi analysé le 601 en 20 blocs (empreinte du corps : `9f45985bb5ffeb0da14290e2e626f7bbfd51dce3743a4d9394d08bebba8304ca`). Il a remonté 1 551 signalements, dont 1 387 orthographiques. Un tri ciblé des règles d’accord et d’élision examinées a surtout retrouvé des faux positifs sur les noms de vaisseaux ; il ne vaut pas relecture intégrale. Le résultat provisoire est `pr-languagetool-20261127/601.json` dans le dossier temporaire local.
+
 ## Lot 605–609 : alignement pilote
 
 La même méthode locale et les mêmes limites s’appliquent. Les 90 séparateurs de scène allemands non appariés ont été replacés après contrôle des blocs voisins.
