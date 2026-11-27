@@ -341,9 +341,9 @@ Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qua
 
 ## Numéro 1200 : début de relecture détaillée
 
-Le corps XHTML allemand contient 671 éléments `p`, dont 609 non vides, et aucun texte non blanc hors de ces paragraphes. Les 130 premiers paragraphes extraits (indices 0 à 129, titres, crédits et séparateurs compris) ont été lus avec les blocs français correspondants pour repérer omissions et défauts de français. Quarante-sept corrections ciblées ont été apportées ; les listes provisoires sont `pr-review-1200-0-9.json` à `pr-review-1200-120-129.json` dans le dossier temporaire local.
+Le corps XHTML allemand contient 671 éléments `p`, dont 609 non vides, et aucun texte non blanc hors de ces paragraphes. Les 240 premiers paragraphes extraits (indices 0 à 239, titres, crédits et séparateurs compris) ont été lus avec les blocs français correspondants pour repérer omissions et défauts de français. 112 corrections ciblées ont été apportées ; les listes provisoires sont `pr-review-1200-0-9.json` à `pr-review-1200-230-239.json` dans le dossier temporaire local.
 
-Les paragraphes 130 à 608 et le contrôle linguistique complet restent à examiner. Le paragraphe 40 allemand nomme le ministre `Sorkalah`, tandis que le contexte et 31 autres occurrences françaises donnent `Sorkalan` ; la graphie a été harmonisée en français et cette divergence de source reste signalée. Le terme technique fictif « tarkcier » est conservé provisoirement pour la future vérification de fidélité. Cette lecture partielle ne valide pas le roman.
+Les paragraphes 240 à 608 et le contrôle linguistique complet restent à examiner. Le paragraphe 40 allemand nomme le ministre `Sorkalah`, tandis que le contexte et 31 autres occurrences françaises donnent `Sorkalan` ; la graphie a été harmonisée en français et cette divergence de source reste signalée. Le terme technique fictif « tarkcier » est conservé provisoirement pour la future vérification de fidélité. Cette lecture partielle ne valide pas le roman.
 
 ## Numéro 1202 : début de relecture détaillée
 
