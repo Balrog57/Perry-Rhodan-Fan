@@ -429,3 +429,7 @@ Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qua
 ## Contrôles effectués
 
 Les variantes explicites de marqueurs entre crochets ont été recherchées dans l’ensemble des fichiers ; de nouveaux types de marqueurs et consignes ont ensuite été trouvés. `git diff --check` a réussi après les corrections de ce lot. Les originaux et les fichiers préexistants non suivis doivent être préservés.
+
+## Numéro 1201 : début de relecture détaillée
+
+Le corps XHTML allemand `OEBPS/Text/index_split_044.xhtml` contient 911 éléments `p`, dont 857 non vides, et aucun texte non blanc hors de ces paragraphes. Les 110 premiers paragraphes extraits (indices 0 à 109, titres, crédits et un séparateur compris) ont été lus avec les blocs français correspondants pour repérer omissions et défauts de français. 53 corrections ciblées ont été apportées ; les listes provisoires sont `pr-review-1201-0-9.json` à `pr-review-1201-100-109.json` dans le dossier temporaire local. Les paragraphes 110 à 856 et le contrôle linguistique restent à examiner ; cette lecture partielle ne valide pas le roman.
