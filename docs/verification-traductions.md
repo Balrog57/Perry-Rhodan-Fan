@@ -341,9 +341,9 @@ Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qua
 
 ## Numéro 1202 : début de relecture détaillée
 
-Les 135 premiers paragraphes extraits de l’original allemand (indices 0 à 134 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Cinquante-neuf corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante, des dialogues déformés et des formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-125-134.json` dans le dossier temporaire local.
+Les 225 premiers paragraphes extraits de l’original allemand (indices 0 à 224 sur 453, titres et crédits compris) ont été lus avec leurs blocs français correspondants pour repérer les omissions et les défauts de français. Cent dix corrections ciblées ou normalisations de paragraphes ont été apportées : notamment traduction de `Armadaschmiede`, une précision manquante, des dialogues déformés et des formulations difficiles à lire. Les listes provisoires des remplacements sont `pr-review-1202-0-44.json` puis `pr-review-1202-45-54.json` à `pr-review-1202-215-224.json` dans le dossier temporaire local.
 
-Les paragraphes allemands 135 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
+Les paragraphes allemands 225 à 452 et l’ensemble des signalements linguistiques restent à examiner. Cette lecture partielle ne valide pas le roman, et ne remplace pas la future vérification approfondie de la fidélité.
 
 ## Lot 1215–1219 : alignement pilote
 
@@ -386,6 +386,28 @@ Les 42 occurrences de formes allemandes ou hybrides de `Kosmokrat` dans les corp
 - 1222 : `95f20a3acc14c52031546b3c216705c6a29f6a3461094ae85e44acc626da52f5` (`OEBPS/Text/index_split_030.xhtml`)
 - 1223 : `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1` (`OEBPS/Text/index_split_032.xhtml`)
 - 1224 : `9fe020232604f0fad8978b18d49585380e26cb7ded0bc62c7374f9cdd2587564` (`OEBPS/Text/index_split_034.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
+## Lot 1225–1229 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots précédents. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros ; les titres de résumés sont des blocs français supplémentaires. Le titre allemand isolé du 1227 figure dans ses métadonnées, dont la graphie a été corrigée d’après l’original.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1225 | 710 | 694 | 693 | 17 |
+| 1226 | 881 | 860 | 859 | 22 |
+| 1227 | 935 | 923 | 922 | 12 |
+| 1228 | 1018 | 1008 | 1007 | 11 |
+| 1229 | 838 | 821 | 820 | 18 |
+
+Quatre occurrences de formes allemandes ou hybrides de `Kosmokrat` ont été traduites dans les corps français des 1225 et 1227 ; trois fautes de français ont également été corrigées dans le 1227. Les résultats provisoires et le script sont `pr-align-1225-1229` et `pr_align_1225_1229.py` dans le dossier temporaire local. Les textes français analysés correspondent au commit `8713fc3c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1225 : `025950bcdc6939538c94d3585138f0ec37ffc81c84b83f09e3758437c60a4f22` (`OEBPS/Text/index_split_036.xhtml`)
+- 1226 : `8d3526bd3a1541cad40f9907c73e18bcd1c6ceb8055341f38e578f163bd32fec` (`OEBPS/Text/index_split_038.xhtml`)
+- 1227 : `129489a81f6ba542eee31b6fe20a1de0a83c441717019b931b1c3f13728799c0` (`OEBPS/Text/index_split_040.xhtml`)
+- 1228 : `414c2f7d1b347275d754888deb9c41042bc198b856dd566b646d712e4ed34495` (`OEBPS/Text/index_split_042.xhtml`)
+- 1229 : `15c0464853fc7e9c77e1c6c50f8784aed6e224d599b11cf80d6689fe17a50641` (`OEBPS/Text/index_split_046.xhtml`)
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
