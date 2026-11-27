@@ -211,6 +211,28 @@ Les résultats provisoires et le script sont dans le dossier temporaire local `p
 
 Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Lot 640–643 : alignement pilote
+
+Même méthode et mêmes limites que ci-dessus. Les séparateurs non appariés ont été replacés après contrôle des blocs voisins. Le titre français du résumé constitue un bloc supplémentaire non apparié dans chaque numéro.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 640 | 1326 | 1293 | 1288 | 17 |
+| 641 | 1160 | 1153 | 1152 | 8 |
+| 642 | 1360 | 1342 | 1341 | 17 |
+| 643 | 1059 | 1047 | 1046 | 12 |
+
+Dans le 640, l’examen des fragments non appariés a confirmé trois phrases allemandes absentes, rétablies en français, et quatre blocs français dupliqués à un mauvais emplacement, supprimés après localisation des occurrences correctes. Les autres fragments examinés étaient regroupés dans les paragraphes français voisins. Dans les 642 et 643, les fragments allemands non appariés étaient également regroupés ; une ponctuation de dialogue du 642 a été corrigée.
+
+Les résultats provisoires et le script sont dans le dossier temporaire local `pr-align-640-649` et `pr_align_640_649.py`. Les textes français analysés correspondent au commit `fcf14cc8`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 640 : `af948e9a5d9c9f1dd338c09a33c6631a210ded7fea36e7e0946f4e9ba0389c5e` (`OEBPS/Text/index_split_068.xhtml`)
+- 641 : `7d82691bc1d3d49f279ba5478c287c17c058a28b8879492a00dc5a87e4e6724c` (`OEBPS/Text/index_split_070.xhtml`)
+- 642 : `00b7921c34ba01f664d9bbf9b7457ee55c3da934ad3a9005ac68b7b4bab46ea3` (`OEBPS/Text/index_split_072.xhtml`)
+- 643 : `9aa09ce569e5f48a16f3d8f87e143a55146cb6466d4b64119184acfcd77efd7f` (`OEBPS/Text/index_split_074.xhtml`)
+
+Ces contrôles ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; ces quatre romans restent à vérifier.
+
 ## Numéro 644 : contrôle structurel ciblé
 
 L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
