@@ -69,6 +69,28 @@ Le titre allemand cité dans le résumé du 607 a aussi été traduit. Les résu
 
 Ces statistiques ne prouvent pas que les paragraphes appariés soient complets ni que le français soit exempt d’erreurs ; les cinq romans restent à vérifier.
 
+## Lot 610–614 : alignement pilote
+
+La méthode et ses limites sont identiques aux lots précédents. Les séparateurs non appariés ont été replacés après contrôle des voisins ; les titres français des 611 et 614 ont été réintroduits au début des corps de texte.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis | Autres écarts constatés |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 610 | 1 166 | 1 146 | 1 145 | 21 | Titre du résumé supplémentaire |
+| 611 | 1 216 | 1 208 | 1 207 | 8 | Titre allemand non apparié ; titre français réintroduit |
+| 612 | 1 260 | 1 235 | 1 234 | 26 | Titre du résumé supplémentaire |
+| 613 | 1 009 | 987 | 986 | 23 | Titre du résumé supplémentaire |
+| 614 | 1 433 | 1 413 | 1 412 | 20 | Titre allemand non apparié ; titre français réintroduit |
+
+Les résultats provisoires et le script sont dans le dossier temporaire local `pr-align-610-614` et `pr_align_610_614.py`. Les fichiers français analysés correspondent au commit `a13a8644`, avant corrections. Les entrées allemandes `OEBPS/Text/index_split_002.xhtml`, `004`, `006`, `008` et `010` ont respectivement les empreintes SHA-256 suivantes :
+
+- 610 : `b3e31d3e6d4b5e1ce729384c00d2cee9b30963ed7fcd141d7de55430c2af7bd0`
+- 611 : `ff8e5e7b5216e51eb548e48dbe6ab9d82f850f691960b42cf865fdd542b08180`
+- 612 : `cebe670f9c2cddba10e6f5f2c41f25af78d5a16b1069851ffddedd8e44bcc764`
+- 613 : `04416a116b2b4273c10115e65cada97be649ff5fa6bf9d2f4caa7668ce2b0871`
+- 614 : `14bdb9107ffe94b0ec12ba814978eda4272a04228ecb2ac435d8490186eeda3c`
+
+Ces statistiques ne prouvent pas la complétude des paragraphes appariés ni la qualité globale du français ; les cinq romans restent à vérifier.
+
 ## Numéro 644 : contrôle structurel ciblé
 
 L’alignement du fichier allemand `OEBPS/Text/index_split_076.xhtml` a permis de replacer les repères de section 3 à 11 et 16 séparateurs de scène, ainsi que deux répliques qui avaient été déplacées. Les repères numériques isolés concordent désormais avec ceux extraits de cet EPUB : 1 puis 3 à 11. Aucun repère isolé 2 n’a été trouvé dans le XHTML original ; ne pas en inventer sans autre preuve.
