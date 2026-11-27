@@ -21,6 +21,24 @@ Passages contrôlés et corrigés à partir des originaux dans les numéros 1888
 
 Ces corrections concernent seulement les passages signalés et leur contexte immédiat. Par exemple, la précision sur l’attaque du 2162 et le mécanisme évoqué dans le 2536 ont été rétablis. Aucun de ces numéros n’est pour autant considéré entièrement vérifié.
 
+## Lot 600–604 : alignement pilote
+
+Chaque numéro a été relié à son texte dans le recueil allemand par l’ordre de lecture de l’EPUB. Les paragraphes et blocs français ont été comparés par similarité multilingue LaBSE puis alignés dans l’ordre. Les éléments allemands non appariés étaient exclusivement des séparateurs de scène (`*`) ; leurs voisins ont été contrôlés et les séparateurs replacés dans les fichiers français.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis | Autre bloc FR non apparié |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 600 | 916 | 896 | 895 | 21 | Titre du résumé |
+| 601 | 1 331 | 1 309 | 1 309 | 22 | Aucun |
+| 602 | 1 160 | 1 136 | 1 135 | 25 | Titre du résumé |
+| 603 | 1 103 | 1 092 | 1 091 | 12 | Titre du résumé |
+| 604 | 1 025 | 1 009 | 1 008 | 17 | Titre du résumé |
+
+Un alignement, même à score élevé, ne prouve pas qu’une phrase à l’intérieur d’un paragraphe soit complète ou exacte. Ces cinq romans restent donc à vérifier, notamment pour la qualité du français et les omissions partielles. Dans le 600, quelques erreurs de français ont également été corrigées au début du texte.
+
+Les résultats bruts provisoires se trouvent dans le dossier temporaire local `pr600-alignement.json` et `pr-align-601-604` ; les scripts du pilote sont `pr600_alignement.py` et `pr_align_601_604.py` dans ce même dossier. Ils ne sont pas des attestations de validation.
+
+Un contrôle distinct des paragraphes composés uniquement d’un numéro suivi d’un point a comparé les 50 numéros de 600 à 649. Les listes concordent sauf pour le 644 : l’extraction allemande reconnaît les repères 1 puis 3 à 11, alors que le français ne reconnaît que 1. Il faut examiner ce roman pour distinguer les particularités de formatage des repères manquants ; ce contrôle ne prouve ni la présence ni l’absence de contenu narratif.
+
 ## Anomalies encore à traiter
 
 - La recherche initiale des termes « correction » ou « réponse précédente » signalait 51 numéros, avec des faux positifs dans les dialogues. Les formulations ciblées ci-dessus ont été traitées ; poursuivre la recherche d’autres consignes et examiner les occurrences dans leur contexte original.
