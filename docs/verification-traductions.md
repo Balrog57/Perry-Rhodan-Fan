@@ -315,9 +315,33 @@ Les résultats et le script provisoires sont `pr-align-1205-1209` et `pr_align_1
 
 Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
 
+## Lot 1210–1214 : alignement pilote
+
+Même méthode locale et mêmes limites que pour les lots précédents. Les listes de repères de sections numérotées extraites concordent pour les cinq numéros. Le titre allemand isolé du 1213 figure dans ses métadonnées ; les titres de résumés sont des blocs français supplémentaires.
+
+| Numéro | Paragraphes DE | Blocs FR avant correction | Paires | Séparateurs rétablis |
+| --- | ---: | ---: | ---: | ---: |
+| 1210 | 837 | 827 | 826 | 11 |
+| 1211 | 831 | 832 | 831 | 0 |
+| 1212 | 1242 | 1228 | 1227 | 15 |
+| 1213 | 901 | 892 | 891 | 9 |
+| 1214 | 989 | 980 | 979 | 10 |
+
+Le titre de résumé du 1213 a été remis avant son premier paragraphe. Dans les 1211, 1213 et 1214, 71 occurrences de formes allemandes ou hybrides de `Kosmokrat` ont été traduites dans le corps français, en respectant notamment quatre désignations singulières et sept désignations féminines. Plusieurs autres passages allemands isolés, des erreurs de grammaire et des fautes de frappe ont été corrigés dans le 1214, avec retour à l’original pour les formulations ambiguës. Un essai local de LanguageTool 6.9-SNAPSHOT sur ce texte après les premières corrections (empreinte du corps `28a09cfac49199d66920b5cbd57f6195f3b5f5f3e99b7f6af616120855ef339b`) a signalé 1 710 éléments, dont 1 569 vérifications orthographiques, surtout des noms propres. Un tri ciblé a permis des corrections supplémentaires ; les autres signalements restent à examiner. Le résultat provisoire est `pr-languagetool-20261127/1214.json` dans le dossier temporaire local. Les métadonnées originales ont été préservées.
+
+Les résultats provisoires et le script sont `pr-align-1210-1214` et `pr_align_1210_1214.py` dans le dossier temporaire local. Les textes français analysés correspondent au commit `8713fc3c`, avant corrections. Empreintes SHA-256 des entrées allemandes brutes :
+
+- 1210 : `5c415f94061c621093622e270b87d06cd0e7b50ded6d2899157a5b6b44c6e2d7` (`OEBPS/Text/index_split_004.xhtml`)
+- 1211 : `20f79a402fad55b5f33ac53d3337c622adce62c05bf58e5b6cb3d0dca807bb90` (`OEBPS/Text/index_split_006.xhtml`)
+- 1212 : `a785c77039a23a7ec5c3ed3b7cf495126fbc4a0c96b494a0bb586ebc4915e367` (`OEBPS/Text/index_split_008.xhtml`)
+- 1213 : `57602df520dde975a22de8626bb38492325f73052c8fad75d900f7ccb945817e` (`OEBPS/Text/index_split_011.xhtml`)
+- 1214 : `20a57ef0bfedb9edee1af6e56bdc34044cfb34b3b82ca5cfb62bd0a8f79ff0d9` (`OEBPS/Text/index_split_013.xhtml`)
+
+Ces contrôles ne prouvent ni la complétude des paragraphes appariés ni la qualité globale du français ; ces cinq romans restent à vérifier.
+
 ## Anomalies encore à traiter
 
-- Une recherche de la racine allemande `Kosmokrat` a trouvé 615 fichiers de chapitres au 27 novembre 2026, métadonnées incluses. Les occurrences en contexte doivent être distinguées des titres originaux et corrigées par lots ; le simple détecteur de langue par paragraphe ne les repère pas de manière fiable.
+- Une recherche de la racine allemande `Kosmokrat` a trouvé 615 fichiers de chapitres et une recherche du mot `Oxtorner` en a trouvé 250 au 27 novembre 2026, métadonnées incluses. Les occurrences en contexte doivent être distinguées des titres originaux et corrigées par lots ; le simple détecteur de langue par paragraphe ne les repère pas de manière fiable.
 
 - La recherche initiale des termes « correction » ou « réponse précédente » signalait 51 numéros, avec des faux positifs dans les dialogues. Les formulations ciblées ci-dessus ont été traitées ; poursuivre la recherche d’autres consignes et examiner les occurrences dans leur contexte original.
 - Les recherches de débuts de ligne allemands révèlent d’autres titres, phrases et fragments encore présents. Les noms propres, titres d’œuvres et termes fictifs exigent un tri contextuel.
