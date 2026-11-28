@@ -537,3 +537,8 @@ Le corps original `OEBPS/Text/index_split_030.xhtml` (SHA-256 `95f20a3acc14c5203
 ## Numéro 1223 : première relecture détaillée achevée
 
 Le corps original `OEBPS/Text/index_split_032.xhtml` (SHA-256 `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1`) contient 973 éléments `p`, dont 926 non vides. Les 926 paragraphes non vides (indices 0 à 925) ont été examinés en comparaison avec le français ; 454 corrections ciblées et 42 espacements autour des guillemets ont été appliqués. La graphie du nom Zibbotu, écrit aussi Zibbatu dans l’original, a été harmonisée. Les onze paragraphes allemands non appariés sont des séparateurs ; le seul bloc français non apparié est le titre du résumé. Aucun texte hors paragraphe dans le corps XHTML. LanguageTool a relevé 1 076 points, dont 926 contrôles orthographiques surtout liés aux noms et termes de la série ; les signalements utiles ont été corrigés. La compilation finale a réussi ; les 923 blocs du rendu correspondent au Markdown, avec onze séparateurs et 499 paires de guillemets équilibrées. SHA-256 du corps Markdown : `27ca8c570f95ae5bd77a2c2fc126b27f27ab0c177c418247809cb9155fab0960`.
+
+
+## Numéro 1224 : relecture détaillée en cours
+
+Le corps original `OEBPS/Text/index_split_034.xhtml` (SHA-256 `9fe020232604f0fad8978b18d49585380e26cb7ded0bc62c7374f9cdd2587564`) contient 944 éléments `p`, dont 918 non vides. Les indices 0 à 209 ont été examinés en comparaison avec le français ; 136 corrections ciblées ont été appliquées. À l’indice 77, l’original appelle Saturne la cinquième planète ; cette affirmation est conservée dans l’attente d’une vérification éditoriale. Aux indices 188 et 190, les valeurs numériques sont celles de la source. La lecture et les vérifications finales restent en cours.
