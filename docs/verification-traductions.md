@@ -494,4 +494,4 @@ La source nomme le même arbitre Hulnan 2371 à l’indice 765 puis Hulnan 2317 
 
 ## Numéro 1216 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_016.xhtml` (SHA-256 `bfaf1fbdc3e4eba051695508f2dadbbe060f43ce80e081e22fd4b0268f223b34`) contient 952 éléments `p`, dont 888 non vides. Les indices 0 à 223 ont été examinés en comparaison avec le français ; 112 corrections ciblées ont été appliquées après rapprochement avec le fichier actuel. La lecture des indices suivants, le contrôle linguistique, la recherche de résidus et la vérification du rendu restent à faire : ce numéro ne constitue pas un lot achevé.
+Le corps original `OEBPS/Text/index_split_016.xhtml` (SHA-256 `bfaf1fbdc3e4eba051695508f2dadbbe060f43ce80e081e22fd4b0268f223b34`) contient 952 éléments `p`, dont 888 non vides. Les indices 0 à 454 ont été examinés en comparaison avec le français ; 206 corrections ciblées ont été appliquées après rapprochement avec le fichier actuel. La lecture des indices suivants, le contrôle linguistique, la recherche de résidus et la vérification du rendu restent à faire : ce numéro ne constitue pas un lot achevé.
