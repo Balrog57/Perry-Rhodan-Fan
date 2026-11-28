@@ -536,4 +536,4 @@ Le corps original `OEBPS/Text/index_split_030.xhtml` (SHA-256 `95f20a3acc14c5203
 
 ## Numéro 1223 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_032.xhtml` (SHA-256 `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1`) contient 973 éléments `p`, dont 926 non vides. Les indices 0 à 433 ont été examinés en comparaison avec le français ; 206 corrections ciblées ont été appliquées. La lecture et les vérifications finales restent en cours.
+Le corps original `OEBPS/Text/index_split_032.xhtml` (SHA-256 `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1`) contient 973 éléments `p`, dont 926 non vides. Les indices 0 à 629 ont été examinés en comparaison avec le français ; 295 corrections ciblées ont été appliquées. La graphie du nom Zibbotu, écrit aussi Zibbatu dans l’original, a été harmonisée. La lecture et les vérifications finales restent en cours.
