@@ -551,4 +551,4 @@ Le corps original `OEBPS/Text/index_split_036.xhtml` (SHA-256 `025950bcdc6939538
 
 ## Numéro 1226 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_038.xhtml` (SHA-256 `8d3526bd3a1541cad40f9907c73e18bcd1c6ceb8055341f38e578f163bd32fec`) contient 952 éléments `p`, dont 881 non vides. Les indices 0 à 307 ont été examinés en comparaison avec le français ; 112 corrections ciblées ont été appliquées. La suite de la lecture et les contrôles finaux restent à faire.
+Le corps original `OEBPS/Text/index_split_038.xhtml` (SHA-256 `8d3526bd3a1541cad40f9907c73e18bcd1c6ceb8055341f38e578f163bd32fec`) contient 952 éléments `p`, dont 881 non vides. Les indices 0 à 573 ont été examinés en comparaison avec le français ; 206 corrections ciblées ont été appliquées. La suite de la lecture et les contrôles finaux restent à faire.
