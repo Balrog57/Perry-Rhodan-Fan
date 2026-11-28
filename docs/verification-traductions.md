@@ -511,3 +511,7 @@ Le corps original `OEBPS/Text/index_split_020.xhtml` (SHA-256 `8572b11acc4dfbdf4
 La source donne les 10 et 15 février 228 NGZ aux indices 682 et 819, après le 10 janvier 428 NGZ à l’indice 13 ; 428 a été retenu comme correction probable. À l’indice 636, la source attribue l’action à Kollopher alors que le dialogue suivant parle de la famille de Lofker ; l’attribution source est conservée en attendant une vérification.
 
 À l’indice 1100, la source écrit « Bonsil-Twirl » au lieu de « Bonsin-Twirl », graphie utilisée dans le reste du récit ; celle-ci a été retenue. Le terme allemand récurrent « Drangwäsche » est rendu ici par « crise de frénésie » selon le contexte ; le choix terminologique reste à harmoniser à l’échelle de la série.
+
+## Numéro 1219 : relecture détaillée en cours
+
+Le corps original `OEBPS/Text/index_split_024.xhtml` (SHA-256 `b4af48463d5854ca453a810c5ef6693f1ed0d7b4497075ad19627e1a09b1672d`) contient 1 157 éléments `p`, dont 1 113 non vides. Les indices 0 à 358 ont été examinés en comparaison avec le français et 92 corrections ciblées appliquées. La suite de la lecture, les contrôles linguistiques et du rendu restent à faire ; ce numéro n’est pas encore un lot achevé.
