@@ -514,4 +514,4 @@ La source donne les 10 et 15 février 228 NGZ aux indices 682 et 819, après le 
 
 ## Numéro 1219 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_024.xhtml` (SHA-256 `b4af48463d5854ca453a810c5ef6693f1ed0d7b4497075ad19627e1a09b1672d`) contient 1 157 éléments `p`, dont 1 113 non vides. Les indices 0 à 358 ont été examinés en comparaison avec le français et 92 corrections ciblées appliquées. La suite de la lecture, les contrôles linguistiques et du rendu restent à faire ; ce numéro n’est pas encore un lot achevé.
+Le corps original `OEBPS/Text/index_split_024.xhtml` (SHA-256 `b4af48463d5854ca453a810c5ef6693f1ed0d7b4497075ad19627e1a09b1672d`) contient 1 157 éléments `p`, dont 1 113 non vides. Les indices 0 à 733 ont été examinés en comparaison avec le français et 171 corrections ciblées appliquées. La suite de la lecture, les contrôles linguistiques et du rendu restent à faire ; ce numéro n’est pas encore un lot achevé.
