@@ -531,4 +531,4 @@ Le corps original `OEBPS/Text/index_split_028.xhtml` (SHA-256 `0377c2a8d7ab34e39
 
 ## Numéro 1222 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_030.xhtml` (SHA-256 `95f20a3acc14c52031546b3c216705c6a29f6a3461094ae85e44acc626da52f5`) contient 882 éléments `p`, dont 831 non vides. Les indices 0 à 293 ont été examinés en comparaison avec le français ; 203 corrections ciblées ont été appliquées, notamment la restitution d’un passage omis. Le titre allemand figure dans les métadonnées françaises. La lecture et les vérifications finales restent en cours.
+Le corps original `OEBPS/Text/index_split_030.xhtml` (SHA-256 `95f20a3acc14c52031546b3c216705c6a29f6a3461094ae85e44acc626da52f5`) contient 882 éléments `p`, dont 831 non vides. Les indices 0 à 496 ont été examinés en comparaison avec le français ; 362 corrections ciblées ont été appliquées, notamment la restitution d’un passage omis. Le titre allemand figure dans les métadonnées françaises. La lecture et les vérifications finales restent en cours.
