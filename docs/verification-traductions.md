@@ -532,3 +532,8 @@ Le corps original `OEBPS/Text/index_split_028.xhtml` (SHA-256 `0377c2a8d7ab34e39
 ## Numéro 1222 : première relecture détaillée achevée
 
 Le corps original `OEBPS/Text/index_split_030.xhtml` (SHA-256 `95f20a3acc14c52031546b3c216705c6a29f6a3461094ae85e44acc626da52f5`) contient 882 éléments `p`, dont 831 non vides. Les 831 paragraphes non vides (indices 0 à 830) ont été examinés en comparaison avec le français ; 580 corrections ciblées et 52 espacements autour des guillemets ont été appliqués, notamment la restitution d’un passage omis. Le titre allemand figure dans les métadonnées françaises ; les treize autres paragraphes non appariés sont des séparateurs et le seul bloc français non apparié est le titre du résumé. Aucun texte hors paragraphe dans le corps XHTML. LanguageTool a relevé 1 271 points, dont 1 145 contrôles orthographiques portant surtout sur des noms et termes de la série ; les signalements utiles ont été corrigés. La compilation finale a réussi ; les 831 blocs du rendu correspondent au Markdown, avec treize séparateurs et 559 paires de guillemets équilibrées. SHA-256 du corps Markdown : `40aa3f860db48291b15a3269014273539f8cdc1616cfd649b267f4a021d6a150`.
+
+
+## Numéro 1223 : relecture détaillée en cours
+
+Le corps original `OEBPS/Text/index_split_032.xhtml` (SHA-256 `e57ddcc69f873aca64691f7b10bf7957e659ad787999b9f967a2e40ae4e1c6d1`) contient 973 éléments `p`, dont 926 non vides. Les indices 0 à 433 ont été examinés en comparaison avec le français ; 206 corrections ciblées ont été appliquées. La lecture et les vérifications finales restent en cours.
