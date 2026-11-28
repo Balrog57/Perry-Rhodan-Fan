@@ -526,4 +526,4 @@ Le corps original `OEBPS/Text/index_split_026.xhtml` (SHA-256 `ebb4bf6f7dc537586
 
 ## Numéro 1221 : relecture détaillée en cours
 
-Le corps original `OEBPS/Text/index_split_028.xhtml` (SHA-256 `0377c2a8d7ab34e39697e6fbafd19fa2d71edef12138d2e9871479e70c9b7f5d`) contient 891 éléments `p`, dont 847 non vides. Aucun texte hors paragraphe dans le corps XHTML. Les indices allemands 0 à 221 ont été examinés en comparaison avec le français ; 78 corrections ciblées ont été appliquées. La relecture et les contrôles restent à poursuivre sur le reste du roman avant publication du lot.
+Le corps original `OEBPS/Text/index_split_028.xhtml` (SHA-256 `0377c2a8d7ab34e39697e6fbafd19fa2d71edef12138d2e9871479e70c9b7f5d`) contient 891 éléments `p`, dont 847 non vides. Aucun texte hors paragraphe dans le corps XHTML. Les indices allemands 0 à 382 ont été examinés en comparaison avec le français ; 189 corrections ciblées ont été appliquées. La compilation intermédiaire après les indices 0 à 221 a réussi. La relecture et les contrôles restent à poursuivre sur le reste du roman avant publication du lot.
